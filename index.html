@@ -107,6 +107,8 @@ body{padding-bottom:58px;}
 .whale-pos{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;margin-top:8px;font-size:11px;}
 .whale-pos-row{display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:1px solid var(--border);}
 .whale-pos-row:last-child{border-bottom:none;}
+.whale-pos-link{display:block;color:var(--cyan);text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;}
+.whale-pos-link:hover{text-decoration:underline;}
 .whale-pos-toggle{cursor:pointer;color:var(--cyan);font-size:10px;text-transform:uppercase;letter-spacing:.08em;margin-top:8px;user-select:none;font-weight:600;}
 .whale-pos-toggle:hover{text-decoration:underline;}
 
@@ -551,7 +553,11 @@ async function loadWhalePositions(addr){
       const cp=+(p.curPrice||p.currentPrice||p.avgPrice||0.5);
       const title=p.title||p.market||'Unknown';
       const short=title.length>48?title.slice(0,48)+'…':title;
-      return`<div class="whale-pos-row"><div style="flex:1;min-width:0"><div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${short}</div><div style="color:var(--text2);font-size:10px">bet ${dirInline(d)} · ${f$(sz)} · now ${Math.round(cp*100)}¢</div></div></div>`;
+      // Prefer eventSlug (canonical polymarket.com/event/<slug>), then slug, then derive from title.
+      const slug=p.eventSlug||p.slug||title.toLowerCase().replace(/[^a-z0-9\s-]/g,'').trim().replace(/\s+/g,'-').slice(0,80);
+      const href=`https://polymarket.com/event/${slug}`;
+      const safeTitle=short.replace(/"/g,'&quot;');
+      return`<div class="whale-pos-row"><div style="flex:1;min-width:0"><a href="${href}" target="_blank" rel="noopener" class="whale-pos-link" title="${safeTitle}">${short}</a><div style="color:var(--text2);font-size:10px">bet ${dirInline(d)} · ${f$(sz)} · now ${Math.round(cp*100)}¢</div></div></div>`;
     }).join('')+'</div>';
     container.dataset.loaded='1';
   }catch(e){container.innerHTML='<div style="font-size:10px;color:var(--red);padding:4px">Failed to load</div>';}
