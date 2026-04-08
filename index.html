@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>PolyWatch v3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@500;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════════════════
+   POLYWATCH — Refined trading terminal
+   Single cyan primary, data-rich, surgical dark UI
+   ═══════════════════════════════════════════════════════════════════ */
+:root{
+  /* Surfaces */
+  --bg:#08090d;--bg2:#0d1017;--bg3:#111520;--bg4:#161d2a;
+  --border:#1c2538;--border2:#2a3650;
+
+  /* Primary accent — electric cyan */
+  --cyan:#22d3ee;--cdim:rgba(34,211,238,.12);--cmid:rgba(34,211,238,.2);--cstrong:rgba(34,211,238,.4);
+
+  /* Status colors */
+  --green:#10b981;--gdim:rgba(16,185,129,.12);--gmid:rgba(16,185,129,.3);
+  --red:#f43f5e;--rdim:rgba(244,63,94,.12);--rmid:rgba(244,63,94,.3);
+  --amber:#f59e0b;--adim:rgba(245,158,11,.12);--amid:rgba(245,158,11,.25);
+  --purple:#a78bfa;--pdim:rgba(167,139,250,.12);
+
+  /* Neutral tier (was amber, now grey) */
+  --grey:#5b6782;--gydim:rgba(91,103,130,.12);--gymid:rgba(91,103,130,.3);
+
+  /* Text */
+  --text:#e8eef8;--text2:#7a8aaa;--text3:#3a4662;
+  --muted-40:rgba(232,238,248,.4);
+
+  /* Typography */
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,monospace;
+  --sans:'Syne','Bebas Neue',sans-serif;
+  --display:'Bebas Neue','Syne',sans-serif;
+
+  --r:8px;--rl:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13px;min-height:100vh;-webkit-font-smoothing:antialiased;}
+body{padding-bottom:58px;}
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:var(--bg2);}::-webkit-scrollbar-thumb{background:var(--border2);}
+
+/* HEADER — status + bankroll + time */
+.hdr{position:sticky;top:0;z-index:100;background:var(--bg2);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;gap:12px;}
+.logo{font-family:var(--display);font-size:22px;font-weight:700;color:var(--cyan);letter-spacing:.04em;text-transform:uppercase;}
+.vtag{font-size:9px;padding:2px 7px;border-radius:100px;background:var(--cdim);color:var(--cyan);border:1px solid var(--cmid);letter-spacing:.1em;text-transform:uppercase;}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.dotl{background:var(--cyan);box-shadow:0 0 8px var(--cyan);}
+.dotd{background:var(--grey);}
+.dote{background:var(--red);}
+.pulse{animation:pu 2s infinite;}@keyframes pu{0%,100%{opacity:1}50%{opacity:.35}}
+
+/* NAVIGATION — cyan underline on active */
+.nav{position:sticky;top:53px;z-index:99;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;overflow-x:auto;scrollbar-width:none;padding:0 8px;}
+.nav::-webkit-scrollbar{display:none;}
+.nt{flex-shrink:0;padding:13px 18px;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);background:transparent;border:none;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s;font-family:var(--mono);}
+.nt:hover{color:var(--text2);}
+.nt.on{color:var(--cyan);border-bottom-color:var(--cyan);}
+.nb{display:inline-block;background:var(--red);color:#fff;font-size:9px;font-weight:700;padding:1px 6px;border-radius:100px;margin-left:5px;vertical-align:middle;animation:pu 1.5s infinite;}
+
+.page{max-width:1180px;margin:0 auto;padding:20px 18px;}
+.tp{display:none;}.tp.on{display:block;}
+
+/* GRIDS */
+.g2{display:grid;grid-template-columns:1fr;gap:14px;}@media(min-width:680px){.g2{grid-template-columns:1fr 1fr;}}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.g4{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}@media(min-width:600px){.g4{grid-template-columns:repeat(4,1fr);}}
+
+/* CARDS — contained units, 20px padding */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:20px;margin-bottom:14px;}
+.ct{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.ca{color:var(--cyan);}
+
+/* STAT CARDS — amount biggest, label small */
+.sc{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;}
+.sl{font-size:9px;color:var(--text3);margin-bottom:6px;text-transform:uppercase;letter-spacing:.1em;font-weight:600;}
+.sv{font-size:26px;font-weight:700;font-family:var(--display);letter-spacing:.02em;line-height:1;}
+.ss{font-size:10px;color:var(--text3);margin-top:4px;}
+
+/* LEADERBOARD ROWS — rank 32px bold, name 16px, PnL 20px */
+.row{display:flex;align-items:flex-start;gap:14px;padding:14px 0;border-bottom:1px solid var(--border);}
+.row:last-child{border-bottom:none;}
+.rk{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;font-family:var(--display);flex-shrink:0;background:var(--bg3);border:1px solid var(--border);color:var(--text3);}
+.rk.top{background:var(--cdim);border-color:var(--cmid);color:var(--cyan);}
+
+/* GENERIC TAGS */
+.tag{display:inline-block;font-size:10px;font-weight:700;padding:3px 8px;border-radius:100px;letter-spacing:.03em;}
+.tg-b{background:var(--gdim);color:var(--green);border:1px solid var(--gmid);}
+.tg-s{background:var(--rdim);color:var(--red);border:1px solid var(--rmid);}
+
+/* YES/NO PILLS — impossible to miss */
+.tg-y{background:rgba(16,185,129,.18);color:#34d399;border:1px solid rgba(16,185,129,.5);font-size:14px;font-weight:800;padding:4px 12px;letter-spacing:.08em;text-transform:uppercase;}
+.tg-n{background:rgba(244,63,94,.18);color:#fb7185;border:1px solid rgba(244,63,94,.5);font-size:14px;font-weight:800;padding:4px 12px;letter-spacing:.08em;text-transform:uppercase;}
+.dir-big{font-family:var(--display);font-size:38px;font-weight:700;letter-spacing:.04em;line-height:.9;}
+.dir-big.yes{color:#34d399;text-shadow:0 0 20px rgba(16,185,129,.35);}
+.dir-big.no{color:#fb7185;text-shadow:0 0 20px rgba(244,63,94,.35);}
+.dir-inline{font-weight:800;letter-spacing:.06em;}
+.dir-inline.yes{color:#34d399;}
+.dir-inline.no{color:#fb7185;}
+
+/* Whale position collapsible */
+.whale-pos{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;margin-top:8px;font-size:11px;}
+.whale-pos-row{display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:1px solid var(--border);}
+.whale-pos-row:last-child{border-bottom:none;}
+.whale-pos-toggle{cursor:pointer;color:var(--cyan);font-size:10px;text-transform:uppercase;letter-spacing:.08em;margin-top:8px;user-select:none;font-weight:600;}
+.whale-pos-toggle:hover{text-decoration:underline;}
+
+/* TIER TAGS — S uses cyan (primary), A uses cyan-dim, W grey, X red */
+.tg-S{background:var(--cdim);color:var(--cyan);border:1px solid var(--cstrong);font-weight:700;}
+.tg-A{background:var(--cdim);color:var(--cyan);border:1px solid var(--cmid);}
+.tg-W{background:var(--gydim);color:var(--text2);border:1px solid var(--gymid);}
+.tg-X{background:var(--rdim);color:var(--red);border:1px solid var(--rmid);}
+.tg-ins{background:var(--pdim);color:var(--purple);border:1px solid rgba(167,139,250,.35);}
+
+/* CONFIDENCE */
+.tg-hi{background:var(--rdim);color:var(--red);border:1px solid var(--rmid);}
+.tg-md{background:var(--gydim);color:var(--text2);border:1px solid var(--gymid);}
+.tg-lo{background:var(--gydim);color:var(--text3);border:1px solid var(--gymid);}
+
+.tg-w{background:var(--gdim);color:var(--green);border:1px solid var(--gmid);}
+.tg-l{background:var(--rdim);color:var(--red);border:1px solid var(--rmid);}
+.tg-ex{background:var(--cdim);color:var(--cyan);border:1px solid var(--cmid);}
+.tg-p{background:var(--pdim);color:var(--purple);border:1px solid rgba(167,139,250,.3);}
+
+/* REC / INSIDER / POSITION CARDS */
+.rec-card{background:var(--bg2);border:1px solid var(--cmid);border-left:3px solid var(--cyan);border-radius:var(--rl);padding:20px;margin-bottom:12px;}
+.ins-card{background:var(--bg2);border:1px solid rgba(167,139,250,.28);border-left:3px solid var(--purple);border-radius:var(--rl);padding:18px 20px;margin-bottom:12px;}
+.pos-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rl);padding:18px 20px;margin-bottom:12px;}
+.pos-card.won{border-color:var(--gmid);background:rgba(16,185,129,.04);}
+.pos-card.lost{border-color:var(--rmid);background:rgba(244,63,94,.04);}
+.pos-card.resolving{border-color:var(--cmid);animation:glow-cyan 2s infinite;}
+@keyframes glow-cyan{0%,100%{box-shadow:none}50%{box-shadow:0 0 14px rgba(34,211,238,.25)}}
+
+/* PROBABILITY BARS */
+.con-bar{height:8px;background:var(--bg4);border-radius:4px;overflow:hidden;margin:6px 0;position:relative;}
+.cony{position:absolute;left:0;top:0;height:100%;background:var(--green);border-radius:4px 0 0 4px;}
+.conn{position:absolute;right:0;top:0;height:100%;background:var(--red);border-radius:0 4px 4px 0;}
+.pct-yes{font-size:12px;color:#34d399;font-weight:800;min-width:62px;letter-spacing:.04em;}
+.pct-no{font-size:12px;color:#fb7185;font-weight:800;min-width:62px;text-align:right;letter-spacing:.04em;}
+
+/* WIN RATE BAR — 8px thick */
+.wr-bar{height:8px;background:var(--bg4);border-radius:4px;overflow:hidden;width:72px;flex-shrink:0;}
+.wr-f{height:100%;border-radius:4px;}
+
+/* STREAK DOTS — 10px */
+.streak-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:3px;}
+
+/* COUNTDOWN & WARNINGS — amber only when warning */
+.countdown{font-family:var(--mono);font-size:11px;color:var(--text2);background:var(--gydim);padding:3px 10px;border-radius:100px;border:1px solid var(--gymid);font-weight:600;}
+.countdown.urgent{color:var(--amber);background:var(--adim);border-color:var(--amid);animation:pu 1s infinite;}
+.impact-warn{font-size:11px;color:var(--amber);background:var(--adim);border:1px solid var(--amid);border-radius:var(--r);padding:6px 11px;margin-top:6px;}
+
+/* Bankroll bar — cyan */
+.bankroll-bar{height:5px;background:var(--bg4);border-radius:3px;overflow:hidden;margin-top:6px;}
+.bankroll-fill{height:100%;border-radius:3px;background:var(--cyan);transition:width .4s ease;}
+
+/* TOASTS */
+.toast{position:fixed;top:72px;right:18px;z-index:999;max-width:320px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--rl);padding:14px 18px;box-shadow:0 10px 36px rgba(0,0,0,.6);animation:slide-in .3s ease;}
+.toast.win{border-color:var(--gmid);}
+.toast.lose{border-color:var(--rmid);}
+@keyframes slide-in{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes slide-out{from{transform:translateX(0);opacity:1}to{transform:translateX(110%);opacity:0}}
+
+/* BUTTONS — ghost cyan */
+.btn{background:transparent;border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-family:var(--mono);font-size:11px;font-weight:600;padding:8px 14px;cursor:pointer;white-space:nowrap;transition:all .15s;letter-spacing:.04em;}
+.btn:hover{background:var(--bg4);border-color:var(--border2);}
+.ba{border-color:var(--cmid);color:var(--cyan);}.ba:hover{background:var(--cdim);}
+.bg{border-color:var(--gmid);color:var(--green);}.bg:hover{background:var(--gdim);}
+.br{border-color:var(--rmid);color:var(--red);}
+.bsm{padding:4px 10px;font-size:10px;}
+.bfw{width:100%;text-align:center;}
+
+/* ANALYZE BUTTON — ghost cyan with mono font */
+.btn-analyze{background:transparent;border:1px solid var(--cmid);color:var(--cyan);font-family:var(--mono);font-size:11px;font-weight:700;padding:8px 14px;border-radius:var(--r);cursor:pointer;letter-spacing:.06em;text-transform:uppercase;transition:all .15s;}
+.btn-analyze:hover{background:var(--cdim);border-color:var(--cyan);}
+.btn-analyze:disabled{cursor:not-allowed;}
+.btn-analyze.loading{color:var(--text3);border-color:var(--border2);animation:pu 1.5s infinite;}
+
+/* PW says — amber left border, cyan label */
+.pw-says{margin-top:12px;padding:12px 14px;background:var(--bg3);border-radius:var(--r);border:1px solid var(--border);border-left:3px solid var(--amber);}
+.pw-says-lbl{font-size:10px;color:var(--cyan);font-weight:700;margin-bottom:6px;text-transform:uppercase;letter-spacing:.12em;display:flex;align-items:center;gap:6px;}
+.pw-says-body{font-size:13px;color:var(--text);line-height:1.6;}
+.live-badge{font-size:9px;background:var(--cdim);color:var(--cyan);border:1px solid var(--cmid);padding:1px 6px;border-radius:100px;font-weight:600;letter-spacing:.05em;text-transform:none;}
+
+/* INPUTS — cyan focus */
+.inp{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-family:var(--mono);font-size:12px;padding:9px 12px;margin-bottom:10px;}
+.inp:focus{outline:none;border-color:var(--cyan);}
+select.inp{cursor:pointer;}
+.lbl{font-size:10px;color:var(--text3);margin-bottom:5px;display:block;text-transform:uppercase;letter-spacing:.08em;font-weight:600;}
+.szinp{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-family:var(--mono);font-size:13px;padding:6px 10px;width:90px;}
+.szinp:focus{outline:none;border-color:var(--cyan);}
+
+/* EMPTY STATES */
+.empty{color:var(--text3);text-align:center;padding:32px 18px;font-size:12px;}
+
+/* SKELETON */
+.skel{background:linear-gradient(90deg,var(--bg3) 25%,var(--bg4) 50%,var(--bg3) 75%);background-size:200% 100%;animation:sk 1.5s infinite;border-radius:4px;height:13px;}
+@keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+.fade{animation:fi .35s ease;}@keyframes fi{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+.cull-note{background:var(--adim);border:1px solid var(--amid);border-radius:var(--r);padding:9px 13px;font-size:11px;color:var(--amber);margin-bottom:8px;}
+.hr{border:none;border-top:1px solid var(--border);margin:14px 0;}
+.withdraw-banner{background:linear-gradient(135deg,rgba(16,185,129,.1),rgba(16,185,129,.04));border:1px solid var(--gmid);border-radius:var(--rl);padding:16px 18px;margin-bottom:14px;}
+.cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-top:6px;}
+.cat-pill{font-size:10px;padding:3px 7px;border-radius:4px;background:var(--bg4);color:var(--text3);text-align:center;}
+.cat-pill.hi{color:var(--green);}
+.cat-pill.lo{color:var(--red);}
+
+/* META TEXT — 10px 40% opacity */
+.meta-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:600;}
+
+/* BIG NUMBER (leaderboard PnL etc) */
+.big-num{font-family:var(--display);font-size:22px;font-weight:700;letter-spacing:.02em;line-height:1;}
+
+@media(max-width:600px){.nav{position:fixed;bottom:0;top:auto;border-top:1px solid var(--border);border-bottom:none;}body{padding-bottom:56px;}.page{padding:14px;}.dir-big{font-size:30px;}}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <span class="logo">PolyWatch</span><span class="vtag">v4</span>
+  <span class="dot dotd pulse" id="hd"></span>
+  <span id="hs" style="font-size:11px;color:var(--text2);font-weight:600">Loading...</span>
+  <span id="bankroll-hdr" style="margin:0 auto;font-family:var(--display);font-size:20px;display:none;letter-spacing:.02em"></span>
+  <span style="font-size:11px;color:var(--text3);font-weight:600;letter-spacing:.05em" id="ht"></span>
+  <button class="btn bsm" onclick="doRefresh()" style="margin-left:10px" title="Refresh now">↻</button>
+  <button class="btn bsm" id="notif-btn" onclick="reqNotif()" style="margin-left:4px" title="Enable notifications">🔔</button>
+</div>
+
+<div class="nav">
+  <button class="nt on" onclick="goTab('reco',this)">🎯 Recs</button>
+  <button class="nt" onclick="goTab('whales',this)">🐋 Whales</button>
+  <button class="nt" onclick="goTab('insiders',this)">👁 Insiders<span class="nb" id="nb-i" style="display:none">0</span></button>
+  <button class="nt" onclick="goTab('hotbets',this)">🔥 Hot Bets</button>
+  <button class="nt" onclick="goTab('positions',this)">📍 Positions<span class="nb" id="nb-r" style="display:none">!</span></button>
+  <button class="nt" onclick="goTab('queue',this)">✅ Approve<span class="nb" id="nb-q" style="display:none">0</span></button>
+  <button class="nt" onclick="goTab('bets',this)">📊 My P&L</button>
+  <button class="nt" onclick="goTab('btc',this)">₿ BTC</button>
+  <button class="nt" onclick="goTab('settings',this)">⚙ Settings</button>
+</div>
+
+<div id="toast-container"></div>
+
+<!-- RECO TAB -->
+<div id="tp-reco" class="tp on page">
+  <div class="g4" style="margin-bottom:12px">
+    <div class="sc"><div class="sl">Whales live</div><div class="sv" style="color:var(--amber)" id="r1">—</div></div>
+    <div class="sc"><div class="sl">Active recs</div><div class="sv" style="color:var(--cyan)" id="r2">—</div></div>
+    <div class="sc"><div class="sl">My win rate</div><div class="sv" style="color:var(--green)" id="r3">—</div></div>
+    <div class="sc"><div class="sl">My P&L</div><div class="sv" id="r4">—</div></div>
+  </div>
+  <div class="card">
+    <div class="ct">
+      <span><span class="ca">★</span> AI bet recommendations</span>
+      <span style="font-size:10px;color:var(--text2)" id="rts"></span>
+    </div>
+
+    <div id="rec-list"><div class="skel" style="margin-bottom:8px"></div><div class="skel" style="width:70%"></div></div>
+  </div>
+  <div class="card">
+    <div class="ct"><span class="ca">≡</span> Whale consensus heatmap</div>
+    <div id="con-list"><div class="empty">Watching for multi-whale activity...</div></div>
+  </div>
+  <div class="card">
+    <div class="ct"><span class="ca">◎</span> Learning engine status</div>
+    <div id="learn-stat"></div>
+  </div>
+</div>
+
+<!-- WHALES TAB -->
+<div id="tp-whales" class="tp page">
+  <div id="cull-area"></div>
+  <div class="card">
+    <div class="ct"><span><span class="ca">◉</span> Live trade feed</span><span id="fn" style="font-size:10px;color:var(--text2)"></span></div>
+    <div id="wfeed"><div class="skel" style="margin-bottom:8px"></div><div class="skel" style="width:70%"></div></div>
+  </div>
+  <div class="card">
+    <div class="ct">
+      <span><span class="ca">★</span> Leaderboard</span>
+      <select id="lbp" onchange="fetchLB()" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:2px 7px;font-size:11px;">
+        <option value="all">All time</option><option value="1m">30 days</option><option value="7d">7 days</option>
+      </select>
+    </div>
+    <div id="lb-list"><div class="skel" style="margin-bottom:8px"></div><div class="skel" style="width:80%;margin-bottom:8px"></div><div class="skel" style="width:60%"></div></div>
+  </div>
+</div>
+
+<!-- INSIDERS TAB -->
+<div id="tp-insiders" class="tp page">
+  <div class="card" style="background:rgba(167,139,250,.04);border-color:rgba(167,139,250,.18);margin-bottom:12px">
+    <div class="ct"><span style="color:var(--purple)">◈</span> Insider anomaly detection</div>
+    <p style="font-size:12px;color:var(--text2);line-height:1.8">Flags wallets with fewer than <strong id="i-tr" style="color:var(--text)">8</strong> lifetime trades making single bets above <strong id="i-sz" style="color:var(--text)">$2,000</strong>. The fewer lifetime trades + the larger the bet = higher confidence. 1 trade + $20k+ on a political market is the single loudest signal this system can produce.</p>
+  </div>
+  <div id="ins-list"><div class="empty" style="padding:40px">Scanning markets...</div></div>
+</div>
+
+<!-- HOT BETS TAB -->
+<div id="tp-hotbets" class="tp page">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+    <div class="ct" style="margin-bottom:0"><span style="color:var(--red)">🔥</span> High-volume markets closing soon</div>
+    <span style="font-size:10px;color:var(--text2)" id="hb-updated"></span>
+  </div>
+  <div id="hb-list"><div class="skel" style="margin-bottom:8px"></div><div class="skel" style="width:70%"></div></div>
+</div>
+
+<!-- POSITIONS TAB (NEW) -->
+<div id="tp-positions" class="tp page">
+  <div id="withdraw-banner" style="display:none"></div>
+  <div class="g4" style="margin-bottom:12px">
+    <div class="sc"><div class="sl">Open bets</div><div class="sv" style="color:var(--cyan)" id="pos-open">0</div></div>
+    <div class="sc"><div class="sl">At stake</div><div class="sv" style="color:var(--amber)" id="pos-staked">$0</div></div>
+    <div class="sc"><div class="sl">Resolved today</div><div class="sv" style="color:var(--green)" id="pos-res">0</div></div>
+    <div class="sc"><div class="sl">Today's P&L</div><div class="sv" id="pos-pnl">$0</div></div>
+  </div>
+  <div class="card">
+    <div class="ct"><span class="ca">◉</span> Open positions — live countdown to resolution</div>
+    <div id="open-positions"><div class="empty">No open positions yet. Approved trades appear here.</div></div>
+  </div>
+  <div class="card">
+    <div class="ct"><span class="ca">✓</span> Resolved bets — outcomes</div>
+    <div id="resolved-bets"><div class="empty">No resolved bets yet.</div></div>
+  </div>
+</div>
+
+<!-- APPROVAL QUEUE TAB -->
+<div id="tp-queue" class="tp page">
+  <div class="g3" style="margin-bottom:12px">
+    <div class="sc"><div class="sl">Pending</div><div class="sv" style="color:var(--amber)" id="qs1">0</div></div>
+    <div class="sc"><div class="sl">Executed</div><div class="sv" style="color:var(--green)" id="qs2">0</div></div>
+    <div class="sc"><div class="sl">Deployed</div><div class="sv" style="color:var(--cyan)" id="qs3">$0</div></div>
+  </div>
+  <div id="q-list"></div>
+  <div class="card" style="background:var(--bg3)">
+    <div class="ct"><span class="ca">◎</span> Execution history</div>
+    <div id="exec-hist"><div class="empty" style="padding:16px">Nothing executed yet.</div></div>
+  </div>
+</div>
+
+<!-- MY P&L TAB -->
+<div id="tp-bets" class="tp page">
+  <div id="b-empty" class="card" style="text-align:center;padding:24px">
+    <div style="font-size:24px;margin-bottom:8px">📊</div>
+    <div style="font-weight:600;font-family:var(--sans);margin-bottom:6px">Add your Polymarket wallet</div>
+    <div style="color:var(--text2);font-size:12px;margin-bottom:14px">polymarket.com → your profile → copy the 0x address from the URL</div>
+    <input class="inp" id="mwin" placeholder="0x... proxy wallet address" style="max-width:400px;text-align:center;display:block;margin:0 auto 10px">
+    <button class="btn ba" style="min-width:200px" onclick="setMW()">Start tracking →</button>
+  </div>
+  <div id="b-content" style="display:none">
+    <div class="g4" style="margin-bottom:12px">
+      <div class="sc"><div class="sl">All-time P&L</div><div class="sv" id="my-pnl">$0</div></div>
+      <div class="sc"><div class="sl">Win rate</div><div class="sv" style="color:var(--amber)" id="my-wr">—</div><div class="ss" id="my-wrs">—</div></div>
+      <div class="sc"><div class="sl">Profit factor</div><div class="sv" style="color:var(--cyan)" id="my-pf">—</div><div class="ss">avg win / avg loss</div></div>
+      <div class="sc"><div class="sl">Open value</div><div class="sv" style="color:var(--amber)" id="my-op">—</div></div>
+    </div>
+    <div class="card">
+      <div class="ct"><span class="ca">◎</span> My performance vs copied whales</div>
+      <div id="vs-whales"><div class="empty">Execute copy trades to see head-to-head comparison.</div></div>
+    </div>
+    <div class="card">
+      <div class="ct"><span class="ca">◎</span> Category breakdown</div>
+      <div id="cat-breakdown"><div class="empty">Accumulating data...</div></div>
+    </div>
+    <div class="card">
+      <div class="ct"><span class="ca">◎</span> Recent closed bets</div>
+      <div id="my-trades"><div class="skel" style="margin-bottom:8px"></div><div class="skel" style="width:75%"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- BTC TAB -->
+<div id="tp-btc" class="tp page">
+  <div class="card" id="btc-price-banner" style="text-align:center;padding:18px;margin-bottom:12px">
+    <div class="sl">BITCOIN / USD</div>
+    <div id="btc-price" style="font-size:32px;font-weight:700;font-family:var(--sans);color:var(--amber)">Loading...</div>
+    <div id="btc-delta" style="font-size:12px;color:var(--text2);margin-top:4px"></div>
+  </div>
+  <div class="card" style="margin-bottom:12px">
+    <div class="ct"><span class="ca">◎</span> Today: Up or Down?</div>
+    <div id="btc-daily"><div class="skel" style="margin-bottom:8px"></div><div class="skel" style="width:70%"></div></div>
+  </div>
+  <div class="card" style="margin-bottom:12px">
+    <div class="ct"><span class="ca">◎</span> This Week</div>
+    <div id="btc-weekly"><div class="skel" style="margin-bottom:8px"></div><div class="skel" style="width:70%"></div></div>
+  </div>
+  <div class="card" style="margin-bottom:12px">
+    <div class="ct"><span class="ca">◎</span> Price Targets</div>
+    <div id="btc-targets"><div class="skel" style="margin-bottom:8px"></div><div class="skel" style="width:70%"></div></div>
+  </div>
+  <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--rl);padding:14px 16px;font-size:12px;color:var(--text2);line-height:1.8">
+    <strong style="color:var(--amber);font-family:var(--sans)">Strategy note:</strong><br>
+    Daily and weekly directional markets are where edge lives. 5-min and 15-min markets are noise &mdash; avoid them. Follow S-Tier whale consensus on direction, cross-reference with BTC momentum. Best entry: when whale consensus and momentum agree.
+  </div>
+</div>
+
+<!-- SETTINGS TAB -->
+<div id="tp-settings" class="tp page">
+  <div class="card" style="background:rgba(245,158,11,.04);border-color:rgba(245,158,11,.18)">
+    <div class="ct"><span class="ca">★</span> Professional defaults pre-loaded</div>
+    <p style="font-size:12px;color:var(--text2);line-height:1.7">Conservative sizing for first 30 days. Adjust as you develop your own edge. Kelly numbers scale automatically with bankroll.</p>
+  </div>
+  <div class="card">
+    <div class="ct"><span class="ca">◎</span> Bankroll & sizing</div>
+    <div class="g2">
+      <div>
+        <label class="lbl">Total bankroll (USDC) — <strong style="color:var(--amber)">your Polymarket balance</strong></label>
+        <input class="inp" id="s-br" type="number" value="2000" placeholder="Your total USDC in Polymarket">
+        <label class="lbl">Default copy size — <strong style="color:var(--amber)">20% recommended</strong></label>
+        <select class="inp" id="s-cp"><option value="10">10%</option><option value="20" selected>20% (rec.)</option><option value="25">25%</option><option value="50">50%</option></select>
+      </div>
+      <div>
+        <label class="lbl">Hard cap per trade (USDC)</label>
+        <input class="inp" id="s-mx" type="number" value="750">
+        <label class="lbl">Max daily deployment (USDC)</label>
+        <input class="inp" id="s-md" type="number" value="2000">
+        <label class="lbl">Max daily trade count</label>
+        <input class="inp" id="s-dc" type="number" value="4">
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ct"><span class="ca">◎</span> Signal detection</div>
+    <div class="g2">
+      <div>
+        <label class="lbl">Min whale trade (USDC) — <strong style="color:var(--amber)">$1,500 rec.</strong></label>
+        <input class="inp" id="s-mw" type="number" value="1500">
+        <label class="lbl">Min insider bet (USDC) — <strong style="color:var(--amber)">$2,000 rec.</strong></label>
+        <input class="inp" id="s-mi" type="number" value="2000">
+      </div>
+      <div>
+        <label class="lbl">Max insider lifetime trades — <strong style="color:var(--amber)">8 rec.</strong></label>
+        <input class="inp" id="s-mt" type="number" value="8">
+        <label class="lbl">Poll interval (minutes)</label>
+        <input class="inp" id="s-po" type="number" value="5">
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ct"><span class="ca">◎</span> Tier cutoffs — auto-removes below these</div>
+    <div class="row" style="padding:8px 0"><span class="tag tg-S" style="min-width:52px;text-align:center">S-Tier</span><div style="flex:1;font-size:12px;line-height:1.7">Win rate <input id="s-t1w" type="number" value="72" style="width:36px;background:var(--bg3);border:1px solid var(--border);color:var(--amber);border-radius:4px;padding:2px 4px;text-align:center;font-family:var(--mono)">%+ & <input id="s-t1b" type="number" value="250" style="width:44px;background:var(--bg3);border:1px solid var(--border);color:var(--amber);border-radius:4px;padding:2px 4px;text-align:center;font-family:var(--mono)">+ bets.</div></div>
+    <div class="row" style="padding:8px 0"><span class="tag tg-A" style="min-width:52px;text-align:center">A-Tier</span><div style="flex:1;font-size:12px;line-height:1.7">Win rate <input id="s-t2w" type="number" value="65" style="width:36px;background:var(--bg3);border:1px solid var(--border);color:var(--cyan);border-radius:4px;padding:2px 4px;text-align:center;font-family:var(--mono)">%+ & <input id="s-t2b" type="number" value="125" style="width:44px;background:var(--bg3);border:1px solid var(--border);color:var(--cyan);border-radius:4px;padding:2px 4px;text-align:center;font-family:var(--mono)">+ bets.</div></div>
+    <div class="row" style="padding:8px 0;border:none"><span class="tag tg-X" style="min-width:52px;text-align:center">Cut</span><div style="flex:1;font-size:12px;color:var(--text2)">Under 60% win rate OR under 75 total bets. Auto-removed. No exceptions.</div></div>
+    <label class="lbl" style="margin-top:8px">Max active whale watches</label>
+    <input class="inp" id="s-mxw" type="number" value="12">
+  </div>
+  <div class="card">
+    <div class="ct"><span class="ca">◎</span> Integrations</div>
+    <label class="lbl">n8n webhook URL</label>
+    <input class="inp" id="s-wh" placeholder="https://your-n8n.instance.com/webhook/polywatch">
+    <label class="lbl">My Polymarket proxy wallet (portfolio + outcome tracking)</label>
+    <input class="inp" id="s-myw" placeholder="0x... from polymarket.com/profile/0x...">
+    <label class="lbl">Withdrawal reminder — prompt after winning this much (USDC, 0 = off)</label>
+    <input class="inp" id="s-wr-amt" type="number" value="200">
+  </div>
+  <button class="btn ba bfw" onclick="saveAll()" style="margin-bottom:8px">Save all settings</button>
+  <button class="btn bfw" onclick="testWH()" style="margin-bottom:8px">Test n8n webhook</button>
+  <button class="btn bfw" onclick="reqNotif()">Enable browser notifications</button>
+  <div id="s-msg" style="margin-top:8px;font-size:12px;text-align:center"></div>
+  <div class="hr"></div>
+  <div style="font-size:11px;color:var(--text2);line-height:2">
+    <strong style="color:var(--text);font-family:var(--sans)">Run on your phone (same WiFi):</strong><br>
+    1. Terminal: <code style="background:var(--bg3);padding:1px 5px;border-radius:3px">python3 -m http.server 8090</code><br>
+    2. System Settings → WiFi → Details → IP address<br>
+    3. Phone: <code style="background:var(--bg3);padding:1px 5px;border-radius:3px">http://192.168.x.x:8090/polywatch-v3.html</code><br>
+    4. Safari → Share → Add to Home Screen
+  </div>
+</div>
+
+
+<script>
+// ── CONFIG ──────────────────────────────────────────────────
+const DEF={bankroll:2000,minWhale:500,minInsider:2000,insMaxTrades:8,pollMin:5,copyPct:20,maxTrade:750,maxDaily:2000,maxDailyCount:4,t1Wr:72,t1Bets:250,t2Wr:65,t2Bets:125,cutWr:60,cutBets:75,maxWL:12,webhook:'',myWallet:'',withdrawReminder:200};
+let C={...DEF};
+
+// ── STATE ───────────────────────────────────────────────────
+const S={
+  wallets:[],activity:[],insiders:[],queue:[],execHistory:[],
+  betLog:[],openPositions:[],resolvedPositions:[],
+  seenT:new Set(),seenI:new Set(),seenR:new Set(),
+  tradeCount:0,execCount:0,deployedTotal:0,deployedToday:0,todayPnl:0,
+  whaleScores:{},mktOutcomes:{},recs:[],consensus:{},
+  myWins:0,myLosses:0,myPnl:0,myPF:0,myTrades:[],positions:[],
+  catStats:{},totalTracked:0,newResolutions:0,
+  pollTimer:null,resolutionTimer:null,countdownTimer:null,
+  apiLive:false,demo:true,notifGranted:false
+};
+
+// ── NO DEMO DATA — real data only ────────────────────────────
+// Your real proxy wallet — pre-loaded, no manual entry needed
+const MY_WALLET = '0xA18dF3A012433c5826c8BCa88FAF4CbA19F3dcd9';
+
+// ── UTILS ────────────────────────────────────────────────────
+// Normalizes any outcome value to 'YES' or 'NO'.
+// For binary markets Polymarket returns 'Yes'/'No'. For multi-outcome markets (e.g. "Rockets" vs "Suns"),
+// outcomeIndex 0 = first option, 1 = second. We fall back to YES/NO at the call site via outcomeIndex.
+function dirOf(v){
+  if(v===0||v==='0')return'YES';
+  if(v===1||v==='1')return'NO';
+  const s=(v==null?'':String(v)).trim().toUpperCase();
+  if(s==='YES'||s==='Y'||s==='TRUE'||s==='UP'||s==='LONG')return'YES';
+  if(s==='NO'||s==='N'||s==='FALSE'||s==='DOWN'||s==='SHORT')return'NO';
+  // Unknown string (e.g. team name in multi-outcome market) — default YES so display isn't broken.
+  return s?'YES':'YES';
+}
+function dirTag(o){const d=dirOf(o);return`<span class="tag ${d==='YES'?'tg-y':'tg-n'}">${d}</span>`;}
+function dirInline(o){const d=dirOf(o);return`<span class="dir-inline ${d==='YES'?'yes':'no'}">${d}</span>`;}
+function dirBig(o){const d=dirOf(o);return`<span class="dir-big ${d==='YES'?'yes':'no'}">${d}</span>`;}
+// Prose-format bet: "whale bet YES on Market @ 97¢ for $6k"
+function betLine(whaleName,outcome,market,price,size){const mkt=market?((market.length>50?(market.slice(0,50)+'…'):market)):'';const onMkt=mkt?` on ${mkt}`:'';return`<strong>${whaleName}</strong> bet ${dirInline(outcome)}${onMkt} @ ${Math.round((+price||0.5)*100)}¢ for ${f$(+size||0)}`;}
+// Minimal markdown → HTML for Claude output (handles **bold**, *italic*, simple links, newlines)
+function renderMd(s){if(!s)return'';return String(s)
+  .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+  .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+  .replace(/\*(.+?)\*/g,'<em>$1</em>')
+  .replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>')
+  .replace(/\n/g,'<br>');}
+function f$(n){const abs=Math.abs(n);const s=abs>=1e6?'$'+(abs/1e6).toFixed(1)+'M':abs>=1000?'$'+(abs/1000).toFixed(0)+'k':'$'+Math.round(abs);return n<0?'-'+s:s;}
+function ft(ts){const d=Math.floor((Date.now()-ts)/1000);return d<60?d+'s ago':d<3600?Math.floor(d/60)+'m ago':d<86400?Math.floor(d/3600)+'h ago':Math.floor(d/86400)+'d ago';}
+function fcd(ms){if(ms<=0)return'Expired';const d=Math.floor(ms/86400000);const h=Math.floor((ms%86400000)/3600000);const m=Math.floor((ms%3600000)/60000);if(d>0)return d+'d '+h+'h';if(h>0)return h+'h '+m+'m';return m+'m left';}
+function now(){return new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'});}
+function cat(s){const m=(s||'').toLowerCase();if(/trump|president|election|congress|senate|fed|rate|tariff|war|government|policy|chair|resign|nato|sanction/.test(m))return'Politics';if(/btc|bitcoin|eth|crypto|blockchain|solana/.test(m))return'Crypto';if(/nba|nfl|mlb|nhl|championship|super bowl|playoffs|world cup/.test(m))return'Sports';if(/apple|google|meta|tesla|amazon|merger|ipo|earnings/.test(m))return'Corporate';if(/bank|crash|recession|inflation|gdp|unemployment/.test(m))return'Macro';return'Other';}
+function tier(wr,bets){if(wr>=C.t1Wr&&bets>=C.t1Bets)return'S';if(wr>=C.t2Wr&&bets>=C.t2Bets)return'A';if(wr>=C.cutWr&&bets>=C.cutBets)return'W';return'X';}
+function ttag(t){return`<span class="tag ${{S:'tg-S',A:'tg-A',W:'tg-W',X:'tg-X'}[t]}">${{S:'S-Tier',A:'A-Tier',W:'Watch',X:'Skip'}[t]}</span>`;}
+function streakHtml(streak){
+  if(!streak||!streak.length)return'<span style="font-size:10px;color:var(--text3)">—</span>';
+  // streak is an array of 0 (loss) / 1 (win), oldest → newest, max 5
+  return streak.slice(-5).map(s=>`<span class="streak-dot" style="background:${s?'var(--green)':'var(--red)'}"></span>`).join('');
+}
+// Fetch a whale's current open positions and render into #wp-<addr>
+async function loadWhalePositions(addr){
+  const container=document.getElementById('wp-'+addr);
+  if(!container)return;
+  if(container.dataset.loaded==='1'){container.style.display=container.style.display==='none'?'block':'none';return;}
+  container.style.display='block';
+  container.innerHTML='<div style="font-size:10px;color:var(--text2);padding:4px">Loading positions...</div>';
+  try{
+    const r=await fetch(`https://polywatch-api-production.up.railway.app/proxy/positions?user=${addr}&limit=10`);
+    if(!r.ok)throw 0;
+    const raw=await r.json();
+    const arr=Array.isArray(raw)?raw:(raw.data||[]);
+    if(!arr.length){container.innerHTML='<div style="font-size:10px;color:var(--text2);padding:4px">No open positions</div>';container.dataset.loaded='1';return;}
+    // Sort by size descending
+    arr.sort((a,b)=>(+b.size||0)-(+a.size||0));
+    container.innerHTML='<div class="whale-pos">'+arr.slice(0,10).map(p=>{
+      const d=dirOf(p.outcome!=null?p.outcome:(p.outcomeIndex===0?'YES':'NO'));
+      const sz=+(p.size||0)*+(p.avgPrice||p.curPrice||0.5);
+      const cp=+(p.curPrice||p.currentPrice||p.avgPrice||0.5);
+      const title=p.title||p.market||'Unknown';
+      const short=title.length>48?title.slice(0,48)+'…':title;
+      return`<div class="whale-pos-row"><div style="flex:1;min-width:0"><div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${short}</div><div style="color:var(--text2);font-size:10px">bet ${dirInline(d)} · ${f$(sz)} · now ${Math.round(cp*100)}¢</div></div></div>`;
+    }).join('')+'</div>';
+    container.dataset.loaded='1';
+  }catch(e){container.innerHTML='<div style="font-size:10px;color:var(--red);padding:4px">Failed to load</div>';}
+}
+// Fetch the last 5 win/loss results for a whale from closed-positions (realizedPnl-based)
+async function fetchWhaleStreak(w){
+  if(!w.addr)return;
+  try{
+    const r=await fetch(`https://polywatch-api-production.up.railway.app/proxy/closed-positions?user=${w.addr}&limit=10`);
+    if(!r.ok)return;
+    const raw=await r.json();
+    const arr=Array.isArray(raw)?raw:(raw.data||[]);
+    if(!arr.length)return;
+    // Sort by timestamp descending (most recent first), then take last 5 chronologically
+    const sorted=arr.slice().sort((a,b)=>(+(b.timestamp||0))-(+(a.timestamp||0)));
+    const last5=sorted.slice(0,5).reverse();// reverse so oldest → newest for display
+    w.streak=last5.map(p=>(+p.realizedPnl||0)>0?1:0);
+    // Only overwrite wr if the streak sample is meaningful AND close to the API's reported wr.
+    // Sample is small (5), so a single bad run shouldn't tank the displayed wr.
+    if(w.streak.length>=5){
+      const sampleWr=Math.round((w.streak.filter(x=>x).length/w.streak.length)*100);
+      if(Math.abs(sampleWr-(w.wr||0))<=20){
+        w.wr=sampleWr;
+        const sc=S.whaleScores[w.addr];if(sc)sc.rollingWr=w.wr;
+      }
+    }
+  }catch(e){}
+}
+function initWS(w){if(!S.whaleScores[w.addr])S.whaleScores[w.addr]={name:w.name,baseWr:w.wr,rollingWr:w.wr,score:w.wr,bets:[],catWr:{},w30:0,t30:0,streak:w.streak||[]};}
+
+// ── KELLY SIZING ─────────────────────────────────────────────
+function kellySize(wp,odds,bankroll){
+  const k=Math.max(0,(wp*odds-(1-wp))/odds);
+  return Math.min(C.maxTrade,Math.max(10,Math.round(k*0.25*bankroll)));
+}
+
+// ── RECOMMENDATIONS ENGINE ───────────────────────────────────
+// Loosened thresholds: show more recs, include single-whale A-Tier+ recs
+function buildRecs(){
+  const mm={};const items=[...S.activity];
+  // Widened lookback from 24h → 72h to catch more signals
+  const cut=Date.now()-72*36e5;
+  items.filter(t=>t.ts>=cut).forEach(t=>{
+    const w=S.wallets.find(x=>x.name===t.name);if(!w)return;
+    const sc=S.whaleScores[w.addr];const wr=sc?.rollingWr||w.wr;
+    const ti=tier(wr,w.total);if(ti==='X')return;
+    const wt=ti==='S'?3:ti==='A'?2:1;
+    const outcome=dirOf(t.outcome);
+    // BUY YES / SELL NO both = bullish YES; BUY NO / SELL YES = bullish NO
+    const dir=(t.side==='BUY'&&outcome==='YES')||(t.side==='SELL'&&outcome==='NO')?1:-1;
+    // Key by conditionId when available (robust), fall back to market title
+    const key=t.conditionId||t.market;
+    if(!mm[key])mm[key]={key,market:t.market,yes:0,no:0,tot:0,whales:[],whaleSizes:[],prices:[],cat:cat(t.market),topBet:0,topWhale:'',topWhaleTier:'W'};
+    if(dir>0)mm[key].yes+=wt*t.size;else mm[key].no+=wt*t.size;
+    mm[key].tot+=t.size;
+    if(!mm[key].whales.includes(t.name)){mm[key].whales.push(t.name);mm[key].whaleSizes.push({name:t.name,size:t.size,tier:ti});}
+    mm[key].prices.push(t.price);
+    if(t.size>mm[key].topBet){mm[key].topBet=t.size;mm[key].topWhale=t.name;mm[key].topWhaleTier=ti;}
+  });
+  // Consensus = any market with 2+ whales (track for heatmap)
+  S.consensus={};Object.values(mm).forEach(m=>{if(m.whales.length>=2)S.consensus[m.market]=m;});
+  const recs=[];
+  // Multi-whale consensus recs — lowered volume floor from $2000 → $500
+  Object.values(mm).filter(m=>m.whales.length>=2&&m.tot>=500).forEach(m=>{
+    const side=m.yes>=m.no?'YES':'NO';const sig=Math.abs(m.yes-m.no)/(m.yes+m.no+1);
+    const ap=m.prices.reduce((a,b)=>a+b,0)/m.prices.length;
+    const wp=Math.min(.95,Math.max(.05,side==='YES'?ap+sig*.2:1-ap+sig*.2));
+    const odds=side==='YES'?(1-ap)/ap:ap/(1-ap);
+    const sz=kellySize(wp,odds,C.bankroll);
+    const conf=m.whales.length>=3&&sig>.5?'HIGH':m.whales.length>=2&&sig>.3?'MEDIUM':'LOW';
+    const priceShift=m.prices.length>1?Math.abs(m.prices[0]-m.prices[m.prices.length-1]):0;
+    recs.push({...m,side,sig,ap,sz,conf,wc:m.whales.length,type:'consensus',priceShift});
+  });
+  // Single-whale recs:
+  //  - S/A tier: size >= $750
+  //  - W tier (CHANGE 11): size >= $3000
+  Object.values(mm).filter(m=>m.whales.length===1&&((m.topWhaleTier==='S'||m.topWhaleTier==='A')&&m.topBet>=750||m.topWhaleTier==='W'&&m.topBet>=3000)).forEach(m=>{
+    const side=m.yes>=m.no?'YES':'NO';const ap=m.prices[0]||.5;
+    const odds=side==='YES'?(1-ap)/ap:ap/(1-ap);
+    const wr=S.whaleScores[S.wallets.find(w=>w.name===m.topWhale)?.addr]?.rollingWr||70;
+    const sz=kellySize(wr/100,odds,C.bankroll);
+    const conf=m.topWhaleTier==='S'&&m.topBet>=5000?'HIGH':m.topWhaleTier==='W'?'LOW':'MEDIUM';
+    recs.push({...m,side,ap,sz,conf,wc:1,type:'single',sig:.5});
+  });
+  // Show more: 6 → 15 recs
+  S.recs=recs.sort((a,b)=>{const wa=a.type==='consensus'?2:1;const wb=b.type==='consensus'?2:1;return b.sig*b.wc*wb-a.sig*a.wc*wa;}).slice(0,15);
+  return S.recs;
+}
+
+// ── API ──────────────────────────────────────────────────────
+async function fetchLB(){
+  const p=document.getElementById('lbp').value;let ws=null;
+  try{
+    // Map dropdown values → API window param: all, 1m, 1w
+    const wp=p==='1m'?'1m':p==='7d'?'1w':'all';
+    const r=await fetch(`https://polywatch-api-production.up.railway.app/proxy/leaderboard?window=${wp}&limit=20&orderBy=pnl`);
+    if(!r.ok)throw 0;const raw=await r.json();const arr=Array.isArray(raw)?raw:(raw.data||raw.users||[]);
+    if(arr.length){
+      ws=arr.map((u,i)=>{const addr=(u.proxyWallet||u.proxyAddress||u.address||'').toLowerCase();const nm=u.userName||u.name||u.username||(addr?addr.slice(0,6)+'...'+addr.slice(-4):'Anon'+(i+1));return{rank:+u.rank||i+1,name:nm,addr:addr,pnl:+u.pnl||0,vol:+u.vol||+u.volume||0,wins:0,total:150,wr:65,streak:[],active:false,verified:!!u.verifiedBadge};});
+      S.apiLive=true;S.demo=false;
+    }
+  }catch(e){S.demo=true;}
+  if(!ws){renderLBEmpty();renderRecStats();return;}
+  ws.forEach(w=>{const pv=S.wallets.find(x=>x.addr===w.addr);if(pv){w.active=pv.active;w.streak=pv.streak||[];}initWS(w);});
+  // Auto-activate top N whales on first load so the Live Trade Feed populates automatically
+  if(!ws.some(w=>w.active)){const n=Math.min(C.maxWL||12,ws.length);for(let i=0;i<n;i++)if(ws[i].addr)ws[i].active=true;}
+  S.wallets=ws;autoCull();renderLB();renderRecStats();saveLS();
+  // Fire-and-forget: fetch real streaks for all watched whales in parallel, then re-render
+  Promise.all(ws.filter(w=>w.addr).map(fetchWhaleStreak)).then(()=>{renderLB();saveLS();});
+}
+
+async function fetchAct(w){
+  if(!w.addr||!w.active)return;
+  try{
+    const r=await fetch(`https://polywatch-api-production.up.railway.app/proxy/activity?user=${w.addr}&limit=30`);if(!r.ok)return;
+    const raw=await r.json();const arr=Array.isArray(raw)?raw:(raw.data||[]);
+    arr.forEach(a=>{
+      // Skip non-trade events (REDEEM, etc.) — only count BUY/SELL activity
+      const sideRaw=(a.side||'').toUpperCase();
+      if(sideRaw!=='BUY'&&sideRaw!=='SELL')return;
+      const id=w.addr+'_'+(a.transactionHash||a.id||a.txHash||a.timestamp||Math.random());
+      if(S.seenT.has(id))return;
+      const sz=+(a.usdcSize||(+(a.size||0)*+(a.price||0))||0);if(sz<C.minWhale)return;
+      S.seenT.add(id);
+      // Always derive YES/NO from outcomeIndex when available — the raw `outcome` field returns
+      // team/option names in multi-outcome markets ("Rockets", "Suns") which aren't YES/NO.
+      const outcomeNorm = a.outcomeIndex===0?'YES':a.outcomeIndex===1?'NO':(/^(yes|no)$/i.test(a.outcome||'')?a.outcome.toUpperCase():'YES');
+      const trade={id,name:w.name,rank:w.rank,market:a.title||a.market||'Unknown',side:sideRaw,outcome:outcomeNorm,size:sz,price:+(a.price||.5),entryPrice:+(a.price||.5),ts:a.timestamp?+a.timestamp*1000:Date.now(),conditionId:a.conditionId||a.marketId||''};
+      S.activity.unshift(trade);S.tradeCount++;addToQ(trade);
+    });
+    S.activity=S.activity.slice(0,60);
+  }catch(e){}
+}
+
+async function detectIns(){
+  try{
+    const r=await fetch(`https://polywatch-api-production.up.railway.app/proxy/trades?limit=100`);if(!r.ok)throw 0;
+    const raw=await r.json();const ts=Array.isArray(raw)?raw:(raw.data||[]);
+    // Only scan the first 40 trades to avoid hammering the proxy with 100 sequential history calls
+    for(const t of ts.slice(0,40)){
+      // /proxy/trades returns size as shares; USDC notional = size * price
+      const sz=+(t.usdcSize||(+(t.size||0)*+(t.price||0))||0);if(sz<C.minInsider)continue;
+      const addr=(t.proxyWallet||t.maker||t.taker||t.user||'').toLowerCase();if(!addr)continue;
+      if(S.wallets.slice(0,12).some(w=>(w.addr||'').toLowerCase()===addr))continue;
+      const k=addr+'_'+(t.transactionHash||t.id||t.timestamp);if(S.seenI.has(k))continue;
+      try{
+        const hr=await fetch(`https://polywatch-api-production.up.railway.app/proxy/trades?user=${addr}&limit=20`);if(!hr.ok)continue;
+        const hj=await hr.json();const hist=Array.isArray(hj)?hj:(hj.data||[]);
+        if(hist.length<=C.insMaxTrades){S.seenI.add(k);S.insiders.unshift({id:k,name:addr.slice(0,6)+'...'+addr.slice(-4),trades:hist.length,market:t.title||t.market||'Unknown market',side:t.side||'BUY',outcome:t.outcome||'YES',size:sz,price:+(t.price||.5),ts:t.timestamp?+t.timestamp*1000:Date.now(),cat:cat(t.title||t.market||''),conf:hist.length<=3?'HIGH':hist.length<=6?'MEDIUM':'LOW'});}
+      }catch(e){}
+    }
+    if(!S.insiders.length){renderInsEmpty();}
+  }catch(e){renderInsEmpty();}
+  renderIns();updateBadges();
+}
+
+// ── RESOLUTION ENGINE ─────────────────────────────────────────
+async function checkResolutions(){
+  const open=S.betLog.filter(b=>!b.resolved);
+  if(!open.length){checkDemoResolutions();return;}
+  for(const bet of open){
+    try{
+      const r=await fetch(`https://polywatch-api-production.up.railway.app/proxy/markets?q=${encodeURIComponent(bet.market)}&limit=3`);
+      if(!r.ok)continue;const raw=await r.json();
+      const arr=Array.isArray(raw)?raw:(raw.data||raw.markets||[]);
+      const mk=arr.find(m=>m.question===bet.market||m.title===bet.market||((m.question||m.title||'').toLowerCase().includes(bet.market.slice(0,20).toLowerCase())));
+      if(!mk)continue;
+      // Update current price for open bets
+      if(!mk.closed&&mk.outcomePrices){
+        const cp=+(mk.outcomePrices[0])||.5;
+        bet.currentPrice=bet.outcome==='YES'?cp:1-cp;
+        const posIdx=S.openPositions.findIndex(p=>p.id===bet.id);if(posIdx>=0)S.openPositions[posIdx].currentPrice=bet.currentPrice;
+      }
+      if(!mk.closed)continue;
+      // Market resolved
+      const winningIdx=mk.outcomePrices?(mk.outcomePrices[0]==='1'||+mk.outcomePrices[0]===1)?0:1:0;
+      const winningOutcome=winningIdx===0?'YES':'NO';
+      const won=(bet.outcome===winningOutcome&&bet.side==='BUY')||(bet.outcome!==winningOutcome&&bet.side==='SELL');
+      const pnl=won?Math.round(bet.size*(1/bet.price-1)):-bet.size;
+      bet.resolved=true;bet.won=won;bet.pnl=pnl;bet.resolvedAt=Date.now();
+      // Move to resolved
+      S.openPositions=S.openPositions.filter(p=>p.id!==bet.id);
+      S.resolvedPositions.unshift({...bet});
+      S.todayPnl+=pnl;S.newResolutions++;
+      // Update my stats
+      if(won)S.myWins++;else S.myLosses++;S.myPnl+=pnl;
+      // Category tracking
+      const c=cat(bet.market);if(!S.catStats[c])S.catStats[c]={w:0,t:0,pnl:0};S.catStats[c].t++;if(won)S.catStats[c].w++;S.catStats[c].pnl+=pnl;
+      // Fire notification
+      fireResolutionNotif(bet,won,pnl);
+      // Withdrawal reminder
+      if(won&&C.withdrawReminder>0&&pnl>=C.withdrawReminder)showWithdrawBanner(pnl);
+      S.seenR.add(bet.id);
+    }catch(e){}
+  }
+  renderPositions();renderQStats();renderMyPnl();updateBadges();saveLS();
+}
+
+function checkDemoResolutions(){
+  // Demo mode — no fake resolutions
+}
+
+function fireResolutionNotif(bet,won,pnl){
+  const title=won?'🎉 Bet Won!':'❌ Bet Lost';
+  const body=`${won?'+':'-'}${f$(Math.abs(pnl))} · "${bet.market.slice(0,45)}..."`;
+  // Browser notification
+  if(S.notifGranted&&Notification.permission==='granted'){
+    new Notification(title,{body,icon:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><text y="28" font-size="28">🎯</text></svg>'});
+  }
+  // In-app toast
+  showToast(title,body,won?'win':'lose');
+  // n8n webhook
+  if(C.webhook){
+    fetch(C.webhook,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({event:'resolved',market:bet.market,outcome:bet.outcome,won,pnl,size:bet.size,timestamp:Date.now()})}).catch(()=>{});
+  }
+}
+
+function showToast(title,body,type){
+  const ct=document.getElementById('toast-container');
+  const t=document.createElement('div');
+  t.className=`toast ${type}`;
+  t.innerHTML=`<div style="font-weight:700;font-family:var(--sans);font-size:13px;margin-bottom:4px;color:${type==='win'?'var(--green)':type==='lose'?'var(--red)':'var(--amber)'}">${title}</div><div style="font-size:12px;color:var(--text2)">${body}</div>`;
+  ct.appendChild(t);
+  setTimeout(()=>{t.style.animation='slide-out .3s ease forwards';setTimeout(()=>t.remove(),300);},6000);
+}
+
+function showWithdrawBanner(amt){
+  const b=document.getElementById('withdraw-banner');
+  b.style.display='block';
+  b.innerHTML=`<div class="withdraw-banner fade"><div style="display:flex;align-items:center;gap:10px"><div style="font-size:22px">💰</div><div><div style="font-family:var(--sans);font-weight:700;font-size:14px;color:var(--green)">Withdrawal reminder — you won ${f$(amt)}</div><div style="font-size:12px;color:var(--text2);margin-top:3px">Consider withdrawing winnings now to minimize your exposure. Keep only your working stake in the account.</div></div><button class="btn bg bsm" onclick="this.closest('.withdraw-banner').parentElement.style.display='none'" style="margin-left:auto;flex-shrink:0">Dismiss</button></div></div>`;
+}
+
+async function fetchPortfolio(addr){
+  if(!addr)return;
+  try{
+    const[tr,tv,pr]=await Promise.all([fetch(`https://polywatch-api-production.up.railway.app/proxy/closed-positions?user=${addr}&limit=100`),fetch(`https://polywatch-api-production.up.railway.app/proxy/value?user=${addr}`),fetch(`https://polywatch-api-production.up.railway.app/proxy/positions?user=${addr}`)]);
+    if(tr.ok){const r=await tr.json();S.myTrades=(Array.isArray(r)?r:(r.data||[])).slice(0,20);}
+    let ov=0;if(tv.ok){const r=await tv.json();ov=+(r.value||0);}
+    if(pr.ok){const r=await pr.json();S.positions=(Array.isArray(r)?r:(r.data||[])).slice(0,10);}
+    let w=0,l=0,tw=0,tl=0;
+    S.myTrades.forEach(t=>{const pl=+(t.pnl||0);S.myPnl+=pl;const c=cat(t.title||t.market||'');if(!S.catStats[c])S.catStats[c]={w:0,t:0,pnl:0};S.catStats[c].t++;if(pl>0){w++;tw+=pl;S.catStats[c].w++;}else tl+=Math.abs(pl);S.catStats[c].pnl+=pl;});
+    S.myWins=w;S.myLosses=l;S.myPF=tl>0?(tw/tl).toFixed(2):'∞';
+    document.getElementById('my-op').textContent=S.positions.length?f$(ov):'—';
+    renderMyPnl();
+  }catch(e){renderMyPnl();}
+}
+
+// ── QUEUE ────────────────────────────────────────────────────
+function addToQ(trade){
+  if(S.queue.find(q=>q.id===trade.id))return;
+  if(S.deployedToday>=C.maxDaily)return;
+  const w=S.wallets.find(x=>x.name===trade.name);
+  const entryShift=trade.price&&trade.entryPrice?Math.abs(trade.price-trade.entryPrice):0;
+  const sz=Math.min(trade.size*(C.copyPct/100),C.maxTrade);
+  S.queue.unshift({...trade,sugSz:Math.round(sz),status:'pending',priceShift:entryShift,whaleTier:w?tier(S.whaleScores[w.addr]?.rollingWr||w.wr,w.total):'W'});
+  updateBadges();if(C.webhook)sendSig(trade,sz,false);
+}
+function approveQ(id){
+  const q=S.queue.find(x=>x.id===id);if(!q)return;
+  const inp=document.getElementById('qs-'+id);const amt=inp?Math.min(+inp.value,C.maxTrade):q.sugSz;
+  q.status='approved';q.approvedSz=amt;q.approvedAt=Date.now();
+  S.execCount++;S.deployedToday+=amt;S.deployedTotal+=amt;
+  S.execHistory.unshift({...q,dispSz:amt});S.totalTracked++;
+  // Add to bet log and open positions
+  const betEntry={...q,id:q.id,size:amt,resolved:false,pnl:0,currentPrice:q.price};
+  S.betLog.push(betEntry);
+  S.openPositions.push({...betEntry,endTs:Date.now()+86400000*60});// default 60d if no end date
+  S.queue=S.queue.filter(x=>x.id!==id);
+  if(C.webhook)sendSig(q,amt,true);
+  saveLS();renderQ();renderQStats();renderExecHist();updateBadges();renderPositions();
+}
+function skipQ(id){S.queue=S.queue.filter(q=>q.id!==id);renderQ();renderQStats();updateBadges();}
+function setQS(id,v){const i=document.getElementById('qs-'+id);if(i)i.value=Math.min(v,C.maxTrade);}
+async function sendSig(t,amt,approved){if(!C.webhook)return;try{await fetch(C.webhook,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({event:approved?'approved':'signal',price:t.price,size_usdc:amt,approved_usdc:approved?amt:null,side:t.side,outcome:t.outcome,market:t.market,source_wallet:t.name,timestamp:t.ts})});}catch(e){}}
+
+// ── RENDER ───────────────────────────────────────────────────
+function renderLB(){
+  const el=document.getElementById('lb-list');if(!S.wallets.length){el.innerHTML='<div class="empty">No data</div>';return;}
+  el.innerHTML=S.wallets.map(w=>{
+    const sc=S.whaleScores[w.addr];const wr=sc?.rollingWr||w.wr;const ti=tier(wr,w.total);
+    const wf=ti==='S'?'style="background:var(--amber)"':ti==='A'?'style="background:var(--cyan)"':'style="background:var(--text3)"';
+    const cut=ti==='X';const act=w.active;
+    const catWrHtml=sc&&Object.keys(sc.catWr||{}).length?`<div style="font-size:10px;color:var(--text2);margin-top:3px">${Object.entries(sc.catWr).map(([k,v])=>`${k}:${v}%`).join(' · ')}</div>`:'';
+    return`<div class="row" style="${cut?'opacity:.4':''};flex-wrap:wrap">
+      <div class="rk ${w.rank<=3?'top':''}">${w.rank}</div>
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px">
+          <strong style="font-size:16px;font-family:var(--sans);letter-spacing:.01em">${w.name}</strong>${ttag(ti)}${act?'<span class="tag tg-b" style="font-size:9px">watching</span>':''}
+        </div>
+        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+          <span class="big-num" style="color:var(--green)">${f$(w.pnl)}</span>
+          <div style="display:flex;align-items:center;gap:6px"><div class="wr-bar"><div class="wr-f" ${wf} style="width:${Math.min(wr,100)}%"></div></div><span style="font-size:11px;color:var(--text2);font-weight:600">${wr.toFixed(0)}%</span></div>
+          <span class="meta-lbl">${w.total}+ bets</span>
+          <span title="Last 5 results" style="display:inline-flex;align-items:center">${streakHtml(w.streak)}</span>
+        </div>
+        ${sc?.t30>=5?`<div style="font-size:10px;color:var(--cyan);margin-top:4px;font-weight:600">30D · ${sc.rollingWr.toFixed(0)}% (${sc.t30} bets)</div>`:''}
+        ${catWrHtml}
+        ${w.addr?`<div class="whale-pos-toggle" onclick="loadWhalePositions('${w.addr}')">▸ Currently betting on</div><div id="wp-${w.addr}" style="display:none;width:100%"></div>`:''}
+      </div>
+      ${!cut?`<button class="btn bsm ${act?'ba':''}" onclick="toggleW(${w.rank-1})">${act?'Stop':'Watch'}</button>`:`<span style="font-size:10px;color:var(--red)">Cut</span>`}
+    </div>`;
+  }).join('');
+}
+
+function renderFeed(){
+  const el=document.getElementById('wfeed');const items=S.activity;
+  document.getElementById('fn').textContent=S.apiLive?'Live · '+S.tradeCount+' signals today':'Connecting — polls every '+C.pollMin+'min';
+  if(!items.length){el.innerHTML='<div class="empty">Watching for whale trades — data appears within 5 minutes of a qualifying trade</div>';return;}
+  el.innerHTML=items.slice(0,12).map(t=>{const d=dirOf(t.outcome);return`
+    <div class="row fade">
+      <div class="rk ${t.rank<=3?'top':''}">${t.rank<=0?'★':t.rank}</div>
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:3px">
+          ${dirTag(d)}
+          <span class="tag ${t.side==='BUY'?'tg-b':'tg-s'}" style="font-size:9px">${t.side}</span>
+          <span style="color:var(--text2);font-size:10px;margin-left:auto">${ft(t.ts)}</span>
+        </div>
+        <div style="font-size:12px;line-height:1.5">${betLine(t.name,d,t.market,t.price,t.size)}</div>
+        <div style="font-size:11px;color:var(--text2);margin-top:2px">${cat(t.market)}</div>
+      </div>
+    </div>`;}).join('');
+}
+
+function renderRecs(){
+  const recs=buildRecs();const el=document.getElementById('rec-list');document.getElementById('rts').textContent=now();
+  if(!recs.length){
+    const wc=S.wallets.length;
+    const ac=S.wallets.filter(w=>w.active).length;
+    const actN=S.activity.length;
+    const apiState=S.apiLive?'API live':'API offline';
+    let msg='';
+    if(!wc){msg=`<strong style="color:var(--red)">0 whales loaded · ${apiState}</strong><br><span style="color:var(--text2);font-size:11px">Check polywatch-api is deployed on Railway</span>`;}
+    else if(!ac){msg=`<strong style="color:var(--amber)">${wc} whales loaded · 0 active · ${apiState}</strong><br><span style="color:var(--text2);font-size:11px">Activate whales in the Whales tab</span>`;}
+    else if(!actN){msg=`<strong style="color:var(--cyan)">${wc} whales loaded · ${ac} active · ${apiState}</strong><br><span style="color:var(--text2);font-size:11px">0 qualifying trades yet — waiting for activity above $${C.minWhale}</span>`;}
+    else {msg=`<strong style="color:var(--cyan)">${wc} whales · ${ac} active · ${actN} recent trades · ${apiState}</strong><br><span style="color:var(--text2);font-size:11px">No recs built yet — waiting for consensus or large single-whale bets</span>`;}
+    el.innerHTML=`<div class="empty" style="padding:28px 0;line-height:1.8">${msg}</div>`;
+    return;
+  }
+  el.innerHTML=recs.map(r=>{
+    const shiftWarn=r.priceShift>=0.05?`<div class="impact-warn">⚠ Price moved ${Math.round(r.priceShift*100)}¢ since whale entered</div>`:'';
+    const typeBadge=r.type==='consensus'?`<span class="tag tg-p" style="font-size:9px">${r.wc} whales</span>`:`<span class="tag tg-p" style="font-size:9px">Solo: ${r.topWhale} (${r.topWhaleTier}-Tier)</span>`;
+    return`<div class="rec-card fade">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <div style="flex-shrink:0">${dirBig(r.side)}</div>
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:3px">
+            <span class="tag ${r.conf==='HIGH'?'tg-hi':'tg-md'}">${r.conf}</span>
+            ${typeBadge}
+            <span style="font-size:10px;padding:1px 7px;border-radius:100px;background:var(--cdim);color:var(--cyan);border:1px solid rgba(34,211,238,.15)">${r.cat}</span>
+            <span style="font-size:11px;color:var(--text2);margin-left:auto">${f$(r.tot)} whale vol</span>
+          </div>
+          <div style="font-size:14px;font-weight:600;font-family:var(--sans);line-height:1.35">${r.market}</div>
+        </div>
+      </div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:6px">${(r.whales||[r.topWhale||'']).join(' + ')} bet ${dirInline(r.side)} @ ${Math.round(r.ap*100)}¢</div>
+      ${shiftWarn}
+      <div style="display:flex;align-items:baseline;gap:12px;margin-top:8px">
+        <div><span style="font-size:22px;font-weight:700;font-family:var(--sans);color:var(--amber)">${f$(r.sz)}</span><span style="font-size:11px;color:var(--text2);margin-left:8px">suggested size</span></div>
+        <button class="btn ba bsm" style="margin-left:auto" onclick="addRecQ('${encodeURIComponent(r.market)}','${r.side}',${r.ap},${r.sz})">Add to queue →</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderCon(){
+  const el=document.getElementById('con-list');const items=Object.values(S.consensus);
+  if(!items.length){el.innerHTML='<div class="empty">Consensus appears when 2+ whales align on the same market</div>';return;}
+  el.innerHTML=items.slice(0,5).map(m=>{const tot=m.yes+m.no+1;const yp=Math.round(m.yes/tot*100);const np=Math.round(m.no/tot*100);return`<div class="row"><div style="flex:1;min-width:0"><div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500;font-size:12px;margin-bottom:3px">${m.market}</div><div style="font-size:11px;color:var(--text2);margin-bottom:5px">${m.whales.join(' · ')}</div><div class="con-bar"><div class="cony" style="width:${yp}%"></div><div class="conn" style="width:${np}%"></div></div><div style="display:flex;justify-content:space-between;margin-top:3px"><span style="font-size:11px;color:var(--cyan)">YES ${yp}%</span><span style="font-size:11px;color:var(--amber)">NO ${np}%</span></div></div></div>`;}).join('');
+}
+
+function renderInsEmpty(){document.getElementById('ins-list').innerHTML='<div class="empty" style="padding:32px">Scanning markets for anomalies — large bets from wallets with fewer than '+C.insMaxTrades+' lifetime trades will appear here</div>';}
+
+function renderLBEmpty(){document.getElementById('lb-list').innerHTML='<div class="empty">Could not reach Polymarket leaderboard API — retrying next poll</div>';}
+
+function renderIns(){
+  const el=document.getElementById('ins-list');document.getElementById('i-tr').textContent=C.insMaxTrades;document.getElementById('i-sz').textContent='$'+C.minInsider.toLocaleString();
+  if(!S.insiders.length){renderInsEmpty();return;}
+  el.innerHTML=S.insiders.slice(0,6).map(t=>`
+    <div class="ins-card fade">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px">
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin-bottom:6px">
+            <span class="tag tg-ins">ANOMALY</span>
+            <span class="tag ${t.conf==='HIGH'?'tg-hi':'tg-md'}">${t.conf}</span>
+            <span class="tag ${t.side==='BUY'?'tg-b':'tg-s'}">${t.side}</span>
+            <span class="tag ${t.outcome==='YES'?'tg-y':'tg-n'}">${t.outcome}</span>
+            <span style="font-size:10px;padding:1px 7px;border-radius:100px;background:var(--pdim);color:var(--purple);border:1px solid rgba(167,139,250,.2)">${t.cat}</span>
+          </div>
+          <div style="font-size:14px;font-weight:600;font-family:var(--sans);line-height:1.4;margin-bottom:4px">${t.market}</div>
+          <div style="font-size:11px;color:var(--text2)">Wallet ${t.name} · <strong style="color:${t.trades<=3?'var(--red)':'var(--amber)'}">${t.trades} lifetime trade${t.trades===1?'':'s'}</strong> · ${ft(t.ts)}</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <div style="font-size:22px;font-weight:700;font-family:var(--sans);color:var(--purple)">${f$(t.size)}</div>
+          <div style="font-size:11px;color:var(--text2)">@ ${Math.round(t.price*100)}¢</div>
+        </div>
+      </div>
+      <button class="btn bsm" style="border-color:rgba(167,139,250,.4);color:var(--purple)" onclick="insToQ('${t.id}')">Add to approval queue →</button>
+    </div>`).join('');
+}
+
+function renderPositions(){
+  const openEl=document.getElementById('open-positions');
+  const resEl=document.getElementById('resolved-bets');
+  const open=S.openPositions;
+  const res=S.resolvedPositions;
+  // Stats
+  const staked=open.reduce((a,p)=>a+p.size,0);
+  document.getElementById('pos-open').textContent=open.length;
+  document.getElementById('pos-staked').textContent=f$(staked);
+  document.getElementById('pos-res').textContent=S.resolvedPositions.length;
+  const pnlEl=document.getElementById('pos-pnl');pnlEl.textContent=(S.todayPnl>=0?'+':'')+f$(S.todayPnl);pnlEl.style.color=S.todayPnl>=0?'var(--green)':'var(--red)';
+  if(S.newResolutions>0){const rb=document.getElementById('nb-r');rb.style.display='inline-block';rb.textContent='!';}
+  if(!open.length){openEl.innerHTML='<div class="empty">No open positions. Approved trades appear here automatically.</div>';}
+  else{
+    openEl.innerHTML=open.map(p=>{
+      const d=dirOf(p.outcome);
+      const remaining=p.endTs?p.endTs-Date.now():0;const urgent=remaining>0&&remaining<86400000*3;
+      const unrealized=p.currentPrice?Math.round(p.size*(p.currentPrice/p.price-1)):0;
+      return`<div class="pos-card">
+        <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:8px">
+          <div style="flex-shrink:0">${dirBig(d)}</div>
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:4px">
+              <span class="tag ${p.side==='BUY'?'tg-b':'tg-s'}" style="font-size:9px">${p.side}</span>
+              ${remaining>0?`<span class="countdown ${urgent?'urgent':''}">${fcd(remaining)}</span>`:''}
+              <span style="font-size:10px;color:var(--text2);margin-left:auto">${ft(p.ts)}</span>
+            </div>
+            <div style="font-size:13px;font-weight:600;line-height:1.4;margin-bottom:3px">${p.market}</div>
+            <div style="font-size:11px;color:var(--text2)">Bet ${dirInline(d)} @ ${Math.round(p.price*100)}¢ · copied from ${p.whale||'—'}</div>
+          </div>
+          <div style="text-align:right;flex-shrink:0">
+            <div style="font-size:18px;font-weight:700;font-family:var(--sans);color:var(--amber)">${f$(p.size)}</div>
+            ${p.currentPrice?`<div style="font-size:11px;${unrealized>=0?'color:var(--green)':'color:var(--red)'}">${unrealized>=0?'+':''}${f$(unrealized)} unrealized</div>`:''}
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  if(!res.length){resEl.innerHTML='<div class="empty">No resolved bets yet.</div>';}
+  else{
+    resEl.innerHTML=res.slice(0,10).map(p=>{const d=dirOf(p.outcome);return`
+      <div class="pos-card ${p.won?'won':'lost'} fade">
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="font-size:22px">${p.won?'🎉':'❌'}</div>
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:3px">
+              <span class="tag ${p.won?'tg-w':'tg-l'}">${p.won?'WON':'LOST'}</span>
+              ${dirTag(d)}
+              <span style="font-size:11px;color:var(--text2)">${ft(p.resolvedAt)}</span>
+            </div>
+            <div style="font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.market}</div>
+            <div style="font-size:11px;color:var(--text2)">Bet ${dirInline(d)} — ${f$(p.size)} @ ${Math.round(p.price*100)}¢</div>
+          </div>
+          <div style="text-align:right;flex-shrink:0">
+            <div style="font-size:18px;font-weight:700;font-family:var(--sans);${p.won?'color:var(--green)':'color:var(--red)'}">${p.won?'+':''}${f$(p.pnl)}</div>
+            <div style="font-size:10px;color:var(--text2)">${p.won?Math.round((p.pnl/p.size)*100)+'% return':'lost stake'}</div>
+          </div>
+        </div>
+      </div>`;}).join('');
+  }
+}
+
+function renderQ(){
+  const el=document.getElementById('q-list');const pend=S.queue.filter(q=>q.status==='pending');
+  if(!pend.length){el.innerHTML=`<div class="card" style="text-align:center;padding:24px;margin-bottom:12px"><div style="color:var(--text2);font-size:13px">No pending trades. Signals queue here automatically.</div></div>`;return;}
+  el.innerHTML=pend.map(q=>{const d=dirOf(q.outcome);return`
+    <div class="card fade" style="margin-bottom:10px">
+      <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px">
+        <div style="flex-shrink:0;text-align:center">
+          ${dirBig(d)}
+          <div style="font-size:9px;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-top:2px">direction</div>
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:4px">
+            ${q.whaleTier?ttag(q.whaleTier):''}
+            <strong>#${q.rank} ${q.name}</strong>
+            <span class="tag ${q.side==='BUY'?'tg-b':'tg-s'}" style="font-size:9px">${q.side}</span>
+            <span style="color:var(--text2);font-size:10px;margin-left:auto">${ft(q.ts)}</span>
+          </div>
+          <div style="font-size:14px;font-weight:600;font-family:var(--sans);margin:4px 0;line-height:1.4">${q.market}</div>
+          <div style="font-size:12px;line-height:1.5"><strong>${q.name}</strong> bet ${dirInline(d)} for ${f$(q.size)} @ ${Math.round(q.price*100)}¢</div>
+          ${q.priceShift>=0.05?`<div class="impact-warn">⚠ Price moved ${Math.round(q.priceShift*100)}¢ since whale entered</div>`:''}
+        </div>
+        <button class="btn bsm br" style="flex-shrink:0" onclick="skipQ('${q.id}')">Skip</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <span style="font-size:12px;color:var(--text2)">Amount:</span>
+        <input type="number" id="qs-${q.id}" class="szinp" value="${q.sugSz}">
+        <span style="font-size:11px;color:var(--text2)">max ${f$(C.maxTrade)}</span>
+        <button class="btn bsm" onclick="setQS('${q.id}',${Math.round(q.size*.1)})">10%</button>
+        <button class="btn bsm" onclick="setQS('${q.id}',${Math.round(q.size*.25)})">25%</button>
+        <button class="btn bsm" onclick="setQS('${q.id}',${Math.round(q.size*.5)})">50%</button>
+        <button class="btn bsm bg" onclick="approveQ('${q.id}')">Execute →</button>
+      </div>
+    </div>`;}).join('');
+}
+
+function renderExecHist(){
+  const el=document.getElementById('exec-hist');if(!S.execHistory.length){el.innerHTML='<div class="empty" style="padding:16px">Nothing executed yet.</div>';return;}
+  el.innerHTML=S.execHistory.slice(0,8).map(h=>{
+    const bet=S.betLog.find(b=>b.id===h.id);
+    const res=bet?.resolved?`<span class="tag ${bet.won?'tg-w':'tg-l'}">${bet.won?'WON +'+f$(bet.pnl):'LOST'}</span>`:'<span class="tag tg-W">open</span>';
+    return`<div class="row"><div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:2px"><span class="tag tg-ex">executed</span>${res}<strong style="font-size:12px">${h.name}</strong><span style="font-size:10px;color:var(--text2)">${ft(h.approvedAt)}</span></div><div style="font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text2)">${h.market}</div><div style="font-size:12px">${f$(h.dispSz)} ${h.side} ${h.outcome} @ ${Math.round(h.price*100)}¢</div></div></div>`;
+  }).join('');
+}
+
+function renderMyPnl(){
+  document.getElementById('b-empty').style.display='none';document.getElementById('b-content').style.display='block';
+  const total=S.myWins+S.myLosses;const wr=total>0?(S.myWins/total*100).toFixed(1):'—';
+  const pe=document.getElementById('my-pnl');pe.textContent=(S.myPnl>=0?'+':'')+f$(S.myPnl);pe.style.color=S.myPnl>=0?'var(--green)':'var(--red)';
+  document.getElementById('my-wr').textContent=wr+'%';document.getElementById('my-wrs').textContent=total+' bets ('+S.myWins+'W / '+S.myLosses+'L)';document.getElementById('my-pf').textContent=S.myPF||'—';
+  // Category breakdown
+  const catEl=document.getElementById('cat-breakdown');
+  if(Object.keys(S.catStats).length){
+    catEl.innerHTML=Object.entries(S.catStats).map(([c,d])=>`<div class="row"><div style="flex:1"><strong style="font-size:12px">${c}</strong><div style="font-size:11px;color:var(--text2)">${d.t} bets</div></div><div style="text-align:right"><div style="font-size:12px;font-weight:700;${d.pnl>=0?'color:var(--green)':'color:var(--red)'}">${d.pnl>=0?'+':''}${f$(d.pnl)}</div><div style="font-size:11px;color:var(--text2)">${d.t>0?(d.w/d.t*100).toFixed(0)+'% win':'—'}</div></div></div>`).join('');
+  }else{catEl.innerHTML='<div class="empty" style="padding:12px">Accumulating data...</div>';}
+  if(S.myTrades.length){document.getElementById('my-trades').innerHTML=S.myTrades.slice(0,10).map(t=>{const pl=+(t.pnl||0);return`<div class="row"><div style="flex:1;min-width:0"><div style="font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.title||t.market||'Market'}</div><div style="font-size:11px;color:var(--text2)">${f$(+(t.usdcSize||0))}</div></div><span style="font-weight:700;${pl>=0?'color:var(--green)':'color:var(--red)'}">${pl>=0?'+':''}${f$(pl)}</span></div>`;}).join('');}
+}
+
+function renderLearnStat(){
+  const el=document.getElementById('learn-stat');const tw=Object.keys(S.whaleScores).length;const rm=Object.keys(S.mktOutcomes).length;
+  el.innerHTML=`<div class="g3" style="margin-bottom:10px">
+    <div class="sc"><div class="sl">Whales scored</div><div class="sv" style="color:var(--cyan)">${tw}</div></div>
+    <div class="sc"><div class="sl">Markets resolved</div><div class="sv" style="color:var(--green)">${rm}</div></div>
+    <div class="sc"><div class="sl">Bets tracked</div><div class="sv" style="color:var(--amber)">${S.totalTracked}</div></div>
+  </div>
+  <p style="font-size:12px;color:var(--text2);line-height:1.8">${tw<3?'Watch whales to begin. Tiers and recommendations improve as markets resolve.':'Tier badges reflect rolling 30-day performance, not just all-time. Category win rates build per whale over time — useful for filtering which whale to follow on which type of bet.'}</p>`;
+}
+
+function renderRecStats(){
+  document.getElementById('r1').textContent=S.wallets.filter(w=>w.active).length;document.getElementById('r2').textContent=S.recs.length||buildRecs().length;
+  const tot=S.myWins+S.myLosses;document.getElementById('r3').textContent=tot>0?(S.myWins/tot*100).toFixed(0)+'%':'—';
+  const p4=document.getElementById('r4');p4.textContent=(S.myPnl>=0?'+':'')+f$(S.myPnl);p4.style.color=S.myPnl>=0?'var(--green)':'var(--red)';
+  const bh=document.getElementById('bankroll-hdr');if(C.bankroll){bh.style.display='inline-block';bh.innerHTML=`<span style="color:var(--text3);font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-family:var(--mono);font-weight:600;margin-right:8px">Bankroll</span><span style="color:var(--cyan);font-weight:700;font-family:var(--display)">${f$(C.bankroll)}</span>`;}
+}
+
+function renderQStats(){document.getElementById('qs1').textContent=S.queue.filter(q=>q.status==='pending').length;document.getElementById('qs2').textContent=S.execCount;document.getElementById('qs3').textContent=f$(S.deployedTotal);}
+
+function updateBadges(){
+  const qc=S.queue.filter(q=>q.status==='pending').length;const qb=document.getElementById('nb-q');qb.style.display=qc>0?'inline-block':'none';qb.textContent=qc;
+  const ic=S.insiders.length;const ib=document.getElementById('nb-i');ib.style.display=ic>0?'inline-block':'none';ib.textContent=ic;
+  document.getElementById('ht').textContent=now();
+}
+
+function setStatus(){
+  const live=S.wallets.some(w=>w.active&&w.addr)&&S.apiLive;
+  document.getElementById('hd').className='dot pulse '+(live?'dotl':S.demo?'dotd':'dote');
+  document.getElementById('hs').textContent=live?`Live · ${S.wallets.filter(w=>w.active).length} whales · ${now()}`:'Demo mode — watch a whale to go live';
+}
+
+// ── AUTCULL ──────────────────────────────────────────────────
+function autoCull(){
+  const notes=[];
+  S.wallets.forEach(w=>{if(!w.active)return;const sc=S.whaleScores[w.addr];if(sc&&sc.t30>=10&&sc.rollingWr<C.cutWr){w.active=false;notes.push(`${w.name} auto-removed — 30d rate dropped to ${sc.rollingWr.toFixed(1)}%`);}});
+  const active=S.wallets.filter(w=>w.active).sort((a,b)=>(S.whaleScores[b.addr]?.score||b.wr)-(S.whaleScores[a.addr]?.score||a.wr));
+  active.slice(C.maxWL).forEach(w=>{w.active=false;notes.push(`${w.name} moved to watch-only — cap ${C.maxWL}`);});
+  const ca=document.getElementById('cull-area');ca.innerHTML=notes.map(n=>`<div class="cull-note">⚠ ${n}</div>`).join('');
+  if(notes.length)setTimeout(()=>ca.innerHTML='',15000);
+}
+
+// ── INTERACTIONS ─────────────────────────────────────────────
+function toggleW(i){const w=S.wallets[i];if(!w.active&&S.wallets.filter(x=>x.active).length>=C.maxWL){alert(`Watchlist capped at ${C.maxWL}`);return;}w.active=!w.active;renderLB();renderRecStats();if(w.active&&w.addr)fetchAct(w);saveLS();}
+function insToQ(id){const t=S.insiders.find(x=>x.id===id);if(!t)return;addToQ({...t,name:t.name+' (insider)',rank:99});goTab('queue',document.querySelectorAll('.nt')[4]);}
+function addRecQ(me,side,ap,sz){addToQ({id:'rec_'+Date.now(),name:'AI Rec',rank:0,market:decodeURIComponent(me),side:'BUY',outcome:side,size:sz*(100/C.copyPct),price:ap,ts:Date.now()});goTab('queue',document.querySelectorAll('.nt')[4]);}
+function setMW(){const a=document.getElementById('mwin').value.trim();if(!a.startsWith('0x')){alert('Must start with 0x');return;}C.myWallet=a;document.getElementById('s-myw').value=a;saveLS();document.getElementById('b-empty').style.display='none';document.getElementById('b-content').style.display='block';fetchPortfolio(a);}
+function saveAll(){C.bankroll=+document.getElementById('s-br').value;C.minWhale=+document.getElementById('s-mw').value;C.minInsider=+document.getElementById('s-mi').value;C.insMaxTrades=+document.getElementById('s-mt').value;C.pollMin=+document.getElementById('s-po').value;C.copyPct=+document.getElementById('s-cp').value;C.maxTrade=+document.getElementById('s-mx').value;C.maxDaily=+document.getElementById('s-md').value;C.maxDailyCount=+document.getElementById('s-dc').value;C.t1Wr=+document.getElementById('s-t1w').value;C.t1Bets=+document.getElementById('s-t1b').value;C.t2Wr=+document.getElementById('s-t2w').value;C.t2Bets=+document.getElementById('s-t2b').value;C.maxWL=+document.getElementById('s-mxw').value;C.webhook=document.getElementById('s-wh').value.trim();C.withdrawReminder=+document.getElementById('s-wr-amt').value;const mw=document.getElementById('s-myw').value.trim();if(mw)C.myWallet=mw;saveLS();restartPoll();const m=document.getElementById('s-msg');m.style.color='var(--green)';m.textContent='Saved ✓ — Kelly sizing updated';setTimeout(()=>m.textContent='',3000);}
+async function testWH(){const url=document.getElementById('s-wh').value.trim();const m=document.getElementById('s-msg');if(!url){m.style.color='var(--red)';m.textContent='Enter webhook URL first.';return;}m.style.color='var(--text2)';m.textContent='Sending...';try{await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({event:'test',market:'PolyWatch v3 test',side:'BUY',outcome:'YES',price:.72,size_usdc:500,source_wallet:'kch123',timestamp:Date.now()})});m.style.color='var(--green)';m.textContent='Sent ✓ — check n8n log';}catch(e){m.style.color='var(--red)';m.textContent='Error: '+e.message;}}
+function reqNotif(){if('Notification'in window){Notification.requestPermission().then(p=>{S.notifGranted=p==='granted';document.getElementById('notif-btn').textContent=p==='granted'?'🔔 On':'🔕 Off';const m=document.getElementById('s-msg');m.style.color=p==='granted'?'var(--green)':'var(--red)';m.textContent=p==='granted'?'Browser notifications enabled ✓':'Notifications blocked — enable in browser settings';setTimeout(()=>m.textContent='',4000);});}else{alert('Notifications not supported in this browser');}}
+
+// ── CLAUDE API HELPER ────────────────────────────────────────
+// Calls polywatch-api backend /proxy/claude (which holds the server-side ANTHROPIC_API_KEY)
+// so no key is ever exposed to the browser and CORS is handled.
+const _claudeCache={};
+async function askClaude(cacheKey,prompt,opts){
+  opts=opts||{};
+  // 1 hour cache
+  if(_claudeCache[cacheKey]&&Date.now()-_claudeCache[cacheKey].ts<3600000)return _claudeCache[cacheKey].text;
+  try{
+    const r=await fetch('https://polywatch-api-production.up.railway.app/proxy/claude',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        prompt,
+        model:opts.model||'claude-haiku-4-5-20251001',
+        max_tokens:opts.max_tokens||300,
+        web_search:opts.web_search||false
+      })
+    });
+    if(!r.ok)throw new Error(r.status);
+    const j=await r.json();
+    const txt=j.text||'Analysis unavailable';
+    _claudeCache[cacheKey]={text:txt,ts:Date.now()};
+    return txt;
+  }catch(e){return'Analysis unavailable';}
+}
+// Returns cached Claude text if fresh, otherwise null
+function claudeCached(cacheKey){
+  const c=_claudeCache[cacheKey];
+  return(c&&Date.now()-c.ts<3600000)?c.text:null;
+}
+
+// ── HOT BETS TAB ─────────────────────────────────────────────
+let _hbTimer=null;
+async function fetchHotBets(){
+  const el=document.getElementById('hb-list');
+  try{
+    const r=await fetch('https://polywatch-api-production.up.railway.app/proxy/markets?active=true&closed=false&limit=100&order=volume&ascending=false');
+    if(!r.ok)throw new Error(r.status);
+    const markets=await r.json();
+    const now_=Date.now();const sevenDays=7*86400000;
+    let filtered=markets.filter(m=>{
+      if(!m.endDate&&!m.end_date_iso)return false;
+      const end=new Date(m.endDate||m.end_date_iso).getTime();
+      return end>now_&&end-now_<=sevenDays;
+    }).sort((a,b)=>(+(b.volume24hr||b.volume||0))-(+(a.volume24hr||a.volume||0))).slice(0,8);
+    if(!filtered.length){el.innerHTML='<div class="empty">No high-volume markets closing within 7 days found.</div>';return;}
+    el.innerHTML='';
+    for(const m of filtered){
+      const card=document.createElement('div');card.className='card fade';card.style.marginBottom='10px';
+      const vol=+(m.volume24hr||m.volume||0);const volStr=vol>=1e6?'$'+(vol/1e6).toFixed(1)+'M':vol>=1e3?'$'+(vol/1e3).toFixed(0)+'k':'$'+Math.round(vol);
+      const end=new Date(m.endDate||m.end_date_iso).getTime();const remain=end-now_;
+      const timeStr=remain>86400000?Math.floor(remain/86400000)+'d '+Math.floor((remain%86400000)/3600000)+'h':Math.floor(remain/3600000)+'h '+Math.floor((remain%3600000)/60000)+'m';
+      let yesP=50;try{const op=JSON.parse(m.outcomePrices||'[]');yesP=Math.round((+(op[0]||0.5))*100);}catch(e){}
+      // Find whale bets on this market
+      const whaleBets=[];const q=(m.question||m.title||'').toLowerCase();
+      S.activity.forEach(a=>{if((a.market||'').toLowerCase().includes(q.slice(0,30).toLowerCase())){
+        whaleBets.push({name:a.name,side:a.side,outcome:a.outcome,size:a.size,price:a.price});}});
+      let whaleHtml='';if(whaleBets.length){whaleHtml='<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border)"><div class="meta-lbl" style="margin-bottom:4px">Whale activity</div>'+whaleBets.map(wb=>`<div style="font-size:11px;margin-bottom:3px;line-height:1.5">${betLine(wb.name,wb.outcome,'',wb.price||0.5,wb.size).replace(/\son\s+@/,' @')}</div>`).join('')+'</div>';}
+      const mid=m.id||m.conditionId||Math.random().toString(36).slice(2);
+      const cacheKey='hb_'+mid;
+      const cached=claudeCached(cacheKey);
+      const analyzeBlock=cached
+        ? `<div class="pw-says"><div class="pw-says-lbl">PolyWatch says</div><div class="pw-says-body" id="hb-ai-${mid}">${renderMd(cached)}</div></div>`
+        : `<div class="pw-says collapsed"><div class="pw-says-lbl">PolyWatch says</div><button class="btn-analyze" data-mid="${mid}" data-prompt-src="hb">Analyze ▸</button><div class="pw-says-body" id="hb-ai-${mid}" style="display:none"></div></div>`;
+      card.innerHTML=`
+        <div style="font-size:15px;font-weight:600;font-family:var(--sans);line-height:1.35;margin-bottom:10px">${m.question||m.title||'Unknown'}</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          <span class="pct-yes">YES ${yesP}%</span>
+          <div class="con-bar" style="flex:1"><div class="cony" style="width:${yesP}%"></div><div class="conn" style="width:${100-yesP}%"></div></div>
+          <span class="pct-no">NO ${100-yesP}%</span>
+        </div>
+        <div style="display:flex;gap:12px;font-size:11px;color:var(--text2);margin-bottom:4px">
+          <span>Vol: <strong style="color:var(--text)">${volStr}</strong></span>
+          <span class="countdown${remain<86400000?' urgent':''}">${timeStr}</span>
+        </div>
+        ${whaleHtml}
+        ${analyzeBlock}`;
+      el.appendChild(card);
+      // Attach click handler for Analyze button (no auto-fire)
+      const btn=card.querySelector('.btn-analyze');
+      if(btn){
+        btn.addEventListener('click',async()=>{
+          btn.disabled=true;btn.textContent='Analyzing...';btn.classList.add('loading');
+          const aiEl=document.getElementById('hb-ai-'+mid);
+          const whaleCtx=whaleBets.length?'Whale positions: '+whaleBets.map(wb=>`${wb.name} ${dirOf(wb.outcome)} $${wb.size}`).join(', '):'No tracked whale activity on this market.';
+          const prompt=`You are a prediction-market betting analyst.\n\nMarket: "${m.question||m.title}"\nCurrent YES odds: ${yesP}% / NO odds: ${100-yesP}%\n24h volume: ${volStr}\nTime remaining: ${timeStr}\n${whaleCtx}\n\nYour response MUST begin with exactly one of: **BET YES**, **BET NO**, or **SKIP** as the very first words (in bold markdown). Then in one or two sentences explain your reasoning.`;
+          const txt=await askClaude(cacheKey,prompt);// Haiku, web_search off (default)
+          if(aiEl){aiEl.innerHTML=renderMd(txt);aiEl.style.display='block';}
+          btn.style.display='none';
+          btn.parentElement.classList.remove('collapsed');
+        });
+      }
+    }
+    document.getElementById('hb-updated').textContent='Updated '+now();
+  }catch(e){el.innerHTML='<div class="empty">Could not fetch hot markets — retrying next refresh.</div>';}
+}
+function startHotBetsRefresh(){clearInterval(_hbTimer);_hbTimer=setInterval(fetchHotBets,3600000);}
+
+// ── BTC TAB ──────────────────────────────────────────────────
+let _btcPrice=0,_btcPrev=0,_btcWs=null,_btcFallback=null;
+function initBtcPrice(){
+  try{
+    _btcWs=new WebSocket('wss://data-api.polymarket.com/ws');
+    _btcWs.onopen=()=>{_btcWs.send(JSON.stringify({action:'subscribe',subscriptions:[{topic:'crypto_prices_chainlink',type:'*',filters:'{"symbol":"btc/usd"}'}]}));};
+    _btcWs.onmessage=(e)=>{try{const d=JSON.parse(e.data);const p=+(d.price||d.data?.price||0);if(p>0){_btcPrev=_btcPrice||p;_btcPrice=p;renderBtcPrice();}}catch(ex){}};
+    _btcWs.onerror=()=>{_btcWs.close();startBtcFallback();};
+    _btcWs.onclose=()=>{startBtcFallback();};
+    // If no data within 5s, fall back
+    setTimeout(()=>{if(!_btcPrice)startBtcFallback();},5000);
+  }catch(e){startBtcFallback();}
+}
+function startBtcFallback(){
+  if(_btcFallback)return;
+  async function poll_(){try{const r=await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');const j=await r.json();const p=j.bitcoin?.usd;if(p){_btcPrev=_btcPrice||p;_btcPrice=p;renderBtcPrice();}}catch(e){}}
+  poll_();_btcFallback=setInterval(poll_,30000);
+}
+function renderBtcPrice(){
+  const el=document.getElementById('btc-price');const del=document.getElementById('btc-delta');
+  if(!_btcPrice){el.textContent='Loading...';return;}
+  el.textContent='$'+_btcPrice.toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:0});
+  if(_btcPrev&&_btcPrev!==_btcPrice){
+    const diff=_btcPrice-_btcPrev;const pct=((diff/_btcPrev)*100).toFixed(2);
+    el.style.color=diff>=0?'var(--green)':'var(--red)';
+    del.textContent=(diff>=0?'+':'')+diff.toFixed(0)+' ('+pct+'%)';del.style.color=diff>=0?'var(--green)':'var(--red)';
+  }
+}
+async function fetchBtcMarkets(){
+  try{
+    // Gamma API has no reliable text search — fetch large batch and filter client-side for bitcoin/BTC
+    const r=await fetch('https://polywatch-api-production.up.railway.app/proxy/markets?active=true&closed=false&limit=200&order=volume&ascending=false');
+    if(!r.ok)throw new Error(r.status);
+    const all=await r.json();
+    const markets=all.filter(m=>/bitcoin|btc/i.test((m.question||'')+(m.title||'')));
+    const q_=m=>(m.question||m.title||'').toLowerCase();
+    // Daily — today/daily directional markets
+    const daily=markets.find(m=>{const q=q_(m);return(/today|daily|24.?h|april\s*\d/i.test(q))&&(/up|down|higher|lower|above|below/i.test(q))&&!/week/i.test(q);});
+    renderBtcSection('btc-daily',daily,'daily');
+    // Weekly
+    const weekly=markets.find(m=>{const q=q_(m);return /week|7.?d/i.test(q)&&/up|down|higher|lower|above|below/i.test(q);});
+    renderBtcSection('btc-weekly',weekly,'weekly');
+    // Price targets — any with specific price numbers
+    const targets=markets.filter(m=>/\$[\d,]+|\d+k|\d{4,}/i.test(q_(m))).sort((a,b)=>(+(b.volume24hr||b.volume||0))-(+(a.volume24hr||a.volume||0))).slice(0,8);
+    renderBtcTargets(targets);
+  }catch(e){
+    document.getElementById('btc-daily').innerHTML='<div class="empty">Could not fetch BTC markets.</div>';
+    document.getElementById('btc-weekly').innerHTML='<div class="empty">Could not fetch BTC markets.</div>';
+    document.getElementById('btc-targets').innerHTML='<div class="empty">Could not fetch BTC markets.</div>';
+  }
+}
+function renderBtcSection(elId,market,period){
+  const el=document.getElementById(elId);
+  if(!market){el.innerHTML='<div class="empty">No '+period+' BTC directional market found.</div>';return;}
+  let yesP=50;try{const op=JSON.parse(market.outcomePrices||'[]');yesP=Math.round((+(op[0]||0.5))*100);}catch(e){}
+  const vol=+(market.volume24hr||market.volume||0);const volStr=vol>=1e6?'$'+(vol/1e6).toFixed(1)+'M':vol>=1e3?'$'+(vol/1e3).toFixed(0)+'k':'$'+Math.round(vol);
+  const end=market.endDate||market.end_date_iso?new Date(market.endDate||market.end_date_iso).getTime():0;
+  const remain=end?end-Date.now():0;
+  const timeStr=remain>86400000?Math.floor(remain/86400000)+'d '+Math.floor((remain%86400000)/3600000)+'h':remain>0?Math.floor(remain/3600000)+'h '+Math.floor((remain%3600000)/60000)+'m':'—';
+  // Whale bets
+  const q=(market.question||market.title||'').toLowerCase();
+  const whaleBets=[];S.activity.forEach(a=>{if((a.market||'').toLowerCase().includes(q.slice(0,25).toLowerCase()))whaleBets.push({name:a.name,side:a.side,outcome:a.outcome,size:a.size,price:a.price});});
+  let whaleHtml='';if(whaleBets.length){whaleHtml='<div style="margin-top:8px"><div style="font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px">Whale bets</div>'+whaleBets.map(wb=>`<div style="font-size:11px;margin-bottom:3px;line-height:1.5">${betLine(wb.name,wb.outcome,'',wb.price||0.5,wb.size)}</div>`).join('')+'</div>';}
+  const aiId='btc-ai-'+period;
+  const cacheKey='btc_'+period;
+  const cached=claudeCached(cacheKey);
+  const analyzeBlock=cached
+    ? `<div class="pw-says"><div class="pw-says-lbl">PolyWatch says <span class="live-badge">🔍 live</span></div><div class="pw-says-body" id="${aiId}">${renderMd(cached)}</div></div>`
+    : `<div class="pw-says collapsed"><div class="pw-says-lbl">PolyWatch says <span class="live-badge">🔍 live</span></div><button class="btn-analyze" data-period="${period}">Analyze ▸</button><div class="pw-says-body" id="${aiId}" style="display:none"></div></div>`;
+  el.innerHTML=`
+    <div style="font-size:15px;font-weight:600;font-family:var(--sans);line-height:1.35;margin-bottom:10px">${market.question||market.title}</div>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+      <span class="pct-yes" style="min-width:64px">UP ${yesP}%</span>
+      <div class="con-bar" style="flex:1"><div class="cony" style="width:${yesP}%"></div><div class="conn" style="width:${100-yesP}%"></div></div>
+      <span class="pct-no" style="min-width:74px">DOWN ${100-yesP}%</span>
+    </div>
+    <div style="display:flex;gap:12px;font-size:11px;color:var(--text2)">
+      <span>Vol: <strong style="color:var(--text)">${volStr}</strong></span>
+      ${remain>0?`<span class="countdown">${timeStr}</span>`:''}
+    </div>
+    ${whaleHtml}
+    ${analyzeBlock}`;
+  const btn=el.querySelector('.btn-analyze');
+  if(btn){
+    btn.addEventListener('click',async()=>{
+      btn.disabled=true;btn.textContent='Analyzing...';btn.classList.add('loading');
+      const ae=document.getElementById(aiId);
+      const whaleCtx=whaleBets.length?'Whale positions: '+whaleBets.map(wb=>`${wb.name} bet ${dirOf(wb.outcome)} $${wb.size}`).join(', '):'No tracked whale activity on this market.';
+      const priceCtx=_btcPrice?'Current BTC price: $'+_btcPrice.toLocaleString()+'. ':'';
+      const trendDir=_btcPrev&&_btcPrice&&_btcPrev!==_btcPrice?(_btcPrice>_btcPrev?'Price trending up.':'Price trending down.'):'';
+      const prompt=`You are a Bitcoin directional betting analyst. Use web_search to research the latest Bitcoin news, Fed/macro events, and price action before answering.\n\n${priceCtx}${trendDir}\nMarket: "${market.question||market.title}"\nYES (Up) odds: ${yesP}% / NO (Down) odds: ${100-yesP}%\nVolume: ${volStr}\nTime remaining: ${timeStr}\n${whaleCtx}\n\nYour response MUST begin with exactly one of: **BET YES**, **BET NO**, or **SKIP** as the very first words (in bold markdown). Then in one or two sentences explain your confidence level and reasoning, citing any relevant news.`;
+      // BTC ONLY: web_search on + Sonnet model
+      const txt=await askClaude(cacheKey,prompt,{model:'claude-sonnet-4-20250514',web_search:true,max_tokens:500});
+      if(ae){ae.innerHTML=renderMd(txt);ae.style.display='block';}
+      btn.style.display='none';
+      btn.parentElement.classList.remove('collapsed');
+    });
+  }
+}
+function renderBtcTargets(targets){
+  const el=document.getElementById('btc-targets');
+  if(!targets.length){el.innerHTML='<div class="empty">No active BTC price target markets found.</div>';return;}
+  el.innerHTML=targets.map(m=>{
+    let yesP=50;try{const op=JSON.parse(m.outcomePrices||'[]');yesP=Math.round((+(op[0]||0.5))*100);}catch(e){}
+    const vol=+(m.volume24hr||m.volume||0);const volStr=vol>=1e6?'$'+(vol/1e6).toFixed(1)+'M':vol>=1e3?'$'+(vol/1e3).toFixed(0)+'k':'$'+Math.round(vol);
+    const q=(m.question||m.title||'');
+    // Extract price target from question
+    const priceMatch=q.match(/\$?([\d,]+(?:\.\d+)?)\s*k?/i);let target=0;if(priceMatch){target=parseFloat(priceMatch[1].replace(/,/g,''));if(target<1000)target*=1000;}
+    const aboveBelow=_btcPrice&&target?(_btcPrice>=target?'<span style="color:var(--green);font-size:10px">● above</span>':'<span style="color:var(--red);font-size:10px">● below</span>'):'';
+    return`<div class="row">
+      <div style="flex:1;min-width:0">
+        <div style="font-size:12px;font-weight:500;margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${q}</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:11px;color:var(--text2)">
+          <span>YES ${yesP}%</span><span>Vol: ${volStr}</span>${aboveBelow}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── TABS ─────────────────────────────────────────────────────
+function goTab(id,btn){
+  document.querySelectorAll('.tp').forEach(e=>e.classList.remove('on'));document.querySelectorAll('.nt').forEach(b=>b.classList.remove('on'));
+  document.getElementById('tp-'+id).classList.add('on');if(btn)btn.classList.add('on');
+  if(id==='queue'){renderQ();renderQStats();}
+  if(id==='whales'){renderFeed();renderLB();}
+  if(id==='reco'){renderRecs();renderCon();renderRecStats();renderLearnStat();}
+  if(id==='positions'){renderPositions();S.newResolutions=0;document.getElementById('nb-r').style.display='none';}
+  if(id==='bets'){if(C.myWallet){document.getElementById('b-empty').style.display='none';document.getElementById('b-content').style.display='block';fetchPortfolio(C.myWallet);}else{document.getElementById('b-empty').style.display='block';document.getElementById('b-content').style.display='none';}}
+  if(id==='hotbets'){fetchHotBets();startHotBetsRefresh();}
+  if(id==='btc'){initBtcPrice();fetchBtcMarkets();}
+}
+
+// ── STORAGE ──────────────────────────────────────────────────
+function saveLS(){try{localStorage.setItem('pwc3',JSON.stringify(C));localStorage.setItem('pws3',JSON.stringify({wallets:S.wallets,seenT:[...S.seenT].slice(-500),seenI:[...S.seenI].slice(-200),execHistory:S.execHistory.slice(0,50),betLog:S.betLog.slice(0,100),openPositions:S.openPositions,resolvedPositions:S.resolvedPositions.slice(0,50),whaleScores:S.whaleScores,mktOutcomes:S.mktOutcomes,totalTracked:S.totalTracked,deployedTotal:S.deployedTotal,execCount:S.execCount,myWins:S.myWins,myLosses:S.myLosses,myPnl:S.myPnl,myPF:S.myPF,catStats:S.catStats,todayPnl:S.todayPnl}));}catch(e){}}
+function loadLS(){try{const c=localStorage.getItem('pwc3');if(c)Object.assign(C,JSON.parse(c));const ss=localStorage.getItem('pws3');if(ss){const d=JSON.parse(ss);Object.assign(S,{wallets:d.wallets||[],seenT:new Set(d.seenT||[]),seenI:new Set(d.seenI||[]),execHistory:d.execHistory||[],betLog:d.betLog||[],openPositions:d.openPositions||[],resolvedPositions:d.resolvedPositions||[],whaleScores:d.whaleScores||{},mktOutcomes:d.mktOutcomes||{},totalTracked:d.totalTracked||0,deployedTotal:d.deployedTotal||0,execCount:d.execCount||0,myWins:d.myWins||0,myLosses:d.myLosses||0,myPnl:d.myPnl||0,myPF:d.myPF||0,catStats:d.catStats||{},todayPnl:d.todayPnl||0});}}catch(e){}}
+function applyUI(){document.getElementById('s-br').value=C.bankroll;document.getElementById('s-mw').value=C.minWhale;document.getElementById('s-mi').value=C.minInsider;document.getElementById('s-mt').value=C.insMaxTrades;document.getElementById('s-po').value=C.pollMin;document.getElementById('s-cp').value=C.copyPct;document.getElementById('s-mx').value=C.maxTrade;document.getElementById('s-md').value=C.maxDaily;document.getElementById('s-dc').value=C.maxDailyCount;document.getElementById('s-t1w').value=C.t1Wr;document.getElementById('s-t1b').value=C.t1Bets;document.getElementById('s-t2w').value=C.t2Wr;document.getElementById('s-t2b').value=C.t2Bets;document.getElementById('s-mxw').value=C.maxWL;document.getElementById('s-wh').value=C.webhook;document.getElementById('s-myw').value=C.myWallet;document.getElementById('s-wr-amt').value=C.withdrawReminder;}
+
+// ── POLL ─────────────────────────────────────────────────────
+async function poll(){
+  await fetchLB();
+  for(const w of S.wallets.filter(x=>x.active&&x.addr))await fetchAct(w);
+  await detectIns();
+  await checkResolutions();
+  renderFeed();renderRecs();renderCon();renderLearnStat();renderRecStats();renderQStats();renderExecHist();renderPositions();updateBadges();setStatus();saveLS();
+}
+async function doRefresh(){clearInterval(S.pollTimer);clearInterval(S.resolutionTimer);showToast('Refreshing','Fetching latest whale data...','info');await poll();restartPoll();}
+function restartPoll(){clearInterval(S.pollTimer);clearInterval(S.resolutionTimer);S.pollTimer=setInterval(poll,C.pollMin*60000);S.resolutionTimer=setInterval(checkResolutions,120000);/* check resolutions every 2 min */}
+
+// ── BOOT ─────────────────────────────────────────────────────
+(async function(){
+  loadLS();applyUI();setStatus();
+  // Pre-load Travis's real wallet if not already set
+  if(!C.myWallet){C.myWallet=MY_WALLET;document.getElementById('s-myw').value=MY_WALLET;saveLS();}
+  S.notifGranted=Notification.permission==='granted';
+  document.getElementById('notif-btn').textContent=S.notifGranted?'🔔 On':'🔔';
+  renderLearnStat();renderQStats();renderExecHist();updateBadges();renderRecs();renderCon();renderRecStats();renderPositions();
+  if(C.myWallet){document.getElementById('b-empty').style.display='none';document.getElementById('b-content').style.display='block';fetchPortfolio(C.myWallet);}
+  await poll();restartPoll();
+})();
+</script>
+</body>
+</html>
