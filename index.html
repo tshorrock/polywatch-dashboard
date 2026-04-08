@@ -544,10 +544,17 @@ async function loadWhalePositions(addr){
     if(!r.ok)throw 0;
     const raw=await r.json();
     const arr=Array.isArray(raw)?raw:(raw.data||[]);
-    if(!arr.length){container.innerHTML='<div style="font-size:10px;color:var(--text2);padding:4px">No open positions</div>';container.dataset.loaded='1';return;}
+    if(!arr.length){container.innerHTML='<div style="font-size:10px;color:var(--text2);padding:4px">No active open positions</div>';container.dataset.loaded='1';return;}
+    // Filter out stale/resolved positions (settled at 0 or 1, zero size, or outside active trading range)
+    const active=arr.filter(p=>{
+      const cp=+(p.curPrice||p.currentPrice||p.avgPrice||0);
+      const sz=+(p.size||0);
+      return sz>0&&cp>0.02&&cp<0.98;
+    });
+    if(!active.length){container.innerHTML='<div style="font-size:10px;color:var(--text2);padding:4px">No active open positions</div>';container.dataset.loaded='1';return;}
     // Sort by size descending
-    arr.sort((a,b)=>(+b.size||0)-(+a.size||0));
-    container.innerHTML='<div class="whale-pos">'+arr.slice(0,10).map(p=>{
+    active.sort((a,b)=>(+b.size||0)-(+a.size||0));
+    container.innerHTML='<div class="whale-pos">'+active.slice(0,10).map(p=>{
       const d=dirOf(p.outcome!=null?p.outcome:(p.outcomeIndex===0?'YES':'NO'));
       const sz=+(p.size||0)*+(p.avgPrice||p.curPrice||0.5);
       const cp=+(p.curPrice||p.currentPrice||p.avgPrice||0.5);
