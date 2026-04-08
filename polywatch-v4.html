@@ -645,9 +645,9 @@ function buildRecs(){
 async function fetchLB(){
   const p=document.getElementById('lbp').value;let ws=null;
   try{
-    // Map dropdown values → API window param: all, 1m, 1w
-    const wp=p==='1m'?'1m':p==='7d'?'1w':'all';
-    const r=await fetch(`https://polywatch-api-production.up.railway.app/proxy/leaderboard?window=${wp}&limit=20&orderBy=pnl`);
+    // Upstream /v1/leaderboard silently ignores window=*; the real param is timePeriod=ALL|MONTH|WEEK|DAY with orderBy=PNL.
+    const tp=p==='1m'?'MONTH':(p==='7d'||p==='1w')?'WEEK':'ALL';
+    const r=await fetch(`https://polywatch-api-production.up.railway.app/proxy/leaderboard?timePeriod=${tp}&limit=20&orderBy=PNL`);
     if(!r.ok)throw 0;const raw=await r.json();const arr=Array.isArray(raw)?raw:(raw.data||raw.users||[]);
     if(arr.length){
       ws=arr.map((u,i)=>{const addr=(u.proxyWallet||u.proxyAddress||u.address||'').toLowerCase();const nm=u.userName||u.name||u.username||(addr?addr.slice(0,6)+'...'+addr.slice(-4):'Anon'+(i+1));return{rank:+u.rank||i+1,name:nm,addr:addr,pnl:+u.pnl||0,vol:+u.vol||+u.volume||0,wins:0,total:150,wr:65,streak:[],active:false,verified:!!u.verifiedBadge};});
