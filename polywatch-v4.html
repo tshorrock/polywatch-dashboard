@@ -41,7 +41,7 @@
   --r:8px;--rl:14px;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-html,body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13px;min-height:100vh;-webkit-font-smoothing:antialiased;}
+html,body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:15px;min-height:100vh;-webkit-font-smoothing:antialiased;}
 body{padding-bottom:58px;}
 ::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:var(--bg2);}::-webkit-scrollbar-thumb{background:var(--border2);}
 
@@ -58,7 +58,7 @@ body{padding-bottom:58px;}
 /* NAVIGATION — cyan underline on active */
 .nav{position:sticky;top:53px;z-index:99;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;overflow-x:auto;scrollbar-width:none;padding:0 8px;}
 .nav::-webkit-scrollbar{display:none;}
-.nt{flex-shrink:0;padding:13px 18px;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);background:transparent;border:none;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s;font-family:var(--mono);}
+.nt{flex-shrink:0;padding:13px 18px;font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);background:transparent;border:none;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s;font-family:var(--mono);}
 .nt:hover{color:var(--text2);}
 .nt.on{color:var(--cyan);border-bottom-color:var(--cyan);}
 .nb{display:inline-block;background:var(--red);color:#fff;font-size:9px;font-weight:700;padding:1px 6px;border-radius:100px;margin-left:5px;vertical-align:middle;animation:pu 1.5s infinite;}
@@ -73,13 +73,13 @@ body{padding-bottom:58px;}
 
 /* CARDS — contained units, 20px padding */
 .card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:20px;margin-bottom:14px;}
-.ct{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.ct{font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:8px;}
 .ca{color:var(--cyan);}
 
 /* STAT CARDS — amount biggest, label small */
 .sc{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;}
 .sl{font-size:9px;color:var(--text3);margin-bottom:6px;text-transform:uppercase;letter-spacing:.1em;font-weight:600;}
-.sv{font-size:26px;font-weight:700;font-family:var(--display);letter-spacing:.02em;line-height:1;}
+.sv{font-size:30px;font-weight:700;font-family:var(--display);letter-spacing:.02em;line-height:1;}
 .ss{font-size:10px;color:var(--text3);margin-top:4px;}
 
 /* LEADERBOARD ROWS — rank 32px bold, name 16px, PnL 20px */
@@ -104,7 +104,7 @@ body{padding-bottom:58px;}
 .dir-inline.no{color:#fb7185;}
 
 /* Whale position collapsible */
-.whale-pos{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;margin-top:8px;font-size:11px;}
+.whale-pos{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;margin-top:8px;font-size:13px;}
 .whale-pos-row{display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:1px solid var(--border);}
 .whale-pos-row:last-child{border-bottom:none;}
 .whale-pos-link{display:block;color:var(--cyan);text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;}
@@ -190,10 +190,10 @@ body{padding-bottom:58px;}
 .live-badge{font-size:9px;background:var(--cdim);color:var(--cyan);border:1px solid var(--cmid);padding:1px 6px;border-radius:100px;font-weight:600;letter-spacing:.05em;text-transform:none;}
 
 /* INPUTS — cyan focus */
-.inp{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-family:var(--mono);font-size:12px;padding:9px 12px;margin-bottom:10px;}
+.inp{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-family:var(--mono);font-size:14px;padding:10px 13px;margin-bottom:10px;}
 .inp:focus{outline:none;border-color:var(--cyan);}
 select.inp{cursor:pointer;}
-.lbl{font-size:10px;color:var(--text3);margin-bottom:5px;display:block;text-transform:uppercase;letter-spacing:.08em;font-weight:600;}
+.lbl{font-size:12px;color:var(--text3);margin-bottom:5px;display:block;text-transform:uppercase;letter-spacing:.08em;font-weight:600;}
 .szinp{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-family:var(--mono);font-size:13px;padding:6px 10px;width:90px;}
 .szinp:focus{outline:none;border-color:var(--cyan);}
 
@@ -217,7 +217,7 @@ select.inp{cursor:pointer;}
 .meta-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:600;}
 
 /* BIG NUMBER (leaderboard PnL etc) */
-.big-num{font-family:var(--display);font-size:22px;font-weight:700;letter-spacing:.02em;line-height:1;}
+.big-num{font-family:var(--display);font-size:26px;font-weight:700;letter-spacing:.02em;line-height:1;}
 
 @media(max-width:600px){.nav{position:fixed;bottom:0;top:auto;border-top:1px solid var(--border);border-bottom:none;}body{padding-bottom:56px;}.page{padding:14px;}.dir-big{font-size:30px;}}
 </style>
@@ -564,7 +564,7 @@ async function loadWhalePositions(addr){
       const slug=p.eventSlug||p.slug||title.toLowerCase().replace(/[^a-z0-9\s-]/g,'').trim().replace(/\s+/g,'-').slice(0,80);
       const href=`https://polymarket.com/event/${slug}`;
       const safeTitle=short.replace(/"/g,'&quot;');
-      return`<div class="whale-pos-row"><div style="flex:1;min-width:0"><a href="${href}" target="_blank" rel="noopener" class="whale-pos-link" title="${safeTitle}">${short}</a><div style="color:var(--text2);font-size:10px">bet ${dirInline(d)} · ${f$(sz)} · now ${Math.round(cp*100)}¢</div></div></div>`;
+      return`<div class="whale-pos-row"><div style="flex:1;min-width:0"><a href="${href}" target="_blank" rel="noopener" class="whale-pos-link" title="${safeTitle}">${short}</a><div style="color:var(--text2);font-size:12px">bet ${dirInline(d)} · ${f$(sz)} · now ${Math.round(cp*100)}¢</div></div></div>`;
     }).join('')+'</div>';
     container.dataset.loaded='1';
   }catch(e){container.innerHTML='<div style="font-size:10px;color:var(--red);padding:4px">Failed to load</div>';}
@@ -852,7 +852,7 @@ function renderLB(){
       <div class="rk ${w.rank<=3?'top':''}">${w.rank}</div>
       <div style="flex:1;min-width:0">
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px">
-          <strong style="font-size:16px;font-family:var(--sans);letter-spacing:.01em">${w.name}</strong>${ttag(ti)}${act?'<span class="tag tg-b" style="font-size:9px">watching</span>':''}
+          <strong style="font-size:18px;font-family:var(--sans);letter-spacing:.01em">${w.name}</strong>${ttag(ti)}${act?'<span class="tag tg-b" style="font-size:9px">watching</span>':''}
         </div>
         <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
           <span class="big-num" style="color:var(--green)">${f$(w.pnl)}</span>
