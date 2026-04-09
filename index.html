@@ -437,7 +437,7 @@ select.inp{cursor:pointer;}
         <label class="lbl">Max insider lifetime trades — <strong style="color:var(--amber)">8 rec.</strong></label>
         <input class="inp" id="s-mt" type="number" value="8">
         <label class="lbl">Poll interval (minutes)</label>
-        <input class="inp" id="s-po" type="number" value="5">
+        <input class="inp" id="s-po" type="number" value="60">
       </div>
     </div>
   </div>
@@ -475,7 +475,7 @@ select.inp{cursor:pointer;}
 
 <script>
 // ── CONFIG ──────────────────────────────────────────────────
-const DEF={bankroll:2000,minWhale:500,minInsider:2000,insMaxTrades:8,pollMin:5,copyPct:20,maxTrade:750,maxDaily:2000,maxDailyCount:4,t1Wr:72,t1Bets:250,t2Wr:65,t2Bets:125,cutWr:60,cutBets:75,maxWL:12,webhook:'',myWallet:'',withdrawReminder:200};
+const DEF={bankroll:2000,minWhale:500,minInsider:2000,insMaxTrades:8,pollMin:60,copyPct:20,maxTrade:750,maxDaily:2000,maxDailyCount:4,t1Wr:72,t1Bets:250,t2Wr:65,t2Bets:125,cutWr:60,cutBets:75,maxWL:12,webhook:'',myWallet:'',withdrawReminder:200};
 let C={...DEF};
 
 // ── STATE ───────────────────────────────────────────────────
