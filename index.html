@@ -550,7 +550,8 @@ async function loadWhalePositions(addr){
     const active=arr.filter(p=>{
       const cp=+(p.curPrice||p.currentPrice||p.avgPrice||0);
       const sz=+(p.size||0);
-      return sz>0&&cp>0.02&&cp<0.98;
+      // Hide resolved/near-resolved: 0¢-1¢ and 99¢-100¢ indicate settled markets
+      return sz>0&&cp>0.01&&cp<0.99;
     });
     if(!active.length){container.innerHTML='<div style="font-size:10px;color:var(--text2);padding:4px">No active open positions</div>';container.dataset.loaded='1';return;}
     // Sort by size descending
