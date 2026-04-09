@@ -278,7 +278,7 @@ select.inp{cursor:pointer;}
 <div id="tp-whales" class="tp page">
   <div id="cull-area"></div>
   <div class="card">
-    <div class="ct"><span><span class="ca">◉</span> Live trade feed</span><span id="fn" style="font-size:10px;color:var(--text2)"></span></div>
+    <div class="ct"><span><span class="ca">◉</span> Live trade feed</span><span style="display:flex;align-items:center;gap:8px"><span id="fn" style="font-size:10px;color:var(--text2)"></span><button class="btn bsm" onclick="clearOldTrades()" title="Remove trades older than 24h">Clear Old</button></span></div>
     <div id="wfeed"><div class="skel" style="margin-bottom:8px"></div><div class="skel" style="width:70%"></div></div>
   </div>
   <div class="card">
@@ -873,6 +873,20 @@ function renderLB(){
   }).join('');
 }
 
+// Remove trades older than a given age (ms) from S.activity and save
+function purgeOldTrades(maxAgeMs){
+  const cutoff=Date.now()-maxAgeMs;
+  const before=S.activity.length;
+  S.activity=S.activity.filter(t=>t.ts>=cutoff);
+  if(S.activity.length!==before)saveLS();
+  return before-S.activity.length;
+}
+// Manual button: flush entries older than 24h
+function clearOldTrades(){
+  const n=purgeOldTrades(24*3600000);
+  renderFeed();
+  showToast('Feed cleaned',n?n+' old trade'+(n>1?'s':'')+' removed':'No trades older than 24h','info');
+}
 function renderFeed(){
   const el=document.getElementById('wfeed');const items=S.activity;
   document.getElementById('fn').textContent=S.apiLive?'Live · '+S.tradeCount+' signals today':'Connecting — polls every '+C.pollMin+'min';
@@ -1389,6 +1403,8 @@ function applyUI(){document.getElementById('s-br').value=C.bankroll;document.get
 
 // ── POLL ─────────────────────────────────────────────────────
 async function poll(){
+  // Auto-purge trades older than 48h each poll cycle
+  purgeOldTrades(48*3600000);
   await fetchLB();
   for(const w of S.wallets.filter(x=>x.active&&x.addr))await fetchAct(w);
   await detectIns();
