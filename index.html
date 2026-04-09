@@ -695,7 +695,9 @@ async function fetchAct(w){
       const trade={id,name:w.name,rank:w.rank,market:a.title||a.market||'Unknown',side:sideRaw,outcome:outcomeNorm,size:sz,price:+(a.price||.5),entryPrice:+(a.price||.5),ts:a.timestamp?+a.timestamp*1000:Date.now(),conditionId:a.conditionId||a.marketId||''};
       S.activity.unshift(trade);S.tradeCount++;addToQ(trade);
     });
-    S.activity=S.activity.slice(0,60);
+    // Cap at 50, dropping oldest (end of array) first
+    if(S.activity.length>50)S.activity.length=50;
+    saveLS();
   }catch(e){}
 }
 
@@ -716,9 +718,11 @@ async function detectIns(){
         if(hist.length<=C.insMaxTrades){S.seenI.add(k);S.insiders.unshift({id:k,name:addr.slice(0,6)+'...'+addr.slice(-4),trades:hist.length,market:t.title||t.market||'Unknown market',side:t.side||'BUY',outcome:t.outcome||'YES',size:sz,price:+(t.price||.5),ts:t.timestamp?+t.timestamp*1000:Date.now(),cat:cat(t.title||t.market||''),conf:hist.length<=3?'HIGH':hist.length<=6?'MEDIUM':'LOW'});}
       }catch(e){}
     }
+    // Cap at 50, dropping oldest (end of array) first
+    if(S.insiders.length>50)S.insiders.length=50;
     if(!S.insiders.length){renderInsEmpty();}
-  }catch(e){renderInsEmpty();}
-  renderIns();updateBadges();
+  }catch(e){if(!S.insiders.length)renderInsEmpty();}
+  renderIns();updateBadges();saveLS();
 }
 
 // ── RESOLUTION ENGINE ─────────────────────────────────────────
@@ -939,10 +943,14 @@ function renderInsEmpty(){document.getElementById('ins-list').innerHTML='<div cl
 
 function renderLBEmpty(){document.getElementById('lb-list').innerHTML='<div class="empty">Could not reach Polymarket leaderboard API — retrying next poll</div>';}
 
+function dismissIns(id){
+  S.insiders=S.insiders.filter(x=>x.id!==id);
+  renderIns();updateBadges();saveLS();
+}
 function renderIns(){
   const el=document.getElementById('ins-list');document.getElementById('i-tr').textContent=C.insMaxTrades;document.getElementById('i-sz').textContent='$'+C.minInsider.toLocaleString();
   if(!S.insiders.length){renderInsEmpty();return;}
-  el.innerHTML=S.insiders.slice(0,6).map(t=>`
+  el.innerHTML=S.insiders.map(t=>`
     <div class="ins-card fade">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px">
         <div style="flex:1">
@@ -950,18 +958,21 @@ function renderIns(){
             <span class="tag tg-ins">ANOMALY</span>
             <span class="tag ${t.conf==='HIGH'?'tg-hi':'tg-md'}">${t.conf}</span>
             <span class="tag ${t.side==='BUY'?'tg-b':'tg-s'}">${t.side}</span>
-            <span class="tag ${t.outcome==='YES'?'tg-y':'tg-n'}">${t.outcome}</span>
+            ${dirTag(t.outcome)}
             <span style="font-size:10px;padding:1px 7px;border-radius:100px;background:var(--pdim);color:var(--purple);border:1px solid rgba(167,139,250,.2)">${t.cat}</span>
           </div>
           <div style="font-size:14px;font-weight:600;font-family:var(--sans);line-height:1.4;margin-bottom:4px">${t.market}</div>
-          <div style="font-size:11px;color:var(--text2)">Wallet ${t.name} · <strong style="color:${t.trades<=3?'var(--red)':'var(--amber)'}">${t.trades} lifetime trade${t.trades===1?'':'s'}</strong> · ${ft(t.ts)}</div>
+          <div style="font-size:12px;color:var(--text2)">Wallet ${t.name} · <strong style="color:${t.trades<=3?'var(--red)':'var(--amber)'}">${t.trades} lifetime trade${t.trades===1?'':'s'}</strong> · ${ft(t.ts)}</div>
         </div>
         <div style="text-align:right;flex-shrink:0">
           <div style="font-size:22px;font-weight:700;font-family:var(--sans);color:var(--purple)">${f$(t.size)}</div>
-          <div style="font-size:11px;color:var(--text2)">@ ${Math.round(t.price*100)}¢</div>
+          <div style="font-size:12px;color:var(--text2)">@ ${Math.round(t.price*100)}¢</div>
         </div>
       </div>
-      <button class="btn bsm" style="border-color:rgba(167,139,250,.4);color:var(--purple)" onclick="insToQ('${t.id}')">Add to approval queue →</button>
+      <div style="display:flex;gap:8px">
+        <button class="btn bsm" style="border-color:rgba(167,139,250,.4);color:var(--purple)" onclick="insToQ('${t.id}')">Add to queue →</button>
+        <button class="btn bsm" style="border-color:var(--border2);color:var(--text3)" onclick="dismissIns('${t.id}')">Dismiss</button>
+      </div>
     </div>`).join('');
 }
 
@@ -1367,8 +1378,13 @@ function goTab(id,btn){
 }
 
 // ── STORAGE ──────────────────────────────────────────────────
-function saveLS(){try{localStorage.setItem('pwc3',JSON.stringify(C));localStorage.setItem('pws3',JSON.stringify({wallets:S.wallets,seenT:[...S.seenT].slice(-500),seenI:[...S.seenI].slice(-200),execHistory:S.execHistory.slice(0,50),betLog:S.betLog.slice(0,100),openPositions:S.openPositions,resolvedPositions:S.resolvedPositions.slice(0,50),whaleScores:S.whaleScores,mktOutcomes:S.mktOutcomes,totalTracked:S.totalTracked,deployedTotal:S.deployedTotal,execCount:S.execCount,myWins:S.myWins,myLosses:S.myLosses,myPnl:S.myPnl,myPF:S.myPF,catStats:S.catStats,todayPnl:S.todayPnl}));}catch(e){}}
-function loadLS(){try{const c=localStorage.getItem('pwc3');if(c)Object.assign(C,JSON.parse(c));const ss=localStorage.getItem('pws3');if(ss){const d=JSON.parse(ss);Object.assign(S,{wallets:d.wallets||[],seenT:new Set(d.seenT||[]),seenI:new Set(d.seenI||[]),execHistory:d.execHistory||[],betLog:d.betLog||[],openPositions:d.openPositions||[],resolvedPositions:d.resolvedPositions||[],whaleScores:d.whaleScores||{},mktOutcomes:d.mktOutcomes||{},totalTracked:d.totalTracked||0,deployedTotal:d.deployedTotal||0,execCount:d.execCount||0,myWins:d.myWins||0,myLosses:d.myLosses||0,myPnl:d.myPnl||0,myPF:d.myPF||0,catStats:d.catStats||{},todayPnl:d.todayPnl||0});}}catch(e){}}
+function saveLS(){try{localStorage.setItem('pwc3',JSON.stringify(C));localStorage.setItem('pws3',JSON.stringify({wallets:S.wallets,seenT:[...S.seenT].slice(-500),seenI:[...S.seenI].slice(-200),insiders:S.insiders.slice(0,50),activity:S.activity.slice(0,50),execHistory:S.execHistory.slice(0,50),betLog:S.betLog.slice(0,100),openPositions:S.openPositions,resolvedPositions:S.resolvedPositions.slice(0,50),whaleScores:S.whaleScores,mktOutcomes:S.mktOutcomes,totalTracked:S.totalTracked,deployedTotal:S.deployedTotal,execCount:S.execCount,myWins:S.myWins,myLosses:S.myLosses,myPnl:S.myPnl,myPF:S.myPF,catStats:S.catStats,todayPnl:S.todayPnl}));}catch(e){}}
+function loadLS(){try{const c=localStorage.getItem('pwc3');if(c)Object.assign(C,JSON.parse(c));const ss=localStorage.getItem('pws3');if(ss){const d=JSON.parse(ss);Object.assign(S,{wallets:d.wallets||[],seenT:new Set(d.seenT||[]),seenI:new Set(d.seenI||[]),insiders:d.insiders||[],activity:d.activity||[],execHistory:d.execHistory||[],betLog:d.betLog||[],openPositions:d.openPositions||[],resolvedPositions:d.resolvedPositions||[],whaleScores:d.whaleScores||{},mktOutcomes:d.mktOutcomes||{},totalTracked:d.totalTracked||0,deployedTotal:d.deployedTotal||0,execCount:d.execCount||0,myWins:d.myWins||0,myLosses:d.myLosses||0,myPnl:d.myPnl||0,myPF:d.myPF||0,catStats:d.catStats||{},todayPnl:d.todayPnl||0});
+  // Rebuild seenI from restored insiders so detectIns doesn't re-add them
+  S.insiders.forEach(i=>{if(i.id)S.seenI.add(i.id);});
+  // Rebuild seenT from restored activity
+  S.activity.forEach(a=>{if(a.id)S.seenT.add(a.id);});
+  }}catch(e){}}
 function applyUI(){document.getElementById('s-br').value=C.bankroll;document.getElementById('s-mw').value=C.minWhale;document.getElementById('s-mi').value=C.minInsider;document.getElementById('s-mt').value=C.insMaxTrades;document.getElementById('s-po').value=C.pollMin;document.getElementById('s-cp').value=C.copyPct;document.getElementById('s-mx').value=C.maxTrade;document.getElementById('s-md').value=C.maxDaily;document.getElementById('s-dc').value=C.maxDailyCount;document.getElementById('s-t1w').value=C.t1Wr;document.getElementById('s-t1b').value=C.t1Bets;document.getElementById('s-t2w').value=C.t2Wr;document.getElementById('s-t2b').value=C.t2Bets;document.getElementById('s-mxw').value=C.maxWL;document.getElementById('s-wh').value=C.webhook;document.getElementById('s-myw').value=C.myWallet;document.getElementById('s-wr-amt').value=C.withdrawReminder;}
 
 // ── POLL ─────────────────────────────────────────────────────
