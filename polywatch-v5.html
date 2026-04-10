@@ -33,7 +33,7 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--mono);font-si
 /* HEADER 48px */
 .hdr{height:48px;flex-shrink:0;background:var(--bg2);border-bottom:1px solid var(--border);padding:0 20px;display:flex;align-items:center;gap:12px;z-index:100;}
 .logo{font-family:var(--display);font-size:22px;font-weight:700;color:var(--cyan);letter-spacing:.06em;text-transform:uppercase;}
-.vtag{font-size:8px;padding:2px 6px;border-radius:100px;background:var(--cdim);color:var(--cyan);border:1px solid var(--cmid);letter-spacing:.1em;text-transform:uppercase;}
+.vtag{font-size:11px;padding:2px 6px;border-radius:100px;background:var(--cdim);color:var(--cyan);border:1px solid var(--cmid);letter-spacing:.1em;text-transform:uppercase;}
 .hdr-center{flex:1;display:flex;align-items:center;justify-content:center;gap:10px;}
 .hdr-right{display:flex;align-items:center;gap:8px;}
 .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
@@ -48,18 +48,18 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--mono);font-si
 .nt{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;padding:0 10px;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text3);background:transparent;border:none;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;transition:all .12s;font-family:var(--mono);}
 .nt:hover{color:var(--text2);background:rgba(255,255,255,.015);}
 .nt.on{color:var(--cyan);border-bottom-color:var(--cyan);}
-.nb{display:inline-block;background:var(--red);color:#fff;font-size:8px;font-weight:700;padding:1px 5px;border-radius:100px;animation:pu 1.5s infinite;}
+.nb{display:inline-block;background:var(--red);color:#fff;font-size:11px;font-weight:700;padding:1px 5px;border-radius:100px;animation:pu 1.5s infinite;}
 
 /* CONTENT */
 .pw-content{flex:1;overflow-y:auto;overflow-x:hidden;}
-.page{width:100%;padding:20px;}
+.page{width:100%;padding:20px;max-width:1280px;margin:0 auto;}
 .tp{display:none;}.tp.on{display:block;}
 
 /* STAT ROW — always single horizontal row */
-.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;max-width:1280px;margin-left:auto;margin-right:auto;}
 .stat-pill{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:14px 16px;text-align:center;min-height:72px;display:flex;flex-direction:column;justify-content:center;}
-.stat-pill .stat-val{font-size:24px;font-weight:700;font-family:var(--display);line-height:1;margin-bottom:2px;letter-spacing:.02em;}
-.stat-pill .stat-lbl{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;font-weight:600;}
+.stat-pill .stat-val{font-size:26px;font-weight:700;font-family:var(--display);line-height:1;margin-bottom:2px;letter-spacing:.02em;}
+.stat-pill .stat-lbl{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:600;}
 
 /* UNIVERSAL 3-COL GRID */
 .ugrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
@@ -82,16 +82,16 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--mono);font-si
 .ct{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:8px;}
 .ca{color:var(--cyan);}
 .sc{background:var(--elevated);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;}
-.sl{font-size:9px;color:var(--text3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.1em;font-weight:600;}
+.sl{font-size:11px;color:var(--text3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.1em;font-weight:600;}
 .sv{font-size:26px;font-weight:700;font-family:var(--display);letter-spacing:.02em;line-height:1;}
-.ss{font-size:10px;color:var(--text3);margin-top:3px;}
+.ss{font-size:11px;color:var(--text3);margin-top:3px;}
 
 /* ROWS / TAGS / PILLS (all kept) */
 .row{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);}
 .row:last-child{border-bottom:none;}
 .rk{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;font-family:var(--display);flex-shrink:0;background:var(--elevated);border:1px solid var(--border);color:var(--text3);}
 .rk.top{background:var(--cdim);border-color:var(--cmid);color:var(--cyan);}
-.tag{display:inline-block;font-size:10px;font-weight:700;padding:3px 8px;border-radius:100px;letter-spacing:.03em;}
+.tag{display:inline-block;font-size:11px;font-weight:700;padding:3px 8px;border-radius:100px;letter-spacing:.03em;}
 .tg-b{background:var(--gdim);color:var(--green);border:1px solid var(--gmid);}
 .tg-s{background:var(--rdim);color:var(--red);border:1px solid var(--rmid);}
 .tg-y{background:rgba(16,185,129,.16);color:#34d399;border:1px solid rgba(16,185,129,.5);font-size:13px;font-weight:800;padding:4px 11px;letter-spacing:.06em;text-transform:uppercase;}
@@ -105,7 +105,7 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--mono);font-si
 .whale-pos-link{display:block;color:var(--cyan);text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;}.whale-pos-link:hover{text-decoration:underline;}
 .mkt-link{color:var(--cyan);text-decoration:none;font-weight:500;}.mkt-link:hover{text-decoration:underline;}
 .dismiss-x{background:none;border:none;color:var(--text3);font-size:16px;cursor:pointer;padding:2px 6px;line-height:1;border-radius:4px;font-family:var(--mono);}.dismiss-x:hover{color:var(--red);background:var(--rdim);}
-.whale-pos-toggle{cursor:pointer;color:var(--cyan);font-size:10px;text-transform:uppercase;letter-spacing:.08em;margin-top:8px;user-select:none;font-weight:600;}.whale-pos-toggle:hover{text-decoration:underline;}
+.whale-pos-toggle{cursor:pointer;color:var(--cyan);font-size:11px;text-transform:uppercase;letter-spacing:.08em;margin-top:8px;user-select:none;font-weight:600;}.whale-pos-toggle:hover{text-decoration:underline;}
 .tg-S{background:var(--cdim);color:var(--cyan);border:1px solid var(--cstrong);font-weight:700;}
 .tg-A{background:var(--cdim);color:var(--cyan);border:1px solid var(--cmid);}
 .tg-W{background:var(--gydim);color:var(--text2);border:1px solid var(--gymid);}
@@ -126,7 +126,7 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--mono);font-si
 .bento-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;}
 .bcard-market{font-size:15px;font-weight:600;color:#E5E5E5;line-height:1.35;margin-bottom:8px;}
 .bcard-market a{color:#E5E5E5;text-decoration:none;}.bcard-market a:hover{color:var(--cyan);}
-.bcard-meta{font-size:12px;color:#737373;line-height:1.5;}
+.bcard-meta{font-size:13px;color:#8892a8;line-height:1.5;}
 .bcard-nums{font-size:18px;font-weight:700;font-family:var(--mono);color:#fff;}
 .bcard-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
 .feed-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;}
@@ -140,7 +140,7 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--mono);font-si
 .pct-yes{font-size:12px;color:#34d399;font-weight:800;min-width:60px;}.pct-no{font-size:12px;color:#fb7185;font-weight:800;min-width:60px;text-align:right;}
 .wr-bar{height:7px;background:var(--elevated);border-radius:4px;overflow:hidden;width:68px;flex-shrink:0;}.wr-f{height:100%;border-radius:4px;}
 .streak-dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:2px;}
-.countdown{font-family:var(--mono);font-size:10px;color:var(--text2);background:var(--gydim);padding:2px 8px;border-radius:100px;border:1px solid var(--gymid);font-weight:600;}
+.countdown{font-family:var(--mono);font-size:11px;color:var(--text2);background:var(--gydim);padding:2px 8px;border-radius:100px;border:1px solid var(--gymid);font-weight:600;}
 .countdown.urgent{color:var(--amber);background:var(--adim);border-color:var(--amid);animation:pu 1s infinite;}
 .impact-warn{font-size:11px;color:var(--amber);background:var(--adim);border:1px solid var(--amid);border-radius:var(--r);padding:5px 10px;margin-top:6px;}
 .bankroll-bar{height:4px;background:var(--elevated);border-radius:2px;overflow:hidden;margin-top:5px;}.bankroll-fill{height:100%;border-radius:2px;background:var(--cyan);}
@@ -153,20 +153,20 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--mono);font-si
 .ba{border-color:var(--cmid);color:var(--cyan);}.ba:hover{background:var(--cdim);}
 .bg{border-color:var(--gmid);color:var(--green);}.bg:hover{background:var(--gdim);}
 .br{border-color:var(--rmid);color:var(--red);}
-.bsm{padding:3px 9px;font-size:10px;}
+.bsm{padding:4px 10px;font-size:11px;}
 .bfw{width:100%;text-align:center;}
-.btn-analyze{background:transparent;border:1px solid var(--cmid);color:var(--cyan);font-family:var(--mono);font-size:10px;font-weight:700;padding:7px 12px;border-radius:var(--r);cursor:pointer;letter-spacing:.06em;text-transform:uppercase;transition:all .12s;}
+.btn-analyze{background:transparent;border:1px solid var(--cmid);color:var(--cyan);font-family:var(--mono);font-size:11px;font-weight:700;padding:7px 12px;border-radius:var(--r);cursor:pointer;letter-spacing:.06em;text-transform:uppercase;transition:all .12s;}
 .btn-analyze:hover{background:var(--cdim);transform:scale(1.02);}.btn-analyze:active{transform:scale(.98);}
 .btn-analyze:disabled{cursor:not-allowed;}.btn-analyze.loading{color:var(--text3);border-color:var(--border2);animation:pu 1.5s infinite;}
 .pw-says{margin-top:12px;padding:12px 14px;background:var(--elevated);border-radius:var(--r);border:1px solid var(--border);border-left:3px solid var(--amber);}
-.pw-says-lbl{font-size:9px;color:var(--cyan);font-weight:700;margin-bottom:5px;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:6px;}
-.pw-says-body{font-size:12px;color:var(--text);line-height:1.5;}
-.live-badge{font-size:8px;background:var(--cdim);color:var(--cyan);border:1px solid var(--cmid);padding:1px 5px;border-radius:100px;font-weight:600;}
-.inp{width:100%;background:var(--elevated);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-family:var(--mono);font-size:13px;padding:9px 12px;margin-bottom:8px;}.inp:focus{outline:none;border-color:var(--cyan);}
+.pw-says-lbl{font-size:11px;color:var(--cyan);font-weight:700;margin-bottom:5px;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:6px;}
+.pw-says-body{font-size:13px;color:var(--text);line-height:1.5;}
+.live-badge{font-size:11px;background:var(--cdim);color:var(--cyan);border:1px solid var(--cmid);padding:1px 5px;border-radius:100px;font-weight:600;}
+.inp{width:100%;background:var(--elevated);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-family:var(--mono);font-size:14px;padding:8px 10px;margin-bottom:8px;}.inp:focus{outline:none;border-color:var(--cyan);}
 select.inp{cursor:pointer;}
 .lbl{font-size:11px;color:var(--text3);margin-bottom:4px;display:block;text-transform:uppercase;letter-spacing:.08em;font-weight:600;}
-.szinp{background:var(--surface);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-family:var(--mono);font-size:12px;padding:5px 9px;width:82px;}.szinp:focus{outline:none;border-color:var(--cyan);}
-.empty{color:var(--text3);text-align:center;padding:28px 16px;font-size:12px;}
+.szinp{background:var(--surface);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-family:var(--mono);font-size:14px;padding:8px 10px;min-width:80px;width:auto;}.szinp:focus{outline:none;border-color:var(--cyan);}
+.empty{color:var(--text3);text-align:center;padding:28px 16px;font-size:13px;}
 .skel{background:linear-gradient(90deg,var(--bg3) 25%,var(--bg4) 50%,var(--bg3) 75%);background-size:200% 100%;animation:sk 1.5s infinite;border-radius:4px;height:13px;}
 @keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
 .fade{animation:fi .3s ease;}@keyframes fi{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:translateY(0)}}
@@ -174,12 +174,12 @@ select.inp{cursor:pointer;}
 .hr{border:none;border-top:1px solid var(--border);margin:12px 0;}
 .withdraw-banner{background:linear-gradient(135deg,rgba(16,185,129,.06),rgba(16,185,129,.02));border:1px solid var(--gmid);border-radius:var(--rl);padding:14px 16px;margin-bottom:12px;}
 .cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-top:6px;}
-.cat-pill{font-size:10px;padding:3px 7px;border-radius:4px;background:var(--elevated);color:var(--text3);text-align:center;}.cat-pill.hi{color:var(--green);}.cat-pill.lo{color:var(--red);}
-.meta-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:600;}
+.cat-pill{font-size:11px;padding:3px 7px;border-radius:4px;background:var(--elevated);color:var(--text3);text-align:center;}.cat-pill.hi{color:var(--green);}.cat-pill.lo{color:var(--red);}
+.meta-lbl{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:600;}
 .big-num{font-family:var(--display);font-size:24px;font-weight:700;letter-spacing:.02em;line-height:1;}
 
 @media(max-width:900px){.ugrid,.bento,.bento-3{grid-template-columns:repeat(2,1fr);}.stat-row{grid-template-columns:repeat(2,1fr);}}
-@media(max-width:600px){.ugrid,.bento,.bento-3{grid-template-columns:1fr;}.page{padding:12px;}.dir-big{font-size:26px;}.ucard:hover{transform:none;box-shadow:none;}.nt{font-size:10px;padding:0 6px;}}
+@media(max-width:600px){.ugrid,.bento,.bento-3{grid-template-columns:1fr;}.page{padding:12px;}.dir-big{font-size:26px;}.ucard:hover{transform:none;box-shadow:none;}.nt{font-size:11px;padding:0 6px;}}
 </style>
 </head>
 <body>
@@ -193,7 +193,7 @@ select.inp{cursor:pointer;}
     <span id="bankroll-hdr" style="font-family:var(--display);font-size:18px;display:none;letter-spacing:.02em;margin-left:12px"></span>
   </div>
   <div class="hdr-right">
-    <span style="font-size:10px;color:var(--text3);font-weight:600;letter-spacing:.04em" id="ht"></span>
+    <span style="font-size:11px;color:var(--text3);font-weight:600;letter-spacing:.04em" id="ht"></span>
     <button class="btn bsm" onclick="doRefresh()" title="Refresh">↻</button>
     <button class="btn bsm" id="notif-btn" onclick="reqNotif()" title="Notifications">🔔</button>
   </div>
@@ -224,7 +224,7 @@ select.inp{cursor:pointer;}
   </div>
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
     <span style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3)">★ AI Bet Recommendations</span>
-    <span style="font-size:10px;color:var(--text3)" id="rts"></span>
+    <span style="font-size:11px;color:var(--text3)" id="rts"></span>
   </div>
   <div id="rec-list" style="margin-bottom:24px"><div class="ugrid"><div class="ucard"><div class="skel" style="margin-bottom:8px"></div><div class="skel" style="width:70%"></div></div><div class="ucard"><div class="skel" style="margin-bottom:8px"></div><div class="skel" style="width:60%"></div></div><div class="ucard"><div class="skel" style="margin-bottom:8px"></div><div class="skel" style="width:80%"></div></div></div></div>
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
@@ -241,7 +241,7 @@ select.inp{cursor:pointer;}
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
     <span style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3)">◉ Live Trade Feed</span>
     <span style="display:flex;align-items:center;gap:8px">
-      <span id="fn" style="font-size:10px;color:var(--text3)"></span>
+      <span id="fn" style="font-size:11px;color:var(--text3)"></span>
       <button class="btn bsm" onclick="clearOldTrades()">Clear Old</button>
     </span>
   </div>
@@ -268,7 +268,7 @@ select.inp{cursor:pointer;}
 <div id="tp-hotbets" class="tp page">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
     <div class="ct" style="margin-bottom:0"><span style="color:var(--red)">🔥</span> High-volume markets closing soon</div>
-    <span style="font-size:10px;color:var(--text2)" id="hb-updated"></span>
+    <span style="font-size:11px;color:var(--text2)" id="hb-updated"></span>
   </div>
   <div id="hb-list"><div class="skel" style="margin-bottom:8px"></div><div class="skel" style="width:70%"></div></div>
 </div>
@@ -316,7 +316,7 @@ select.inp{cursor:pointer;}
   <div id="b-content" style="display:none">
     <div class="stat-row" style="margin-bottom:20px">
       <div class="stat-pill"><div class="stat-lbl">All-time P&L</div><div class="stat-val" id="my-pnl">$0</div></div>
-      <div class="stat-pill"><div class="stat-lbl">Win Rate</div><div class="stat-val" style="color:var(--amber)" id="my-wr">—</div><div style="font-size:10px;color:var(--text3);margin-top:2px" id="my-wrs">—</div></div>
+      <div class="stat-pill"><div class="stat-lbl">Win Rate</div><div class="stat-val" style="color:var(--amber)" id="my-wr">—</div><div style="font-size:11px;color:var(--text3);margin-top:2px" id="my-wrs">—</div></div>
       <div class="stat-pill"><div class="stat-lbl">Profit Factor</div><div class="stat-val" style="color:var(--cyan)" id="my-pf">—</div></div>
       <div class="stat-pill"><div class="stat-lbl">Open Value</div><div class="stat-val" style="color:var(--amber)" id="my-op">—</div></div>
     </div>
@@ -398,8 +398,8 @@ select.inp{cursor:pointer;}
   </div>
   <div class="card">
     <div class="ct"><span class="ca">◎</span> Tier cutoffs — auto-removes below these</div>
-    <div class="row" style="padding:8px 0"><span class="tag tg-S" style="min-width:52px;text-align:center">S-Tier</span><div style="flex:1;font-size:12px;line-height:1.7">Win rate <input id="s-t1w" type="number" value="72" style="width:36px;background:var(--bg3);border:1px solid var(--border);color:var(--amber);border-radius:4px;padding:2px 4px;text-align:center;font-family:var(--mono)">%+ & <input id="s-t1b" type="number" value="250" style="width:44px;background:var(--bg3);border:1px solid var(--border);color:var(--amber);border-radius:4px;padding:2px 4px;text-align:center;font-family:var(--mono)">+ bets.</div></div>
-    <div class="row" style="padding:8px 0"><span class="tag tg-A" style="min-width:52px;text-align:center">A-Tier</span><div style="flex:1;font-size:12px;line-height:1.7">Win rate <input id="s-t2w" type="number" value="65" style="width:36px;background:var(--bg3);border:1px solid var(--border);color:var(--cyan);border-radius:4px;padding:2px 4px;text-align:center;font-family:var(--mono)">%+ & <input id="s-t2b" type="number" value="125" style="width:44px;background:var(--bg3);border:1px solid var(--border);color:var(--cyan);border-radius:4px;padding:2px 4px;text-align:center;font-family:var(--mono)">+ bets.</div></div>
+    <div class="row" style="padding:8px 0"><span class="tag tg-S" style="min-width:52px;text-align:center">S-Tier</span><div style="flex:1;font-size:12px;line-height:1.7">Win rate <input id="s-t1w" type="number" value="72" style="min-width:64px;width:auto;background:var(--elevated);border:1px solid var(--border);color:var(--amber);border-radius:4px;padding:6px 8px;text-align:center;font-family:var(--mono)">%+ & <input id="s-t1b" type="number" value="250" style="min-width:64px;width:auto;background:var(--elevated);border:1px solid var(--border);color:var(--amber);border-radius:4px;padding:6px 8px;text-align:center;font-family:var(--mono)">+ bets.</div></div>
+    <div class="row" style="padding:8px 0"><span class="tag tg-A" style="min-width:52px;text-align:center">A-Tier</span><div style="flex:1;font-size:12px;line-height:1.7">Win rate <input id="s-t2w" type="number" value="65" style="min-width:64px;width:auto;background:var(--elevated);border:1px solid var(--border);color:var(--cyan);border-radius:4px;padding:6px 8px;text-align:center;font-family:var(--mono)">%+ & <input id="s-t2b" type="number" value="125" style="min-width:64px;width:auto;background:var(--elevated);border:1px solid var(--border);color:var(--cyan);border-radius:4px;padding:6px 8px;text-align:center;font-family:var(--mono)">+ bets.</div></div>
     <div class="row" style="padding:8px 0;border:none"><span class="tag tg-X" style="min-width:52px;text-align:center">Cut</span><div style="flex:1;font-size:12px;color:var(--text2)">Under 60% win rate OR under 75 total bets. Auto-removed. No exceptions.</div></div>
     <label class="lbl" style="margin-top:8px">Max active whale watches</label>
     <input class="inp" id="s-mxw" type="number" value="12">
@@ -502,7 +502,7 @@ function uCard(opts){
   const href=opts.slug?'https://polymarket.com/event/'+opts.slug:'https://polymarket.com/search?q='+encodeURIComponent(opts.title||opts.market||'');
   const safeTitle=(opts.title||opts.market||'Unknown');
   const tagHtml=(opts.tags||[]).filter(Boolean).join('');
-  const timeAgo=opts.ts?`<span style="color:var(--text3);font-size:10px;margin-left:auto">${ft(opts.ts)}</span>`:'';
+  const timeAgo=opts.ts?`<span style="color:var(--text3);font-size:11px;margin-left:auto">${ft(opts.ts)}</span>`:'';
   const titleHtml=`<a href="${href}" target="_blank" rel="noopener" style="color:#E5E5E5;text-decoration:none;transition:color .15s" onmouseover="this.style.color='var(--cyan)'" onmouseout="this.style.color='#E5E5E5'">${safeTitle}</a>`;
   const midHtml=opts.mid||'';
   const timeLeft=opts.endTs?cdOrUnk(opts.endTs):(opts.openEnded?'<span style="color:var(--text3)">Open-ended</span>':'');
@@ -532,7 +532,7 @@ function cat(s){const m=(s||'').toLowerCase();if(/trump|president|election|congr
 function tier(wr,bets){if(wr>=C.t1Wr&&bets>=C.t1Bets)return'S';if(wr>=C.t2Wr&&bets>=C.t2Bets)return'A';if(wr>=C.cutWr&&bets>=C.cutBets)return'W';return'X';}
 function ttag(t){return`<span class="tag ${{S:'tg-S',A:'tg-A',W:'tg-W',X:'tg-X'}[t]}">${{S:'S-Tier',A:'A-Tier',W:'Watch',X:'Skip'}[t]}</span>`;}
 function streakHtml(streak){
-  if(!streak||!streak.length)return'<span style="font-size:10px;color:var(--text3)">—</span>';
+  if(!streak||!streak.length)return'<span style="font-size:11px;color:var(--text3)">—</span>';
   // streak is an array of 0 (loss) / 1 (win), oldest → newest, max 5
   return streak.slice(-5).map(s=>`<span class="streak-dot" style="background:${s?'var(--green)':'var(--red)'}"></span>`).join('');
 }
@@ -542,13 +542,13 @@ async function loadWhalePositions(addr){
   if(!container)return;
   if(container.dataset.loaded==='1'){container.style.display=container.style.display==='none'?'block':'none';return;}
   container.style.display='block';
-  container.innerHTML='<div style="font-size:10px;color:var(--text2);padding:4px">Loading positions...</div>';
+  container.innerHTML='<div style="font-size:11px;color:var(--text2);padding:4px">Loading positions...</div>';
   try{
     const r=await fetch(`https://polywatch-api-production.up.railway.app/proxy/positions?user=${addr}&limit=10`);
     if(!r.ok)throw 0;
     const raw=await r.json();
     const arr=Array.isArray(raw)?raw:(raw.data||[]);
-    if(!arr.length){container.innerHTML='<div style="font-size:10px;color:var(--text2);padding:4px">No active open positions</div>';container.dataset.loaded='1';return;}
+    if(!arr.length){container.innerHTML='<div style="font-size:11px;color:var(--text2);padding:4px">No active open positions</div>';container.dataset.loaded='1';return;}
     // Filter out stale/resolved positions (settled at 0 or 1, zero size, or outside active trading range)
     const active=arr.filter(p=>{
       const cp=+(p.curPrice||p.currentPrice||p.avgPrice||0);
@@ -556,7 +556,7 @@ async function loadWhalePositions(addr){
       // Hide resolved/near-resolved: 0¢-1¢ and 99¢-100¢ indicate settled markets
       return sz>0&&cp>0.01&&cp<0.99;
     });
-    if(!active.length){container.innerHTML='<div style="font-size:10px;color:var(--text2);padding:4px">No active open positions</div>';container.dataset.loaded='1';return;}
+    if(!active.length){container.innerHTML='<div style="font-size:11px;color:var(--text2);padding:4px">No active open positions</div>';container.dataset.loaded='1';return;}
     // Sort by size descending
     active.sort((a,b)=>(+b.size||0)-(+a.size||0));
     container.innerHTML='<div class="whale-pos">'+active.slice(0,10).map(p=>{
@@ -572,7 +572,7 @@ async function loadWhalePositions(addr){
       return`<div class="whale-pos-row"><div style="flex:1;min-width:0"><a href="${href}" target="_blank" rel="noopener" class="whale-pos-link" title="${safeTitle}">${short}</a><div style="color:var(--text2);font-size:12px">bet ${dirInline(d)} · ${f$(sz)} · now ${Math.round(cp*100)}¢</div></div></div>`;
     }).join('')+'</div>';
     container.dataset.loaded='1';
-  }catch(e){container.innerHTML='<div style="font-size:10px;color:var(--red);padding:4px">Failed to load</div>';}
+  }catch(e){container.innerHTML='<div style="font-size:11px;color:var(--red);padding:4px">Failed to load</div>';}
 }
 // Fetch the last 5 win/loss results for a whale from closed-positions (realizedPnl-based)
 async function fetchWhaleStreak(w){
@@ -870,12 +870,12 @@ function renderLB(){
     const sc=S.whaleScores[w.addr];const wr=sc?.rollingWr||w.wr;const ti=tier(wr,w.total);
     const wf=ti==='S'?'style="background:var(--amber)"':ti==='A'?'style="background:var(--cyan)"':'style="background:var(--text3)"';
     const cut=ti==='X';const act=w.active;
-    const catWrHtml=sc&&Object.keys(sc.catWr||{}).length?`<div style="font-size:10px;color:var(--text2);margin-top:3px">${Object.entries(sc.catWr).map(([k,v])=>`${k}:${v}%`).join(' · ')}</div>`:'';
+    const catWrHtml=sc&&Object.keys(sc.catWr||{}).length?`<div style="font-size:11px;color:var(--text2);margin-top:3px">${Object.entries(sc.catWr).map(([k,v])=>`${k}:${v}%`).join(' · ')}</div>`:'';
     return`<div class="row" style="${cut?'opacity:.4':''};flex-wrap:wrap">
       <div class="rk ${w.rank<=3?'top':''}">${w.rank}</div>
       <div style="flex:1;min-width:0">
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px">
-          <strong style="font-size:18px;font-family:var(--sans);letter-spacing:.01em">${w.name}</strong>${ttag(ti)}${act?'<span class="tag tg-b" style="font-size:9px">watching</span>':''}
+          <strong style="font-size:18px;font-family:var(--sans);letter-spacing:.01em">${w.name}</strong>${ttag(ti)}${act?'<span class="tag tg-b" style="font-size:11px">watching</span>':''}
         </div>
         <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
           <span class="big-num" style="color:var(--green)">${f$(w.pnl)}</span>
@@ -883,11 +883,11 @@ function renderLB(){
           <span class="meta-lbl">${w.total}+ bets</span>
           <span title="Last 5 results" style="display:inline-flex;align-items:center">${streakHtml(w.streak)}</span>
         </div>
-        ${sc?.t30>=5?`<div style="font-size:10px;color:var(--cyan);margin-top:4px;font-weight:600">30D · ${sc.rollingWr.toFixed(0)}% (${sc.t30} bets)</div>`:''}
+        ${sc?.t30>=5?`<div style="font-size:11px;color:var(--cyan);margin-top:4px;font-weight:600">30D · ${sc.rollingWr.toFixed(0)}% (${sc.t30} bets)</div>`:''}
         ${catWrHtml}
         ${w.addr?`<div class="whale-pos-toggle" onclick="loadWhalePositions('${w.addr}')">▸ Currently betting on</div><div id="wp-${w.addr}" style="display:none;width:100%"></div>`:''}
       </div>
-      ${!cut?`<button class="btn bsm ${act?'ba':''}" onclick="toggleW(${w.rank-1})">${act?'Stop':'Watch'}</button>`:`<span style="font-size:10px;color:var(--red)">Cut</span>`}
+      ${!cut?`<button class="btn bsm ${act?'ba':''}" onclick="toggleW(${w.rank-1})">${act?'Stop':'Watch'}</button>`:`<span style="font-size:11px;color:var(--red)">Cut</span>`}
     </div>`;
   }).join('')+'</div>';
 }
@@ -912,7 +912,7 @@ function renderFeed(){
   if(!items.length){el.innerHTML='<div class="empty">Watching for whale trades</div>';return;}
   el.innerHTML='<div class="ugrid">'+items.slice(0,12).map(t=>{const d=dirOf(t.outcome);return uCard({
     accent:'cyan',
-    tags:[dirTag(d),`<span class="tag ${t.side==='BUY'?'tg-b':'tg-s'}" style="font-size:9px">${t.side}</span>`,`<span style="font-size:10px;padding:1px 6px;border-radius:100px;background:var(--gydim);color:var(--text2);border:1px solid var(--gymid)">${cat(t.market)}</span>`],
+    tags:[dirTag(d),`<span class="tag ${t.side==='BUY'?'tg-b':'tg-s'}" style="font-size:11px">${t.side}</span>`,`<span style="font-size:11px;padding:1px 6px;border-radius:100px;background:var(--gydim);color:var(--text2);border:1px solid var(--gymid)">${cat(t.market)}</span>`],
     title:t.market,slug:t.slug,ts:t.ts,endTs:t.endTs,
     mid:`<strong>${t.name}</strong> \u00b7 <span style="font-family:var(--mono);color:#fff;font-size:16px;font-weight:700">${f$(t.size)}</span> @ ${Math.round(t.price*100)}\u00a2`,
   });}).join('')+'</div>';
@@ -937,7 +937,7 @@ function renderRecs(){
     const shiftWarn=r.priceShift>=0.05?`<div class="impact-warn" style="margin-top:6px">\u26a0 Price moved ${Math.round(r.priceShift*100)}\u00a2</div>`:'';
     return uCard({
       accent:'cyan',
-      tags:[dirTag(r.side),`<span class="tag ${r.conf==='HIGH'?'tg-hi':'tg-md'}">${r.conf}</span>`,`<span class="tag tg-p" style="font-size:9px">${r.type==='consensus'?r.wc+' whales':'Solo: '+r.topWhale}</span>`],
+      tags:[dirTag(r.side),`<span class="tag ${r.conf==='HIGH'?'tg-hi':'tg-md'}">${r.conf}</span>`,`<span class="tag tg-p" style="font-size:11px">${r.type==='consensus'?r.wc+' whales':'Solo: '+r.topWhale}</span>`],
       title:r.market,slug:r.slug,
       mid:`${(r.whales||[]).join(' + ')} bet ${dirInline(r.side)} @ ${Math.round(r.ap*100)}\u00a2 \u00b7 ${r.cat}${shiftWarn}`,
       actions:`<span style="font-family:var(--mono);color:var(--amber);font-size:18px;font-weight:700">${f$(r.sz)}</span> <button class="btn ba bsm" style="margin-left:8px" onclick="addRecQ('${encodeURIComponent(r.market)}','${r.side}',${r.ap},${r.sz})">Add \u2192</button>`,
@@ -991,7 +991,7 @@ function renderPositions(){
       const ac=unrealized>=0?'green':'red';
       return uCard({
         accent:ac,
-        tags:[dirTag(d),`<span class="tag ${p.side==='BUY'?'tg-b':'tg-s'}" style="font-size:9px">${p.side}</span>`],
+        tags:[dirTag(d),`<span class="tag ${p.side==='BUY'?'tg-b':'tg-s'}" style="font-size:11px">${p.side}</span>`],
         title:p.market,slug:p.slug,ts:p.ts,endTs:p.endTs,
         mid:`Copied from ${p.whale||'\u2014'} \u00b7 <span style="font-family:var(--mono);color:var(--amber);font-size:16px;font-weight:700">${f$(p.size)}</span> @ ${Math.round(p.price*100)}\u00a2${p.currentPrice?` \u00b7 <span style="${unrealized>=0?'color:var(--green)':'color:var(--red)'}">${unrealized>=0?'+':''}${f$(unrealized)}</span>`:''}`,
       });
@@ -1014,7 +1014,7 @@ function renderPositions(){
           </div>
           <div style="text-align:right;flex-shrink:0">
             <div style="font-size:18px;font-weight:700;font-family:var(--sans);${p.won?'color:var(--green)':'color:var(--red)'}">${p.won?'+':''}${f$(p.pnl)}</div>
-            <div style="font-size:10px;color:var(--text2)">${p.won?Math.round((p.pnl/p.size)*100)+'% return':'lost stake'}</div>
+            <div style="font-size:11px;color:var(--text2)">${p.won?Math.round((p.pnl/p.size)*100)+'% return':'lost stake'}</div>
           </div>
         </div>
       </div>`;}).join('');
@@ -1026,7 +1026,7 @@ function renderQ(){
   if(!pend.length){el.innerHTML=`<div class="card" style="text-align:center;padding:24px;margin-bottom:12px"><div style="color:var(--text2);font-size:13px">No pending trades. Signals queue here automatically.</div></div>`;return;}
   el.innerHTML='<div class="ugrid">'+pend.map(q=>{const d=dirOf(q.outcome);return uCard({
     accent:'amber',
-    tags:[dirTag(d),`<span class="tag ${q.side==='BUY'?'tg-b':'tg-s'}" style="font-size:9px">${q.side}</span>`,q.whaleTier?ttag(q.whaleTier):''],
+    tags:[dirTag(d),`<span class="tag ${q.side==='BUY'?'tg-b':'tg-s'}" style="font-size:11px">${q.side}</span>`,q.whaleTier?ttag(q.whaleTier):''],
     title:q.market,slug:q.slug,ts:q.ts,endTs:q.endTs,
     mid:`<strong>#${q.rank} ${q.name}</strong> bet ${dirInline(d)} \u00b7 <span style="font-family:var(--mono);color:#fff;font-size:16px;font-weight:700">${f$(q.size)}</span> @ ${Math.round(q.price*100)}\u00a2${q.priceShift>=0.05?` \u00b7 <span style="color:var(--amber)">\u26a0 moved ${Math.round(q.priceShift*100)}\u00a2</span>`:''}`,
     bottom:`<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:14px;padding-top:12px;border-top:1px solid var(--border)"><span style="font-size:11px;color:var(--text3)">Amt:</span><input type="number" id="qs-${q.id}" class="szinp" value="${q.sugSz}"><button class="btn bsm" onclick="setQS('${q.id}',${Math.round(q.size*.1)})">10%</button><button class="btn bsm" onclick="setQS('${q.id}',${Math.round(q.size*.25)})">25%</button><button class="btn bsm bg" onclick="approveQ('${q.id}')">Execute \u2192</button><button class="btn bsm br" onclick="skipQ('${q.id}')" style="margin-left:auto">Skip</button></div>`,
@@ -1075,9 +1075,9 @@ function renderMyPnl(){
 function renderLearnStat(){
   const el=document.getElementById('learn-stat');const tw=Object.keys(S.whaleScores).length;const rm=Object.keys(S.mktOutcomes).length;
   el.innerHTML=`<div class="ugrid" style="margin-bottom:12px">
-    <div class="ucard" style="border-top-color:var(--cyan)"><div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;font-weight:600;margin-bottom:6px">Whales Scored</div><div style="font-size:32px;font-weight:700;font-family:var(--display);color:var(--cyan)">${tw}</div></div>
-    <div class="ucard" style="border-top-color:var(--green)"><div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;font-weight:600;margin-bottom:6px">Markets Resolved</div><div style="font-size:32px;font-weight:700;font-family:var(--display);color:var(--green)">${rm}</div></div>
-    <div class="ucard" style="border-top-color:var(--amber)"><div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;font-weight:600;margin-bottom:6px">Bets Tracked</div><div style="font-size:32px;font-weight:700;font-family:var(--display);color:var(--amber)">${S.totalTracked}</div></div>
+    <div class="ucard" style="border-top-color:var(--cyan)"><div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;font-weight:600;margin-bottom:6px">Whales Scored</div><div style="font-size:32px;font-weight:700;font-family:var(--display);color:var(--cyan)">${tw}</div></div>
+    <div class="ucard" style="border-top-color:var(--green)"><div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;font-weight:600;margin-bottom:6px">Markets Resolved</div><div style="font-size:32px;font-weight:700;font-family:var(--display);color:var(--green)">${rm}</div></div>
+    <div class="ucard" style="border-top-color:var(--amber)"><div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;font-weight:600;margin-bottom:6px">Bets Tracked</div><div style="font-size:32px;font-weight:700;font-family:var(--display);color:var(--amber)">${S.totalTracked}</div></div>
   </div>
   <p style="font-size:12px;color:var(--text2);line-height:1.8">${tw<3?'Watch whales to begin. Tiers and recommendations improve as markets resolve.':'Tier badges reflect rolling 30-day performance, not just all-time.'}</p>`;
 }
@@ -1086,7 +1086,7 @@ function renderRecStats(){
   document.getElementById('r1').textContent=S.wallets.filter(w=>w.active).length;document.getElementById('r2').textContent=S.recs.length||buildRecs().length;
   const tot=S.myWins+S.myLosses;document.getElementById('r3').textContent=tot>0?(S.myWins/tot*100).toFixed(0)+'%':'—';
   const p4=document.getElementById('r4');p4.textContent=(S.myPnl>=0?'+':'')+f$(S.myPnl);p4.style.color=S.myPnl>=0?'var(--green)':'var(--red)';
-  const bh=document.getElementById('bankroll-hdr');if(C.bankroll){bh.style.display='inline-block';bh.innerHTML=`<span style="color:var(--text3);font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-family:var(--mono);font-weight:600;margin-right:8px">Bankroll</span><span style="color:var(--cyan);font-weight:700;font-family:var(--display)">${f$(C.bankroll)}</span>`;}
+  const bh=document.getElementById('bankroll-hdr');if(C.bankroll){bh.style.display='inline-block';bh.innerHTML=`<span style="color:var(--text3);font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-family:var(--mono);font-weight:600;margin-right:8px">Bankroll</span><span style="color:var(--cyan);font-weight:700;font-family:var(--display)">${f$(C.bankroll)}</span>`;}
 }
 
 function renderQStats(){document.getElementById('qs1').textContent=S.queue.filter(q=>q.status==='pending').length;document.getElementById('qs2').textContent=S.execCount;document.getElementById('qs3').textContent=f$(S.deployedTotal);const q4=document.getElementById('qs4');if(q4)q4.textContent=f$(C.bankroll);}
@@ -1169,7 +1169,7 @@ async function fetchHotBets(){
       return end>now_&&end-now_<=sevenDays;
     }).sort((a,b)=>(+(b.volume24hr||b.volume||0))-(+(a.volume24hr||a.volume||0))).slice(0,8);
     if(!filtered.length){el.innerHTML='<div class="empty">No high-volume markets closing within 7 days found.</div>';return;}
-    el.innerHTML='';
+    el.innerHTML='<div class="ugrid">';
     for(const m of filtered){
       const card=document.createElement('div');card.className='card fade';card.style.marginBottom='10px';
       const vol=+(m.volume24hr||m.volume||0);const volStr=vol>=1e6?'$'+(vol/1e6).toFixed(1)+'M':vol>=1e3?'$'+(vol/1e3).toFixed(0)+'k':'$'+Math.round(vol);
@@ -1200,7 +1200,7 @@ async function fetchHotBets(){
         </div>
         ${whaleHtml}
         ${analyzeBlock}`;
-      el.appendChild(card);
+      el.querySelector('.ugrid').insertAdjacentHTML('beforeend',card.outerHTML);
       // Attach click handler for Analyze button (no auto-fire)
       const btn=card.querySelector('.btn-analyze');
       if(btn){
@@ -1216,7 +1216,7 @@ async function fetchHotBets(){
         });
       }
     }
-    document.getElementById('hb-updated').textContent='Updated '+now();
+    el.innerHTML+='</div>';document.getElementById('hb-updated').textContent='Updated '+now();
   }catch(e){el.innerHTML='<div class="empty">Could not fetch hot markets — retrying next refresh.</div>';}
 }
 function startHotBetsRefresh(){clearInterval(_hbTimer);_hbTimer=setInterval(fetchHotBets,3600000);}
@@ -1283,7 +1283,7 @@ function renderBtcSection(elId,market,period){
   // Whale bets
   const q=(market.question||market.title||'').toLowerCase();
   const whaleBets=[];S.activity.forEach(a=>{if((a.market||'').toLowerCase().includes(q.slice(0,25).toLowerCase()))whaleBets.push({name:a.name,side:a.side,outcome:a.outcome,size:a.size,price:a.price});});
-  let whaleHtml='';if(whaleBets.length){whaleHtml='<div style="margin-top:8px"><div style="font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px">Whale bets</div>'+whaleBets.map(wb=>`<div style="font-size:11px;margin-bottom:3px;line-height:1.5">${betLine(wb.name,wb.outcome,'',wb.price||0.5,wb.size)}</div>`).join('')+'</div>';}
+  let whaleHtml='';if(whaleBets.length){whaleHtml='<div style="margin-top:8px"><div style="font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px">Whale bets</div>'+whaleBets.map(wb=>`<div style="font-size:11px;margin-bottom:3px;line-height:1.5">${betLine(wb.name,wb.outcome,'',wb.price||0.5,wb.size)}</div>`).join('')+'</div>';}
   const aiId='btc-ai-'+period;
   const cacheKey='btc_'+period;
   const cached=claudeCached(cacheKey);
@@ -1329,7 +1329,7 @@ function renderBtcTargets(targets){
     const q=(m.question||m.title||'');
     // Extract price target from question
     const priceMatch=q.match(/\$?([\d,]+(?:\.\d+)?)\s*k?/i);let target=0;if(priceMatch){target=parseFloat(priceMatch[1].replace(/,/g,''));if(target<1000)target*=1000;}
-    const aboveBelow=_btcPrice&&target?(_btcPrice>=target?'<span style="color:var(--green);font-size:10px">● above</span>':'<span style="color:var(--red);font-size:10px">● below</span>'):'';
+    const aboveBelow=_btcPrice&&target?(_btcPrice>=target?'<span style="color:var(--green);font-size:11px">● above</span>':'<span style="color:var(--red);font-size:11px">● below</span>'):'';
     return`<div class="row">
       <div style="flex:1;min-width:0">
         <div style="font-size:12px;font-weight:500;margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${q}</div>
