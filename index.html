@@ -8,9 +8,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@500;700;800&family=Bebas+Neue&display=swap" rel="stylesheet">
 <style>
-/* ═══════════════════════════════════════════════════════════════
-   POLYWATCH v5 — No sidebar. Slim header + icon nav + bento fill.
-   ═══════════════════════════════════════════════════════════════ */
 :root{
   --bg:#0D0D0D;--bg2:#111111;--bg3:#161616;--bg4:#1C1C1C;
   --surface:#1C1C1C;--elevated:#242424;
@@ -31,10 +28,9 @@
 html,body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:15px;height:100vh;overflow:hidden;-webkit-font-smoothing:antialiased;}
 ::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:var(--bg);}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
 
-/* ─── SHELL: header(48) + nav(44) + content(rest) ─── */
 .pw-shell{display:flex;flex-direction:column;height:100vh;overflow:hidden;}
 
-/* ─── HEADER — 48px slim bar ─── */
+/* HEADER 48px */
 .hdr{height:48px;flex-shrink:0;background:var(--bg2);border-bottom:1px solid var(--border);padding:0 20px;display:flex;align-items:center;gap:12px;z-index:100;}
 .logo{font-family:var(--display);font-size:22px;font-weight:700;color:var(--cyan);letter-spacing:.06em;text-transform:uppercase;}
 .vtag{font-size:8px;padding:2px 6px;border-radius:100px;background:var(--cdim);color:var(--cyan);border:1px solid var(--cmid);letter-spacing:.1em;text-transform:uppercase;}
@@ -46,83 +42,70 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--mono);font-si
 .dote{background:var(--red);}
 .pulse{animation:pu 2s infinite;}@keyframes pu{0%,100%{opacity:1}50%{opacity:.3}}
 
-/* ─── ICON NAV — 44px horizontal tab row ─── */
-.nav{height:44px;flex-shrink:0;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:stretch;overflow-x:auto;scrollbar-width:none;padding:0;z-index:99;}
+/* NAV 40px */
+.nav{height:40px;flex-shrink:0;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;overflow-x:auto;scrollbar-width:none;z-index:99;}
 .nav::-webkit-scrollbar{display:none;}
-.nt{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:0 12px;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text3);background:transparent;border:none;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;transition:all .12s;font-family:var(--mono);}
+.nt{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;padding:0 10px;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text3);background:transparent;border:none;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;transition:all .12s;font-family:var(--mono);}
 .nt:hover{color:var(--text2);background:rgba(255,255,255,.015);}
 .nt.on{color:var(--cyan);border-bottom-color:var(--cyan);}
 .nb{display:inline-block;background:var(--red);color:#fff;font-size:8px;font-weight:700;padding:1px 5px;border-radius:100px;animation:pu 1.5s infinite;}
 
-/* ─── CONTENT AREA — fills remaining viewport, scrolls ─── */
+/* CONTENT */
 .pw-content{flex:1;overflow-y:auto;overflow-x:hidden;}
-.page{width:100%;padding:20px;max-width:100%;}
+.page{width:100%;padding:20px;}
 .tp{display:none;}.tp.on{display:block;}
 
-/* ─── GRIDS ─── */
+/* STAT ROW — always single horizontal row */
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
+.stat-pill{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:14px 16px;text-align:center;min-height:72px;display:flex;flex-direction:column;justify-content:center;}
+.stat-pill .stat-val{font-size:24px;font-weight:700;font-family:var(--display);line-height:1;margin-bottom:2px;letter-spacing:.02em;}
+.stat-pill .stat-lbl{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;font-weight:600;}
+
+/* UNIVERSAL 3-COL GRID */
+.ugrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.ugrid-full{grid-column:1/-1;}
+
+/* UNIVERSAL CARD */
+.ucard{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;border-top:3px solid var(--cyan);display:flex;flex-direction:column;transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease;}
+.ucard:hover{transform:translateY(-3px);border-color:#3D3D3D;box-shadow:0 8px 24px rgba(0,0,0,.4);}
+
+/* GRIDS (compat) */
 .g2{display:grid;grid-template-columns:1fr;gap:14px;}@media(min-width:680px){.g2{grid-template-columns:1fr 1fr;}}
 .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
 .g4{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}@media(min-width:600px){.g4{grid-template-columns:repeat(4,1fr);}}
-
-/* ─── BENTO GRID — auto-fill, fr units ─── */
-.bento{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;}
-.bento-3{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}
+.bento{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.bento-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
 .bento-full{grid-column:1/-1;}
-.bento-wide{grid-column:span 2;}
-@media(max-width:720px){.bento-wide{grid-column:span 1;}.bento,.bento-3{grid-template-columns:1fr;}}
 
-/* ─── STAT ROW — always single row ─── */
-.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
-@media(max-width:500px){.stat-row{grid-template-columns:repeat(2,1fr);}}
-.stat-pill{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:14px 16px;text-align:center;transition:border-color .15s;}
-.stat-pill:hover{border-color:var(--border2);}
-.stat-pill .stat-val{font-size:26px;font-weight:700;font-family:var(--display);line-height:1;margin-bottom:3px;letter-spacing:.02em;}
-.stat-pill .stat-lbl{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;font-weight:600;}
-
-/* ─── CARDS ─── */
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:24px;margin-bottom:14px;transition:border-color .2s;}
-.card:hover{border-color:var(--border2);}
+/* CARDS (compat) */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:20px;margin-bottom:14px;}
 .ct{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:8px;}
 .ca{color:var(--cyan);}
-
 .sc{background:var(--elevated);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;}
 .sl{font-size:9px;color:var(--text3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.1em;font-weight:600;}
-.sv{font-size:28px;font-weight:700;font-family:var(--display);letter-spacing:.02em;line-height:1;}
+.sv{font-size:26px;font-weight:700;font-family:var(--display);letter-spacing:.02em;line-height:1;}
 .ss{font-size:10px;color:var(--text3);margin-top:3px;}
 
-/* ─── LEADERBOARD ROWS ─── */
+/* ROWS / TAGS / PILLS (all kept) */
 .row{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);}
 .row:last-child{border-bottom:none;}
 .rk{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;font-family:var(--display);flex-shrink:0;background:var(--elevated);border:1px solid var(--border);color:var(--text3);}
 .rk.top{background:var(--cdim);border-color:var(--cmid);color:var(--cyan);}
-
-/* ─── TAGS ─── */
 .tag{display:inline-block;font-size:10px;font-weight:700;padding:3px 8px;border-radius:100px;letter-spacing:.03em;}
 .tg-b{background:var(--gdim);color:var(--green);border:1px solid var(--gmid);}
 .tg-s{background:var(--rdim);color:var(--red);border:1px solid var(--rmid);}
 .tg-y{background:rgba(16,185,129,.16);color:#34d399;border:1px solid rgba(16,185,129,.5);font-size:13px;font-weight:800;padding:4px 11px;letter-spacing:.06em;text-transform:uppercase;}
 .tg-n{background:rgba(244,63,94,.16);color:#fb7185;border:1px solid rgba(244,63,94,.5);font-size:13px;font-weight:800;padding:4px 11px;letter-spacing:.06em;text-transform:uppercase;}
-.dir-big{font-family:var(--display);font-size:36px;font-weight:700;letter-spacing:.04em;line-height:.9;}
-.dir-big.yes{color:#34d399;text-shadow:0 0 20px rgba(16,185,129,.25);}
-.dir-big.no{color:#fb7185;text-shadow:0 0 20px rgba(244,63,94,.25);}
-.dir-inline{font-weight:800;letter-spacing:.06em;}
-.dir-inline.yes{color:#34d399;}
-.dir-inline.no{color:#fb7185;}
-
-/* Whale positions */
+.dir-big{font-family:var(--display);font-size:34px;font-weight:700;letter-spacing:.04em;line-height:.9;}
+.dir-big.yes{color:#34d399;text-shadow:0 0 18px rgba(16,185,129,.2);}
+.dir-big.no{color:#fb7185;text-shadow:0 0 18px rgba(244,63,94,.2);}
+.dir-inline{font-weight:800;letter-spacing:.06em;}.dir-inline.yes{color:#34d399;}.dir-inline.no{color:#fb7185;}
 .whale-pos{background:var(--elevated);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;margin-top:8px;font-size:13px;}
-.whale-pos-row{display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:1px solid var(--border);}
-.whale-pos-row:last-child{border-bottom:none;}
-.whale-pos-link{display:block;color:var(--cyan);text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;}
-.whale-pos-link:hover{text-decoration:underline;}
-.mkt-link{color:var(--cyan);text-decoration:none;font-weight:500;}
-.mkt-link:hover{text-decoration:underline;}
-.dismiss-x{background:none;border:none;color:var(--text3);font-size:16px;cursor:pointer;padding:2px 6px;line-height:1;border-radius:4px;font-family:var(--mono);}
-.dismiss-x:hover{color:var(--red);background:var(--rdim);}
-.whale-pos-toggle{cursor:pointer;color:var(--cyan);font-size:10px;text-transform:uppercase;letter-spacing:.08em;margin-top:8px;user-select:none;font-weight:600;}
-.whale-pos-toggle:hover{text-decoration:underline;}
-
-/* Tier tags */
+.whale-pos-row{display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:1px solid var(--border);}.whale-pos-row:last-child{border-bottom:none;}
+.whale-pos-link{display:block;color:var(--cyan);text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;}.whale-pos-link:hover{text-decoration:underline;}
+.mkt-link{color:var(--cyan);text-decoration:none;font-weight:500;}.mkt-link:hover{text-decoration:underline;}
+.dismiss-x{background:none;border:none;color:var(--text3);font-size:16px;cursor:pointer;padding:2px 6px;line-height:1;border-radius:4px;font-family:var(--mono);}.dismiss-x:hover{color:var(--red);background:var(--rdim);}
+.whale-pos-toggle{cursor:pointer;color:var(--cyan);font-size:10px;text-transform:uppercase;letter-spacing:.08em;margin-top:8px;user-select:none;font-weight:600;}.whale-pos-toggle:hover{text-decoration:underline;}
 .tg-S{background:var(--cdim);color:var(--cyan);border:1px solid var(--cstrong);font-weight:700;}
 .tg-A{background:var(--cdim);color:var(--cyan);border:1px solid var(--cmid);}
 .tg-W{background:var(--gydim);color:var(--text2);border:1px solid var(--gymid);}
@@ -130,102 +113,59 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--mono);font-si
 .tg-ins{background:var(--pdim);color:var(--purple);border:1px solid rgba(167,139,250,.35);}
 .tg-hi{background:var(--rdim);color:var(--red);border:1px solid var(--rmid);}
 .tg-md{background:var(--gydim);color:var(--text2);border:1px solid var(--gymid);}
-.tg-lo{background:var(--gydim);color:var(--text3);border:1px solid var(--gymid);}
 .tg-w{background:var(--gdim);color:var(--green);border:1px solid var(--gmid);}
 .tg-l{background:var(--rdim);color:var(--red);border:1px solid var(--rmid);}
 .tg-ex{background:var(--cdim);color:var(--cyan);border:1px solid var(--cmid);}
 .tg-p{background:var(--pdim);color:var(--purple);border:1px solid rgba(167,139,250,.3);}
-
-/* Specialized cards */
-.rec-card{background:var(--surface);border:1px solid var(--cmid);border-left:3px solid var(--cyan);border-radius:var(--rl);padding:24px;transition:border-color .2s;}
-.rec-card:hover{border-color:#3D3D3D;}
-.ins-card{background:var(--surface);border:1px solid rgba(167,139,250,.25);border-left:3px solid var(--purple);border-radius:var(--rl);padding:22px 24px;transition:border-color .2s;}
-.ins-card:hover{border-color:rgba(167,139,250,.4);}
-.pos-card{background:var(--elevated);border:1px solid var(--border);border-radius:var(--rl);padding:20px 24px;margin-bottom:12px;transition:border-color .2s;}
-.pos-card:hover{border-color:var(--border2);}
+.rec-card{background:var(--surface);border:1px solid var(--cmid);border-left:3px solid var(--cyan);border-radius:var(--rl);padding:20px;}
+.ins-card{background:var(--surface);border:1px solid rgba(167,139,250,.25);border-left:3px solid var(--purple);border-radius:var(--rl);padding:20px;}
+.pos-card{background:var(--elevated);border:1px solid var(--border);border-radius:var(--rl);padding:18px 20px;margin-bottom:12px;}
 .pos-card.won{border-color:var(--gmid);background:rgba(16,185,129,.03);}
 .pos-card.lost{border-color:var(--rmid);background:rgba(244,63,94,.03);}
-.pos-card.resolving{border-color:var(--cmid);animation:glow-cyan 2s infinite;}
 @keyframes glow-cyan{0%,100%{box-shadow:none}50%{box-shadow:0 0 14px rgba(34,211,238,.15)}}
-
-/* Bento cards */
-.bento-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;transition:border-color .2s;}
-.bento-card:hover{border-color:#3D3D3D;}
-.bento-card .bcard-market,.feed-card .bcard-market,.approve-card .bcard-market,.pos-bento .bcard-market{font-size:16px;font-weight:600;color:#E5E5E5;line-height:1.35;margin-bottom:8px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;}
-.bento-card .bcard-market a,.feed-card .bcard-market a{color:#E5E5E5;text-decoration:none;transition:color .15s;}
-.bento-card .bcard-market a:hover,.feed-card .bcard-market a:hover{color:var(--cyan);}
+.bento-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;}
+.bcard-market{font-size:15px;font-weight:600;color:#E5E5E5;line-height:1.35;margin-bottom:8px;}
+.bcard-market a{color:#E5E5E5;text-decoration:none;}.bcard-market a:hover{color:var(--cyan);}
 .bcard-meta{font-size:12px;color:#737373;line-height:1.5;}
-.bcard-nums{font-size:20px;font-weight:700;font-family:var(--mono);color:#fff;letter-spacing:.02em;}
+.bcard-nums{font-size:18px;font-weight:700;font-family:var(--mono);color:#fff;}
 .bcard-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
-.bento-card.accent-cyan{border-left:3px solid var(--cyan);}
-.bento-card.accent-purple{border-left:3px solid var(--purple);}
-.bento-card.accent-green{border-left:3px solid var(--green);}
-.bento-card.accent-red{border-left:3px solid var(--red);}
-
-.feed-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;transition:border-color .2s;}
-.feed-card:hover{border-color:#3D3D3D;}
-.approve-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:28px;transition:border-color .2s;}
-.approve-card:hover{border-color:#3D3D3D;}
-.pos-bento{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px;transition:border-color .2s;}
-.pos-bento:hover{border-color:#3D3D3D;}
+.feed-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;}
+.approve-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;}
+.pos-bento{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;}
 .pos-bento.winning{border-color:var(--gmid);border-left:3px solid var(--green);}
 .pos-bento.losing{border-color:var(--rmid);border-left:3px solid var(--red);}
-
-/* Probability bars */
 .con-bar{height:7px;background:var(--elevated);border-radius:4px;overflow:hidden;margin:6px 0;position:relative;}
 .cony{position:absolute;left:0;top:0;height:100%;background:var(--green);border-radius:4px 0 0 4px;}
 .conn{position:absolute;right:0;top:0;height:100%;background:var(--red);border-radius:0 4px 4px 0;}
-.pct-yes{font-size:12px;color:#34d399;font-weight:800;min-width:60px;letter-spacing:.04em;}
-.pct-no{font-size:12px;color:#fb7185;font-weight:800;min-width:60px;text-align:right;letter-spacing:.04em;}
-.wr-bar{height:7px;background:var(--elevated);border-radius:4px;overflow:hidden;width:68px;flex-shrink:0;}
-.wr-f{height:100%;border-radius:4px;}
+.pct-yes{font-size:12px;color:#34d399;font-weight:800;min-width:60px;}.pct-no{font-size:12px;color:#fb7185;font-weight:800;min-width:60px;text-align:right;}
+.wr-bar{height:7px;background:var(--elevated);border-radius:4px;overflow:hidden;width:68px;flex-shrink:0;}.wr-f{height:100%;border-radius:4px;}
 .streak-dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:2px;}
-
-/* Countdown */
 .countdown{font-family:var(--mono);font-size:10px;color:var(--text2);background:var(--gydim);padding:2px 8px;border-radius:100px;border:1px solid var(--gymid);font-weight:600;}
 .countdown.urgent{color:var(--amber);background:var(--adim);border-color:var(--amid);animation:pu 1s infinite;}
 .impact-warn{font-size:11px;color:var(--amber);background:var(--adim);border:1px solid var(--amid);border-radius:var(--r);padding:5px 10px;margin-top:6px;}
-
-.bankroll-bar{height:4px;background:var(--elevated);border-radius:2px;overflow:hidden;margin-top:5px;}
-.bankroll-fill{height:100%;border-radius:2px;background:var(--cyan);transition:width .4s ease;}
-
-/* Toasts */
-.toast{position:fixed;top:60px;right:16px;z-index:999;max-width:300px;background:var(--surface);border:1px solid var(--border2);border-radius:var(--rl);padding:12px 16px;box-shadow:0 10px 36px rgba(0,0,0,.5);animation:slide-in .3s ease;}
-.toast.win{border-color:var(--gmid);}
-.toast.lose{border-color:var(--rmid);}
+.bankroll-bar{height:4px;background:var(--elevated);border-radius:2px;overflow:hidden;margin-top:5px;}.bankroll-fill{height:100%;border-radius:2px;background:var(--cyan);}
+.toast{position:fixed;top:56px;right:16px;z-index:999;max-width:300px;background:var(--surface);border:1px solid var(--border2);border-radius:var(--rl);padding:12px 16px;box-shadow:0 10px 36px rgba(0,0,0,.5);animation:slide-in .3s ease;}
+.toast.win{border-color:var(--gmid);}.toast.lose{border-color:var(--rmid);}
 @keyframes slide-in{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
 @keyframes slide-out{from{transform:translateX(0);opacity:1}to{transform:translateX(110%);opacity:0}}
-
-/* Buttons */
 .btn{background:transparent;border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-family:var(--mono);font-size:11px;font-weight:600;padding:7px 12px;cursor:pointer;white-space:nowrap;transition:all .12s;letter-spacing:.04em;}
-.btn:hover{background:var(--elevated);transform:scale(1.02);}
-.btn:active{transform:scale(.98);}
+.btn:hover{background:var(--elevated);transform:scale(1.02);}.btn:active{transform:scale(.98);}
 .ba{border-color:var(--cmid);color:var(--cyan);}.ba:hover{background:var(--cdim);}
 .bg{border-color:var(--gmid);color:var(--green);}.bg:hover{background:var(--gdim);}
 .br{border-color:var(--rmid);color:var(--red);}
 .bsm{padding:3px 9px;font-size:10px;}
 .bfw{width:100%;text-align:center;}
 .btn-analyze{background:transparent;border:1px solid var(--cmid);color:var(--cyan);font-family:var(--mono);font-size:10px;font-weight:700;padding:7px 12px;border-radius:var(--r);cursor:pointer;letter-spacing:.06em;text-transform:uppercase;transition:all .12s;}
-.btn-analyze:hover{background:var(--cdim);border-color:var(--cyan);transform:scale(1.02);}
-.btn-analyze:active{transform:scale(.98);}
-.btn-analyze:disabled{cursor:not-allowed;}
-.btn-analyze.loading{color:var(--text3);border-color:var(--border2);animation:pu 1.5s infinite;}
-
-/* PW says */
+.btn-analyze:hover{background:var(--cdim);transform:scale(1.02);}.btn-analyze:active{transform:scale(.98);}
+.btn-analyze:disabled{cursor:not-allowed;}.btn-analyze.loading{color:var(--text3);border-color:var(--border2);animation:pu 1.5s infinite;}
 .pw-says{margin-top:12px;padding:12px 14px;background:var(--elevated);border-radius:var(--r);border:1px solid var(--border);border-left:3px solid var(--amber);}
 .pw-says-lbl{font-size:9px;color:var(--cyan);font-weight:700;margin-bottom:5px;text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:6px;}
 .pw-says-body{font-size:12px;color:var(--text);line-height:1.5;}
-.live-badge{font-size:8px;background:var(--cdim);color:var(--cyan);border:1px solid var(--cmid);padding:1px 5px;border-radius:100px;font-weight:600;letter-spacing:.05em;text-transform:none;}
-
-/* Inputs */
-.inp{width:100%;background:var(--elevated);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-family:var(--mono);font-size:13px;padding:9px 12px;margin-bottom:8px;transition:border-color .15s;}
-.inp:focus{outline:none;border-color:var(--cyan);}
+.live-badge{font-size:8px;background:var(--cdim);color:var(--cyan);border:1px solid var(--cmid);padding:1px 5px;border-radius:100px;font-weight:600;}
+.inp{width:100%;background:var(--elevated);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-family:var(--mono);font-size:13px;padding:9px 12px;margin-bottom:8px;}.inp:focus{outline:none;border-color:var(--cyan);}
 select.inp{cursor:pointer;}
 .lbl{font-size:11px;color:var(--text3);margin-bottom:4px;display:block;text-transform:uppercase;letter-spacing:.08em;font-weight:600;}
-.szinp{background:var(--surface);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-family:var(--mono);font-size:12px;padding:5px 9px;width:82px;}
-.szinp:focus{outline:none;border-color:var(--cyan);}
-
-/* Misc */
+.szinp{background:var(--surface);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-family:var(--mono);font-size:12px;padding:5px 9px;width:82px;}.szinp:focus{outline:none;border-color:var(--cyan);}
 .empty{color:var(--text3);text-align:center;padding:28px 16px;font-size:12px;}
 .skel{background:linear-gradient(90deg,var(--bg3) 25%,var(--bg4) 50%,var(--bg3) 75%);background-size:200% 100%;animation:sk 1.5s infinite;border-radius:4px;height:13px;}
 @keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
@@ -234,25 +174,17 @@ select.inp{cursor:pointer;}
 .hr{border:none;border-top:1px solid var(--border);margin:12px 0;}
 .withdraw-banner{background:linear-gradient(135deg,rgba(16,185,129,.06),rgba(16,185,129,.02));border:1px solid var(--gmid);border-radius:var(--rl);padding:14px 16px;margin-bottom:12px;}
 .cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-top:6px;}
-.cat-pill{font-size:10px;padding:3px 7px;border-radius:4px;background:var(--elevated);color:var(--text3);text-align:center;}
-.cat-pill.hi{color:var(--green);}
-.cat-pill.lo{color:var(--red);}
+.cat-pill{font-size:10px;padding:3px 7px;border-radius:4px;background:var(--elevated);color:var(--text3);text-align:center;}.cat-pill.hi{color:var(--green);}.cat-pill.lo{color:var(--red);}
 .meta-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:600;}
 .big-num{font-family:var(--display);font-size:24px;font-weight:700;letter-spacing:.02em;line-height:1;}
 
-/* ─── MOBILE ─── */
-@media(max-width:600px){
-  .page{padding:12px;}
-  .dir-big{font-size:28px;}
-  .bento-card:hover,.feed-card:hover,.pos-bento:hover,.rec-card:hover,.ins-card:hover,.card:hover{border-color:var(--border);}
-  .nt{font-size:10px;padding:0 8px;}
-}
+@media(max-width:900px){.ugrid,.bento,.bento-3{grid-template-columns:repeat(2,1fr);}.stat-row{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:600px){.ugrid,.bento,.bento-3{grid-template-columns:1fr;}.page{padding:12px;}.dir-big{font-size:26px;}.ucard:hover{transform:none;box-shadow:none;}.nt{font-size:10px;padding:0 6px;}}
 </style>
 </head>
 <body>
 <div class="pw-shell">
 
-<!-- HEADER — 48px slim bar -->
 <div class="hdr">
   <span class="logo">PolyWatch</span><span class="vtag">v5</span>
   <div class="hdr-center">
@@ -267,7 +199,6 @@ select.inp{cursor:pointer;}
   </div>
 </div>
 
-<!-- ICON NAV — horizontal tab row -->
 <div class="nav">
   <button class="nt on" onclick="goTab('reco',this)">🎯 Recs</button>
   <button class="nt" onclick="goTab('whales',this)">🐋 Whales</button>
@@ -280,7 +211,6 @@ select.inp{cursor:pointer;}
   <button class="nt" onclick="goTab('settings',this)">⚙</button>
 </div>
 
-<!-- CONTENT — scrollable area fills remaining viewport -->
 <div class="pw-content">
 <div id="toast-container"></div>
 
@@ -563,9 +493,42 @@ function mktLink(title,maxLen,slug){
   return`<a href="${href}" target="_blank" rel="noopener" class="mkt-link" title="${safe}">${short}</a>`;
 }
 // Countdown or fallback
-function cdOrUnk(endTs){return endTs&&endTs>Date.now()?fcd(endTs-Date.now()):'End date unknown';}
+function cdOrUnk(endTs){
+  if(!endTs||endTs<=0)return'<span style="color:var(--text3)">Open-ended</span>';
+  const ms=endTs-Date.now();
+  if(ms<=0)return'<span style="color:var(--text3)">Ended</span>';
+  if(ms<7200000)return'<span style="color:var(--red);animation:pu 1s infinite">Ending soon</span>';
+  const h=Math.floor(ms/3600000);
+  const d=Math.floor(h/24);const rh=h%24;const rm=Math.floor((ms%3600000)/60000);
+  if(d===0)return'<span style="color:var(--amber)">Today &middot; '+h+'h '+rm+'m</span>';
+  if(d<=3)return'<span style="color:var(--amber)">'+d+'d '+rh+'h left</span>';
+  return d+'d '+rh+'h left';
+}
 // Prose-format bet: "whale bet YES on Market @ 97¢ for $6k"
 function betLine(whaleName,outcome,market,price,size,slug){const onMkt=market?` on ${mktLink(market,50,slug)}`:'';return`<strong>${whaleName}</strong> bet ${dirInline(outcome)}${onMkt} @ ${Math.round((+price||0.5)*100)}¢ for ${f$(+size||0)}`;}
+
+// ── UNIVERSAL CARD BUILDER ──────────────────────────────────
+function uCard(opts){
+  // opts: {accent,tags[],title,slug,market,mid,whale,tier,size,price,outcome,ts,endTs,bottom,actions}
+  const ac=opts.accent||'cyan';
+  const href=opts.slug?'https://polymarket.com/event/'+opts.slug:'https://polymarket.com/search?q='+encodeURIComponent(opts.title||opts.market||'');
+  const safeTitle=(opts.title||opts.market||'Unknown');
+  const tagHtml=(opts.tags||[]).filter(Boolean).join('');
+  const timeAgo=opts.ts?`<span style="color:var(--text3);font-size:10px;margin-left:auto">${ft(opts.ts)}</span>`:'';
+  const titleHtml=`<a href="${href}" target="_blank" rel="noopener" style="color:#E5E5E5;text-decoration:none;transition:color .15s" onmouseover="this.style.color='var(--cyan)'" onmouseout="this.style.color='#E5E5E5'">${safeTitle}</a>`;
+  const midHtml=opts.mid||'';
+  const timeLeft=opts.endTs?cdOrUnk(opts.endTs):(opts.openEnded?'<span style="color:var(--text3)">Open-ended</span>':'');
+  const bottomLeft=timeLeft?`<div style="font-size:11px;margin-top:auto">${timeLeft}</div>`:'';
+  const bottomRight=opts.actions||'';
+  const bottom=opts.bottom||(bottomLeft||bottomRight?`<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid var(--border)">${bottomLeft}${bottomRight}</div>`:'');
+  return`<div class="ucard fade" style="border-top-color:var(--${ac})">
+    <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:10px">${tagHtml}${timeAgo}</div>
+    <div style="font-size:15px;font-weight:600;line-height:1.35;margin-bottom:8px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical">${titleHtml}</div>
+    ${midHtml?`<div style="font-size:12px;color:#737373;line-height:1.5;margin-bottom:6px">${midHtml}</div>`:''}
+    ${bottom}
+  </div>`;
+}
+
 // Minimal markdown → HTML for Claude output (handles **bold**, *italic*, simple links, newlines)
 function renderMd(s){if(!s)return'';return String(s)
   .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
@@ -957,18 +920,14 @@ function clearOldTrades(){
 }
 function renderFeed(){
   const el=document.getElementById('wfeed');const items=S.activity;
-  document.getElementById('fn').textContent=S.apiLive?'Live \xb7 '+S.tradeCount+' signals today':'Connecting \u2014 polls every '+C.pollMin+'min';
-  if(!items.length){el.innerHTML='<div class="empty">Watching for whale trades \u2014 data appears within 5 minutes of a qualifying trade</div>';return;}
-  el.innerHTML='<div class="bento">'+items.slice(0,12).map(t=>{const d=dirOf(t.outcome);const href=t.slug?'https://polymarket.com/event/'+t.slug:'https://polymarket.com/search?q='+encodeURIComponent(t.market);return`
-    <div class="feed-card fade">
-      <div class="bcard-tags">${dirTag(d)}<span class="tag ${t.side==='BUY'?'tg-b':'tg-s'}" style="font-size:9px">${t.side}</span><span style="color:#737373;font-size:11px;margin-left:auto">${ft(t.ts)}</span></div>
-      <div class="bcard-market"><a href="${href}" target="_blank" rel="noopener">${t.market}</a></div>
-      <div style="display:flex;align-items:baseline;gap:12px;margin-top:12px">
-        <span class="bcard-nums">${f$(t.size)}</span>
-        <span class="bcard-meta">@ ${Math.round(t.price*100)}\xa2 \xb7 ${t.name}</span>
-      </div>
-      <div class="bcard-meta" style="margin-top:6px">${cat(t.market)}${t.endTs?' \xb7 '+cdOrUnk(t.endTs):''}</div>
-    </div>`;}).join('')+'</div>';
+  document.getElementById('fn').textContent=S.apiLive?'Live \u00b7 '+S.tradeCount+' signals':'Polls every '+C.pollMin+'min';
+  if(!items.length){el.innerHTML='<div class="empty">Watching for whale trades</div>';return;}
+  el.innerHTML='<div class="ugrid">'+items.slice(0,12).map(t=>{const d=dirOf(t.outcome);return uCard({
+    accent:'cyan',
+    tags:[dirTag(d),`<span class="tag ${t.side==='BUY'?'tg-b':'tg-s'}" style="font-size:9px">${t.side}</span>`,`<span style="font-size:10px;padding:1px 6px;border-radius:100px;background:var(--gydim);color:var(--text2);border:1px solid var(--gymid)">${cat(t.market)}</span>`],
+    title:t.market,slug:t.slug,ts:t.ts,endTs:t.endTs,
+    mid:`<strong>${t.name}</strong> \u00b7 <span style="font-family:var(--mono);color:#fff;font-size:16px;font-weight:700">${f$(t.size)}</span> @ ${Math.round(t.price*100)}\u00a2`,
+  });}).join('')+'</div>';
 }
 
 function renderRecs(){
@@ -986,28 +945,15 @@ function renderRecs(){
     el.innerHTML=`<div class="empty" style="padding:28px 0;line-height:1.8">${msg}</div>`;
     return;
   }
-  el.innerHTML='<div class="bento bento-3">'+recs.map(r=>{
-    const shiftWarn=r.priceShift>=0.05?`<div class="impact-warn">\u26a0 Price moved ${Math.round(r.priceShift*100)}\xa2 since whale entered</div>`:'';
-    const href=r.slug?'https://polymarket.com/event/'+r.slug:'https://polymarket.com/search?q='+encodeURIComponent(r.market);
-    return`<div class="bento-card accent-cyan fade">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
-        ${dirBig(r.side)}
-        <div style="flex:1;min-width:0">
-          <div class="bcard-tags">
-            <span class="tag ${r.conf==='HIGH'?'tg-hi':'tg-md'}">${r.conf}</span>
-            <span class="tag tg-p" style="font-size:9px">${r.type==='consensus'?r.wc+' whales':'Solo: '+r.topWhale}</span>
-          </div>
-        </div>
-      </div>
-      <div class="bcard-market"><a href="${href}" target="_blank" rel="noopener">${r.market}</a></div>
-      <div class="bcard-meta" style="margin-bottom:12px">${(r.whales||[]).join(' + ')} bet ${dirInline(r.side)} @ ${Math.round(r.ap*100)}\xa2 \xb7 ${r.cat}</div>
-      ${shiftWarn}
-      <div style="display:flex;align-items:baseline;gap:12px;margin-top:14px">
-        <span class="bcard-nums" style="color:var(--amber)">${f$(r.sz)}</span>
-        <span class="bcard-meta">suggested size</span>
-        <button class="btn ba bsm" style="margin-left:auto" onclick="addRecQ('${encodeURIComponent(r.market)}','${r.side}',${r.ap},${r.sz})">Add to queue \u2192</button>
-      </div>
-    </div>`;
+  el.innerHTML='<div class="ugrid">'+recs.map(r=>{
+    const shiftWarn=r.priceShift>=0.05?`<div class="impact-warn" style="margin-top:6px">\u26a0 Price moved ${Math.round(r.priceShift*100)}\u00a2</div>`:'';
+    return uCard({
+      accent:'cyan',
+      tags:[dirTag(r.side),`<span class="tag ${r.conf==='HIGH'?'tg-hi':'tg-md'}">${r.conf}</span>`,`<span class="tag tg-p" style="font-size:9px">${r.type==='consensus'?r.wc+' whales':'Solo: '+r.topWhale}</span>`],
+      title:r.market,slug:r.slug,
+      mid:`${(r.whales||[]).join(' + ')} bet ${dirInline(r.side)} @ ${Math.round(r.ap*100)}\u00a2 \u00b7 ${r.cat}${shiftWarn}`,
+      actions:`<span style="font-family:var(--mono);color:var(--amber);font-size:18px;font-weight:700">${f$(r.sz)}</span> <button class="btn ba bsm" style="margin-left:8px" onclick="addRecQ('${encodeURIComponent(r.market)}','${r.side}',${r.ap},${r.sz})">Add \u2192</button>`,
+    });
   }).join('')+'</div>';
 }
 
@@ -1028,24 +974,13 @@ function dismissIns(id){
 function renderIns(){
   const el=document.getElementById('ins-list');document.getElementById('i-tr').textContent=C.insMaxTrades;document.getElementById('i-sz').textContent='$'+C.minInsider.toLocaleString();
   if(!S.insiders.length){renderInsEmpty();return;}
-  el.innerHTML='<div class="bento">'+S.insiders.map(t=>{const href=t.slug?'https://polymarket.com/event/'+t.slug:'https://polymarket.com/search?q='+encodeURIComponent(t.market);return`
-    <div class="bento-card accent-purple fade">
-      <div class="bcard-tags">
-        <span class="tag tg-ins">ANOMALY</span>
-        <span class="tag ${t.conf==='HIGH'?'tg-hi':'tg-md'}">${t.conf}</span>
-        ${dirTag(t.outcome)}
-        <span style="font-size:10px;padding:1px 7px;border-radius:100px;background:var(--pdim);color:var(--purple);border:1px solid rgba(167,139,250,.2)">${t.cat}</span>
-      </div>
-      <div class="bcard-market" style="margin-top:10px"><a href="${href}" target="_blank" rel="noopener">${t.market}</a></div>
-      <div class="bcard-meta">Wallet ${t.name} \xb7 <strong style="color:${t.trades<=3?'var(--red)':'var(--amber)'}">${t.trades} lifetime trade${t.trades===1?'':'s'}</strong> \xb7 ${ft(t.ts)}${t.endTs?' \xb7 '+cdOrUnk(t.endTs):''}</div>
-      <div style="display:flex;align-items:baseline;justify-content:space-between;margin-top:14px">
-        <div><span class="bcard-nums" style="color:var(--purple)">${f$(t.size)}</span> <span class="bcard-meta">@ ${Math.round(t.price*100)}\xa2</span></div>
-        <div style="display:flex;gap:8px">
-          <button class="btn bsm" style="border-color:rgba(167,139,250,.4);color:var(--purple)" onclick="insToQ('${t.id}')">Add to queue \u2192</button>
-          <button class="btn bsm" style="border-color:var(--border2);color:var(--text3)" onclick="dismissIns('${t.id}')">Dismiss</button>
-        </div>
-      </div>
-    </div>`;}).join('')+'</div>';
+  el.innerHTML='<div class="ugrid">'+S.insiders.map(t=>{return uCard({
+    accent:'purple',
+    tags:[`<span class="tag tg-ins">ANOMALY</span>`,`<span class="tag ${t.conf==='HIGH'?'tg-hi':'tg-md'}">${t.conf}</span>`,dirTag(t.outcome)],
+    title:t.market,slug:t.slug,ts:t.ts,endTs:t.endTs,
+    mid:`Wallet ${t.name} \u00b7 <strong style="color:${t.trades<=3?'var(--red)':'var(--amber)'}">${t.trades} trade${t.trades===1?'':'s'}</strong> \u00b7 <span style="font-family:var(--mono);color:var(--purple);font-size:16px;font-weight:700">${f$(t.size)}</span> @ ${Math.round(t.price*100)}\u00a2`,
+    actions:`<button class="btn bsm" style="border-color:rgba(167,139,250,.4);color:var(--purple)" onclick="insToQ('${t.id}')">Queue \u2192</button><button class="btn bsm" style="border-color:var(--border2);color:var(--text3);margin-left:6px" onclick="dismissIns('${t.id}')">Dismiss</button>`,
+  });}).join('')+'</div>';
 }
 
 function renderPositions(){
@@ -1062,26 +997,16 @@ function renderPositions(){
   if(S.newResolutions>0){const rb=document.getElementById('nb-r');rb.style.display='inline-block';rb.textContent='!';}
   if(!open.length){openEl.innerHTML='<div class="empty">No open positions. Approved trades appear here automatically.</div>';}
   else{
-    openEl.innerHTML='<div class="bento">'+open.map(p=>{
+    openEl.innerHTML='<div class="ugrid">'+open.map(p=>{
       const d=dirOf(p.outcome);
-      const remaining=p.endTs?p.endTs-Date.now():0;
       const unrealized=p.currentPrice?Math.round(p.size*(p.currentPrice/p.price-1)):0;
-      const statusClass=unrealized>=0?'winning':'losing';
-      const href=p.slug?'https://polymarket.com/event/'+p.slug:'https://polymarket.com/search?q='+encodeURIComponent(p.market);
-      return`<div class="pos-bento ${statusClass}">
-        <div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:10px">
-          <div style="flex-shrink:0">${dirBig(d)}</div>
-          <div style="flex:1;min-width:0">
-            <div class="bcard-tags"><span class="tag ${p.side==='BUY'?'tg-b':'tg-s'}" style="font-size:9px">${p.side}</span><span class="countdown" style="font-size:10px">${cdOrUnk(p.endTs)}</span></div>
-            <div class="bcard-market" style="margin-top:6px"><a href="${href}" target="_blank" rel="noopener">${p.market}</a></div>
-            <div class="bcard-meta" style="margin-top:4px">Bet ${dirInline(d)} @ ${Math.round(p.price*100)}\xa2 \xb7 copied from ${p.whale||'\u2014'} \xb7 ${ft(p.ts)}</div>
-          </div>
-          <div style="text-align:right;flex-shrink:0">
-            <div class="bcard-nums" style="color:var(--amber)">${f$(p.size)}</div>
-            ${p.currentPrice?`<div style="font-size:12px;margin-top:4px;${unrealized>=0?'color:var(--green)':'color:var(--red)'}">${unrealized>=0?'+':''}${f$(unrealized)} unrealized</div>`:''}
-          </div>
-        </div>
-      </div>`;
+      const ac=unrealized>=0?'green':'red';
+      return uCard({
+        accent:ac,
+        tags:[dirTag(d),`<span class="tag ${p.side==='BUY'?'tg-b':'tg-s'}" style="font-size:9px">${p.side}</span>`],
+        title:p.market,slug:p.slug,ts:p.ts,endTs:p.endTs,
+        mid:`Copied from ${p.whale||'\u2014'} \u00b7 <span style="font-family:var(--mono);color:var(--amber);font-size:16px;font-weight:700">${f$(p.size)}</span> @ ${Math.round(p.price*100)}\u00a2${p.currentPrice?` \u00b7 <span style="${unrealized>=0?'color:var(--green)':'color:var(--red)'}">${unrealized>=0?'+':''}${f$(unrealized)}</span>`:''}`,
+      });
     }).join('')+'</div>';
   }
   if(!res.length){resEl.innerHTML='<div class="empty">No resolved bets yet.</div>';}
@@ -1111,37 +1036,13 @@ function renderPositions(){
 function renderQ(){
   const el=document.getElementById('q-list');const pend=S.queue.filter(q=>q.status==='pending');
   if(!pend.length){el.innerHTML=`<div class="card" style="text-align:center;padding:24px;margin-bottom:12px"><div style="color:var(--text2);font-size:13px">No pending trades. Signals queue here automatically.</div></div>`;return;}
-  el.innerHTML=pend.map(q=>{const d=dirOf(q.outcome);const href=q.slug?'https://polymarket.com/event/'+q.slug:'https://polymarket.com/search?q='+encodeURIComponent(q.market);return`
-    <div class="approve-card fade" style="margin-bottom:16px">
-      <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:16px">
-        <div style="flex-shrink:0;text-align:center">
-          ${dirBig(d)}
-          <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-top:4px">direction</div>
-        </div>
-        <div style="flex:1;min-width:0">
-          <div class="bcard-tags" style="margin-bottom:8px">
-            ${q.whaleTier?ttag(q.whaleTier):''}
-            <strong style="font-size:14px">#${q.rank} ${q.name}</strong>
-            <span class="tag ${q.side==='BUY'?'tg-b':'tg-s'}" style="font-size:9px">${q.side}</span>
-            <span style="color:#737373;font-size:11px;margin-left:auto">${ft(q.ts)}</span>
-          </div>
-          <div class="bcard-market"><a href="${href}" target="_blank" rel="noopener">${q.market}</a></div>
-          <div class="bcard-meta" style="margin-top:6px">${cdOrUnk(q.endTs)}</div>
-          <div style="font-size:14px;margin-top:8px"><strong>${q.name}</strong> bet ${dirInline(d)} for <span class="bcard-nums">${f$(q.size)}</span> @ ${Math.round(q.price*100)}\xa2</div>
-          ${q.priceShift>=0.05?`<div class="impact-warn">\u26a0 Price moved ${Math.round(q.priceShift*100)}\xa2 since whale entered</div>`:''}
-        </div>
-        <button class="btn bsm br" style="flex-shrink:0" onclick="skipQ('${q.id}')">Skip</button>
-      </div>
-      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding-top:16px;border-top:1px solid var(--border)">
-        <span class="bcard-meta">Amount:</span>
-        <input type="number" id="qs-${q.id}" class="szinp" value="${q.sugSz}">
-        <span class="bcard-meta">max ${f$(C.maxTrade)}</span>
-        <button class="btn bsm" onclick="setQS('${q.id}',${Math.round(q.size*.1)})">10%</button>
-        <button class="btn bsm" onclick="setQS('${q.id}',${Math.round(q.size*.25)})">25%</button>
-        <button class="btn bsm" onclick="setQS('${q.id}',${Math.round(q.size*.5)})">50%</button>
-        <button class="btn bsm bg" onclick="approveQ('${q.id}')">Execute \u2192</button>
-      </div>
-    </div>`;}).join('');
+  el.innerHTML='<div class="ugrid">'+pend.map(q=>{const d=dirOf(q.outcome);return uCard({
+    accent:'amber',
+    tags:[dirTag(d),`<span class="tag ${q.side==='BUY'?'tg-b':'tg-s'}" style="font-size:9px">${q.side}</span>`,q.whaleTier?ttag(q.whaleTier):''],
+    title:q.market,slug:q.slug,ts:q.ts,endTs:q.endTs,
+    mid:`<strong>#${q.rank} ${q.name}</strong> bet ${dirInline(d)} \u00b7 <span style="font-family:var(--mono);color:#fff;font-size:16px;font-weight:700">${f$(q.size)}</span> @ ${Math.round(q.price*100)}\u00a2${q.priceShift>=0.05?` \u00b7 <span style="color:var(--amber)">\u26a0 moved ${Math.round(q.priceShift*100)}\u00a2</span>`:''}`,
+    bottom:`<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:14px;padding-top:12px;border-top:1px solid var(--border)"><span style="font-size:11px;color:var(--text3)">Amt:</span><input type="number" id="qs-${q.id}" class="szinp" value="${q.sugSz}"><button class="btn bsm" onclick="setQS('${q.id}',${Math.round(q.size*.1)})">10%</button><button class="btn bsm" onclick="setQS('${q.id}',${Math.round(q.size*.25)})">25%</button><button class="btn bsm bg" onclick="approveQ('${q.id}')">Execute \u2192</button><button class="btn bsm br" onclick="skipQ('${q.id}')" style="margin-left:auto">Skip</button></div>`,
+  });}).join('')+'</div>';
 }
 
 function clearExecHist(){
@@ -1156,12 +1057,18 @@ function dismissExec(id){
 }
 function renderExecHist(){
   const el=document.getElementById('exec-hist');if(!S.execHistory.length){el.innerHTML='<div class="empty" style="padding:16px">Nothing executed yet.</div>';return;}
-  el.innerHTML=S.execHistory.slice(0,20).map(h=>{
+  el.innerHTML='<div class="ugrid">'+S.execHistory.slice(0,15).map(h=>{
     const bet=S.betLog.find(b=>b.id===h.id);
-    const res=bet?.resolved?`<span class="tag ${bet.won?'tg-w':'tg-l'}">${bet.won?'WON +'+f$(bet.pnl):'LOST'}</span>`:'<span class="tag tg-W">open</span>';
-    const cd=h.endTs?`<span class="countdown" style="font-size:10px">${cdOrUnk(h.endTs)}</span>`:'';
-    return`<div class="row"><button class="dismiss-x" onclick="dismissExec('${h.id}')" title="Remove">×</button><div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:2px"><span class="tag tg-ex">executed</span>${res}${dirTag(h.outcome)}<strong style="font-size:12px">${h.name}</strong><span style="font-size:10px;color:var(--text2)">${ft(h.approvedAt)}</span>${cd}</div><div style="font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${mktLink(h.market,60,h.slug)}</div><div style="font-size:12px;color:var(--text2)">${f$(h.dispSz)} ${h.side} ${dirOf(h.outcome)} @ ${Math.round(h.price*100)}¢</div></div></div>`;
-  }).join('');
+    const res=bet?.resolved?(bet.won?'green':'red'):'amber';
+    const resTag=bet?.resolved?`<span class="tag ${bet.won?'tg-w':'tg-l'}">${bet.won?'WON +'+f$(bet.pnl):'LOST'}</span>`:'<span class="tag tg-W">open</span>';
+    return uCard({
+      accent:res,
+      tags:[`<span class="tag tg-ex">executed</span>`,resTag,dirTag(h.outcome)],
+      title:h.market,slug:h.slug,ts:h.approvedAt,endTs:h.endTs,
+      mid:`${h.name} \u00b7 <span style="font-family:var(--mono);color:#fff;font-weight:700">${f$(h.dispSz)}</span> ${h.side} ${dirOf(h.outcome)} @ ${Math.round(h.price*100)}\u00a2`,
+      actions:`<button class="dismiss-x" onclick="dismissExec('${h.id}')" title="Remove">\u00d7</button>`,
+    });
+  }).join('')+'</div>';
 }
 
 function renderMyPnl(){
