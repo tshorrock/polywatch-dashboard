@@ -830,6 +830,16 @@ function addToQ(trade){
 }
 function approveQ(id){
   const q=S.queue.find(x=>x.id===id);if(!q)return;
+  // Duplicate check — block if same market already in betLog or openPositions
+  const mkt=(q.market||'').toLowerCase();
+  const dup=S.betLog.find(b=>!b.resolved&&(b.market||'').toLowerCase()===mkt)||S.openPositions.find(p=>(p.market||'').toLowerCase()===mkt);
+  if(dup){
+    showToast('Duplicate blocked','You already have an open bet on this market','lose');
+    return;
+  }
+  // Immediately disable the Execute button so it can't be double-clicked
+  const btn=document.querySelector(`[onclick="approveQ('${id}')"]`);
+  if(btn){btn.disabled=true;btn.textContent='Executing...';btn.style.opacity='.4';btn.style.pointerEvents='none';}
   const inp=document.getElementById('qs-'+id);const amt=inp?Math.min(+inp.value,C.maxTrade):q.sugSz;
   q.status='approved';q.approvedSz=amt;q.approvedAt=Date.now();
   S.execCount++;S.deployedToday+=amt;S.deployedTotal+=amt;
@@ -840,6 +850,7 @@ function approveQ(id){
   S.openPositions.push({...betEntry,endTs:Date.now()+86400000*60});// default 60d if no end date
   S.queue=S.queue.filter(x=>x.id!==id);
   if(C.webhook)sendSig(q,amt,true);
+  showToast('Trade executed',`${f$(amt)} ${dirOf(q.outcome)} on ${(q.market||'').slice(0,50)}`,'win');
   saveLS();renderQ();renderQStats();renderExecHist();updateBadges();renderPositions();
 }
 function skipQ(id){S.queue=S.queue.filter(q=>q.id!==id);renderQ();renderQStats();updateBadges();}
