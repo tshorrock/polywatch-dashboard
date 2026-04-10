@@ -516,17 +516,20 @@ function dirOf(v){
 function dirTag(o){const d=dirOf(o);return`<span class="tag ${d==='YES'?'tg-y':'tg-n'}">${d}</span>`;}
 function dirInline(o){const d=dirOf(o);return`<span class="dir-inline ${d==='YES'?'yes':'no'}">${d}</span>`;}
 function dirBig(o){const d=dirOf(o);return`<span class="dir-big ${d==='YES'?'yes':'no'}">${d}</span>`;}
-// Clickable market link → polymarket.com/search?q=TITLE
-function mktLink(title,maxLen){
+// Clickable market link → polymarket.com/event/<slug> if slug available, else search fallback
+function mktLink(title,maxLen,slug){
   if(!title)return'Unknown';
   const short=(maxLen&&title.length>maxLen)?title.slice(0,maxLen)+'…':title;
   const safe=short.replace(/"/g,'&quot;');
-  return`<a href="https://polymarket.com/search?q=${encodeURIComponent(title)}" target="_blank" rel="noopener" class="mkt-link" title="${safe}">${short}</a>`;
+  // Prefer eventSlug/slug for direct link; derive from title as last resort
+  const s=slug||title.toLowerCase().replace(/[^a-z0-9\s-]/g,'').trim().replace(/\s+/g,'-').slice(0,80);
+  const href=s?`https://polymarket.com/event/${s}`:`https://polymarket.com/search?q=${encodeURIComponent(title)}`;
+  return`<a href="${href}" target="_blank" rel="noopener" class="mkt-link" title="${safe}">${short}</a>`;
 }
 // Countdown or fallback
 function cdOrUnk(endTs){return endTs&&endTs>Date.now()?fcd(endTs-Date.now()):'End date unknown';}
 // Prose-format bet: "whale bet YES on Market @ 97¢ for $6k"
-function betLine(whaleName,outcome,market,price,size){const mkt=market?((market.length>50?(market.slice(0,50)+'…'):market)):'';const onMkt=mkt?` on ${mktLink(market,50)}`:'';return`<strong>${whaleName}</strong> bet ${dirInline(outcome)}${onMkt} @ ${Math.round((+price||0.5)*100)}¢ for ${f$(+size||0)}`;}
+function betLine(whaleName,outcome,market,price,size,slug){const onMkt=market?` on ${mktLink(market,50,slug)}`:'';return`<strong>${whaleName}</strong> bet ${dirInline(outcome)}${onMkt} @ ${Math.round((+price||0.5)*100)}¢ for ${f$(+size||0)}`;}
 // Minimal markdown → HTML for Claude output (handles **bold**, *italic*, simple links, newlines)
 function renderMd(s){if(!s)return'';return String(s)
   .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
@@ -632,7 +635,7 @@ function buildRecs(){
     const dir=(t.side==='BUY'&&outcome==='YES')||(t.side==='SELL'&&outcome==='NO')?1:-1;
     // Key by conditionId when available (robust), fall back to market title
     const key=t.conditionId||t.market;
-    if(!mm[key])mm[key]={key,market:t.market,yes:0,no:0,tot:0,whales:[],whaleSizes:[],prices:[],cat:cat(t.market),topBet:0,topWhale:'',topWhaleTier:'W'};
+    if(!mm[key])mm[key]={key,market:t.market,slug:t.slug||'',yes:0,no:0,tot:0,whales:[],whaleSizes:[],prices:[],cat:cat(t.market),topBet:0,topWhale:'',topWhaleTier:'W'};
     if(dir>0)mm[key].yes+=wt*t.size;else mm[key].no+=wt*t.size;
     mm[key].tot+=t.size;
     if(!mm[key].whales.includes(t.name)){mm[key].whales.push(t.name);mm[key].whaleSizes.push({name:t.name,size:t.size,tier:ti});}
@@ -707,7 +710,7 @@ async function fetchAct(w){
       // Always derive YES/NO from outcomeIndex when available — the raw `outcome` field returns
       // team/option names in multi-outcome markets ("Rockets", "Suns") which aren't YES/NO.
       const outcomeNorm = a.outcomeIndex===0?'YES':a.outcomeIndex===1?'NO':(/^(yes|no)$/i.test(a.outcome||'')?a.outcome.toUpperCase():'YES');
-      const trade={id,name:w.name,rank:w.rank,market:a.title||a.market||'Unknown',side:sideRaw,outcome:outcomeNorm,size:sz,price:+(a.price||.5),entryPrice:+(a.price||.5),ts:a.timestamp?+a.timestamp*1000:Date.now(),conditionId:a.conditionId||a.marketId||''};
+      const trade={id,name:w.name,rank:w.rank,market:a.title||a.market||'Unknown',side:sideRaw,outcome:outcomeNorm,size:sz,price:+(a.price||.5),entryPrice:+(a.price||.5),ts:a.timestamp?+a.timestamp*1000:Date.now(),conditionId:a.conditionId||a.marketId||'',slug:a.eventSlug||a.slug||''};
       S.activity.unshift(trade);S.tradeCount++;addToQ(trade);
     });
     // Cap at 50, dropping oldest (end of array) first
@@ -730,7 +733,7 @@ async function detectIns(){
       try{
         const hr=await fetch(`https://polywatch-api-production.up.railway.app/proxy/trades?user=${addr}&limit=20`);if(!hr.ok)continue;
         const hj=await hr.json();const hist=Array.isArray(hj)?hj:(hj.data||[]);
-        if(hist.length<=C.insMaxTrades){S.seenI.add(k);S.insiders.unshift({id:k,name:addr.slice(0,6)+'...'+addr.slice(-4),trades:hist.length,market:t.title||t.market||'Unknown market',side:t.side||'BUY',outcome:t.outcome||'YES',size:sz,price:+(t.price||.5),ts:t.timestamp?+t.timestamp*1000:Date.now(),cat:cat(t.title||t.market||''),conf:hist.length<=3?'HIGH':hist.length<=6?'MEDIUM':'LOW'});}
+        if(hist.length<=C.insMaxTrades){S.seenI.add(k);S.insiders.unshift({id:k,name:addr.slice(0,6)+'...'+addr.slice(-4),trades:hist.length,market:t.title||t.market||'Unknown market',side:t.side||'BUY',outcome:t.outcome||'YES',size:sz,price:+(t.price||.5),ts:t.timestamp?+t.timestamp*1000:Date.now(),cat:cat(t.title||t.market||''),conf:hist.length<=3?'HIGH':hist.length<=6?'MEDIUM':'LOW',slug:t.eventSlug||t.slug||''});}
       }catch(e){}
     }
     // Cap at 50, dropping oldest (end of array) first
@@ -929,7 +932,7 @@ function renderFeed(){
           <span class="tag ${t.side==='BUY'?'tg-b':'tg-s'}" style="font-size:9px">${t.side}</span>
           <span style="color:var(--text2);font-size:10px;margin-left:auto">${ft(t.ts)}</span>
         </div>
-        <div style="font-size:12px;line-height:1.5">${betLine(t.name,d,t.market,t.price,t.size)}</div>
+        <div style="font-size:12px;line-height:1.5">${betLine(t.name,d,t.market,t.price,t.size,t.slug)}</div>
         <div style="font-size:11px;color:var(--text2);margin-top:2px">${cat(t.market)}${t.endTs?` · <span class="countdown" style="font-size:10px">${cdOrUnk(t.endTs)}</span>`:''}</div>
       </div>
     </div>`;}).join('');
@@ -963,7 +966,7 @@ function renderRecs(){
             <span style="font-size:10px;padding:1px 7px;border-radius:100px;background:var(--cdim);color:var(--cyan);border:1px solid rgba(34,211,238,.15)">${r.cat}</span>
             <span style="font-size:11px;color:var(--text2);margin-left:auto">${f$(r.tot)} whale vol</span>
           </div>
-          <div style="font-size:14px;font-weight:600;font-family:var(--sans);line-height:1.35">${mktLink(r.market)}</div>
+          <div style="font-size:14px;font-weight:600;font-family:var(--sans);line-height:1.35">${mktLink(r.market,0,r.slug)}</div>
         </div>
       </div>
       <div style="font-size:12px;color:var(--text2);margin-bottom:6px">${(r.whales||[r.topWhale||'']).join(' + ')} bet ${dirInline(r.side)} @ ${Math.round(r.ap*100)}¢</div>
@@ -1004,7 +1007,7 @@ function renderIns(){
             ${dirTag(t.outcome)}
             <span style="font-size:10px;padding:1px 7px;border-radius:100px;background:var(--pdim);color:var(--purple);border:1px solid rgba(167,139,250,.2)">${t.cat}</span>
           </div>
-          <div style="font-size:14px;font-weight:600;font-family:var(--sans);line-height:1.4;margin-bottom:4px">${mktLink(t.market)}</div>
+          <div style="font-size:14px;font-weight:600;font-family:var(--sans);line-height:1.4;margin-bottom:4px">${mktLink(t.market,0,t.slug)}</div>
           <div style="font-size:12px;color:var(--text2)">Wallet ${t.name} · <strong style="color:${t.trades<=3?'var(--red)':'var(--amber)'}">${t.trades} lifetime trade${t.trades===1?'':'s'}</strong> · ${ft(t.ts)}${t.endTs?` · <span class="countdown" style="font-size:10px">${cdOrUnk(t.endTs)}</span>`:''}</div>
         </div>
         <div style="text-align:right;flex-shrink:0">
@@ -1046,7 +1049,7 @@ function renderPositions(){
               <span class="countdown${(remaining>0&&urgent)?' urgent':''}" style="font-size:10px">${cdOrUnk(p.endTs)}</span>
               <span style="font-size:10px;color:var(--text2);margin-left:auto">${ft(p.ts)}</span>
             </div>
-            <div style="font-size:13px;font-weight:600;line-height:1.4;margin-bottom:3px">${mktLink(p.market)}</div>
+            <div style="font-size:13px;font-weight:600;line-height:1.4;margin-bottom:3px">${mktLink(p.market,0,p.slug)}</div>
             <div style="font-size:11px;color:var(--text2)">Bet ${dirInline(d)} @ ${Math.round(p.price*100)}¢ · copied from ${p.whale||'—'}</div>
           </div>
           <div style="text-align:right;flex-shrink:0">
@@ -1069,7 +1072,7 @@ function renderPositions(){
               ${dirTag(d)}
               <span style="font-size:11px;color:var(--text2)">${ft(p.resolvedAt)}</span>
             </div>
-            <div style="font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${mktLink(p.market,55)}</div>
+            <div style="font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${mktLink(p.market,55,p.slug)}</div>
             <div style="font-size:11px;color:var(--text2)">Bet ${dirInline(d)} — ${f$(p.size)} @ ${Math.round(p.price*100)}¢</div>
           </div>
           <div style="text-align:right;flex-shrink:0">
@@ -1098,7 +1101,7 @@ function renderQ(){
             <span class="tag ${q.side==='BUY'?'tg-b':'tg-s'}" style="font-size:9px">${q.side}</span>
             <span style="color:var(--text2);font-size:10px;margin-left:auto">${ft(q.ts)}</span>
           </div>
-          <div style="font-size:14px;font-weight:600;font-family:var(--sans);margin:4px 0;line-height:1.4">${mktLink(q.market)}</div>
+          <div style="font-size:14px;font-weight:600;font-family:var(--sans);margin:4px 0;line-height:1.4">${mktLink(q.market,0,q.slug)}</div>
           <div style="font-size:10px;color:var(--text2)">${cdOrUnk(q.endTs)}</div>
           <div style="font-size:12px;line-height:1.5"><strong>${q.name}</strong> bet ${dirInline(d)} for ${f$(q.size)} @ ${Math.round(q.price*100)}¢</div>
           ${q.priceShift>=0.05?`<div class="impact-warn">⚠ Price moved ${Math.round(q.priceShift*100)}¢ since whale entered</div>`:''}
@@ -1133,7 +1136,7 @@ function renderExecHist(){
     const bet=S.betLog.find(b=>b.id===h.id);
     const res=bet?.resolved?`<span class="tag ${bet.won?'tg-w':'tg-l'}">${bet.won?'WON +'+f$(bet.pnl):'LOST'}</span>`:'<span class="tag tg-W">open</span>';
     const cd=h.endTs?`<span class="countdown" style="font-size:10px">${cdOrUnk(h.endTs)}</span>`:'';
-    return`<div class="row"><button class="dismiss-x" onclick="dismissExec('${h.id}')" title="Remove">×</button><div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:2px"><span class="tag tg-ex">executed</span>${res}${dirTag(h.outcome)}<strong style="font-size:12px">${h.name}</strong><span style="font-size:10px;color:var(--text2)">${ft(h.approvedAt)}</span>${cd}</div><div style="font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${mktLink(h.market,60)}</div><div style="font-size:12px;color:var(--text2)">${f$(h.dispSz)} ${h.side} ${dirOf(h.outcome)} @ ${Math.round(h.price*100)}¢</div></div></div>`;
+    return`<div class="row"><button class="dismiss-x" onclick="dismissExec('${h.id}')" title="Remove">×</button><div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:2px"><span class="tag tg-ex">executed</span>${res}${dirTag(h.outcome)}<strong style="font-size:12px">${h.name}</strong><span style="font-size:10px;color:var(--text2)">${ft(h.approvedAt)}</span>${cd}</div><div style="font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${mktLink(h.market,60,h.slug)}</div><div style="font-size:12px;color:var(--text2)">${f$(h.dispSz)} ${h.side} ${dirOf(h.outcome)} @ ${Math.round(h.price*100)}¢</div></div></div>`;
   }).join('');
 }
 
