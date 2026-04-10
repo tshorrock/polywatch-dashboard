@@ -866,12 +866,12 @@ async function sendSig(t,amt,approved){if(!C.webhook)return;try{await fetch(C.we
 // ── RENDER ───────────────────────────────────────────────────
 function renderLB(){
   const el=document.getElementById('lb-list');if(!S.wallets.length){el.innerHTML='<div class="empty">No data</div>';return;}
-  el.innerHTML='<div class="ugrid">'+S.wallets.map(w=>{
+  el.innerHTML='<div class="ugrid" style="grid-template-columns:repeat(2,1fr);gap:20px">'+S.wallets.map(w=>{
     const sc=S.whaleScores[w.addr];const wr=sc?.rollingWr||w.wr;const ti=tier(wr,w.total);
     const wf=ti==='S'?'style="background:var(--amber)"':ti==='A'?'style="background:var(--cyan)"':'style="background:var(--text3)"';
     const cut=ti==='X';const act=w.active;
     const catWrHtml=sc&&Object.keys(sc.catWr||{}).length?`<div style="font-size:11px;color:var(--text2);margin-top:3px">${Object.entries(sc.catWr).map(([k,v])=>`${k}:${v}%`).join(' · ')}</div>`:'';
-    return`<div class="row" style="${cut?'opacity:.4':''};flex-wrap:wrap">
+    return`<div class="row" style="${cut?'opacity:.4':''};flex-wrap:wrap;padding:24px;min-height:140px;background:var(--surface);border:1px solid var(--border);border-radius:14px">
       <div class="rk ${w.rank<=3?'top':''}">${w.rank}</div>
       <div style="flex:1;min-width:0">
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px">
@@ -885,7 +885,7 @@ function renderLB(){
         </div>
         ${sc?.t30>=5?`<div style="font-size:11px;color:var(--cyan);margin-top:4px;font-weight:600">30D · ${sc.rollingWr.toFixed(0)}% (${sc.t30} bets)</div>`:''}
         ${catWrHtml}
-        ${w.addr?`<div class="whale-pos-toggle" onclick="loadWhalePositions('${w.addr}')">▸ Currently betting on</div><div id="wp-${w.addr}" style="display:none;width:100%"></div>`:''}
+        ${w.addr?`<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)"><div class="whale-pos-toggle" onclick="loadWhalePositions('${w.addr}')">▸ Currently betting on</div><div id="wp-${w.addr}" style="display:none;width:100%"></div></div>`:''}
       </div>
       ${!cut?`<button class="btn bsm ${act?'ba':''}" onclick="toggleW(${w.rank-1})">${act?'Stop':'Watch'}</button>`:`<span style="font-size:11px;color:var(--red)">Cut</span>`}
     </div>`;
