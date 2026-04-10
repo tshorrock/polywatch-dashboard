@@ -85,7 +85,7 @@ body{display:flex;flex-direction:column;}
 
 /* ─── CARDS — 24px padding, lift + glow on hover ─── */
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:24px;margin-bottom:16px;transition:transform .15s ease,box-shadow .15s ease;}
-.card:hover{transform:translateY(-4px);box-shadow:0 8px 30px rgba(0,0,0,.4);}
+.card:hover{}
 .ct{font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;gap:8px;}
 .ca{color:var(--cyan);}
 
@@ -230,6 +230,49 @@ select.inp{cursor:pointer;}
 .cat-pill.lo{color:var(--red);}
 .meta-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-weight:600;}
 .big-num{font-family:var(--display);font-size:26px;font-weight:700;letter-spacing:.02em;line-height:1;}
+/* ─── BENTO GRID SYSTEM ─── */
+.bento{display:grid;grid-template-columns:1fr;gap:16px;}
+@media(min-width:720px){.bento{grid-template-columns:repeat(2,1fr);}}
+@media(min-width:1080px){.bento-3{grid-template-columns:repeat(3,1fr);}}
+.bento-full{grid-column:1/-1;}
+.stat-row{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px;}
+@media(min-width:600px){.stat-row{grid-template-columns:repeat(4,1fr);}}
+.stat-pill{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:18px 20px;text-align:center;transition:transform .15s,border-color .15s;}
+.stat-pill:hover{transform:translateY(-2px);border-color:var(--border2);}
+.stat-pill .stat-val{font-size:28px;font-weight:700;font-family:var(--display);line-height:1;margin-bottom:4px;letter-spacing:.02em;}
+.stat-pill .stat-lbl{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.12em;font-weight:600;}
+
+/* Bento card — self-contained box */
+.bento-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px;transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease;}
+.bento-card:hover{transform:translateY(-4px);border-color:#3D3D3D;box-shadow:0 8px 32px rgba(0,0,0,.4);}
+.bento-card .bcard-market{font-size:16px;font-weight:600;color:#E5E5E5;line-height:1.35;margin-bottom:10px;}
+.bento-card .bcard-market a{color:#E5E5E5;text-decoration:none;transition:color .15s;}
+.bento-card .bcard-market a:hover{color:var(--cyan);}
+.bento-card .bcard-meta{font-size:12px;color:#737373;line-height:1.5;}
+.bento-card .bcard-nums{font-size:20px;font-weight:700;font-family:var(--mono);color:#fff;letter-spacing:.02em;}
+.bento-card .bcard-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}
+
+/* Accent borders for card types */
+.bento-card.accent-cyan{border-left:3px solid var(--cyan);}
+.bento-card.accent-purple{border-left:3px solid var(--purple);}
+.bento-card.accent-green{border-left:3px solid var(--green);}
+.bento-card.accent-red{border-left:3px solid var(--red);}
+.bento-card.accent-amber{border-left:3px solid var(--amber);}
+
+/* Feed card — whale bet card for 2-col grid */
+.feed-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease;}
+.feed-card:hover{transform:translateY(-4px);border-color:#3D3D3D;box-shadow:0 8px 32px rgba(0,0,0,.35);}
+
+/* Approve card — full width, spacious */
+.approve-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:32px;transition:transform .15s,border-color .15s;}
+.approve-card:hover{border-color:#3D3D3D;}
+
+/* Position card variants */
+.pos-bento{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;transition:transform .2s,border-color .2s,box-shadow .2s;}
+.pos-bento:hover{transform:translateY(-4px);border-color:#3D3D3D;box-shadow:0 8px 32px rgba(0,0,0,.35);}
+.pos-bento.winning{border-color:var(--gmid);border-left:3px solid var(--green);}
+.pos-bento.losing{border-color:var(--rmid);border-left:3px solid var(--red);}
+
 
 /* ─── MOBILE: bottom bar, hide sidebar ─── */
 @media(max-width:768px){
@@ -303,9 +346,10 @@ select.inp{cursor:pointer;}
 
 <!-- RECO TAB -->
 <div id="tp-reco" class="tp on page">
-  <div class="g4" style="margin-bottom:12px">
-    <div class="sc"><div class="sl">Whales live</div><div class="sv" style="color:var(--amber)" id="r1">—</div></div>
-    <div class="sc"><div class="sl">Active recs</div><div class="sv" style="color:var(--cyan)" id="r2">—</div></div>
+  <div class="stat-row">
+    <div class="stat-pill"><div class="stat-val" style="color:var(--amber)" id="r1">—</div></div>
+    <div class="sc"><div class="sl">Active recs</div><div class="stat-lbl">Whales live</div></div>
+    <div class="stat-pill"><div class="stat-val" style="color:var(--cyan)" id="r2">—</div></div>
     <div class="sc"><div class="sl">My win rate</div><div class="sv" style="color:var(--green)" id="r3">—</div></div>
     <div class="sc"><div class="sl">My P&L</div><div class="sv" id="r4">—</div></div>
   </div>
@@ -972,21 +1016,18 @@ function clearOldTrades(){
 }
 function renderFeed(){
   const el=document.getElementById('wfeed');const items=S.activity;
-  document.getElementById('fn').textContent=S.apiLive?'Live · '+S.tradeCount+' signals today':'Connecting — polls every '+C.pollMin+'min';
-  if(!items.length){el.innerHTML='<div class="empty">Watching for whale trades — data appears within 5 minutes of a qualifying trade</div>';return;}
-  el.innerHTML=items.slice(0,12).map(t=>{const d=dirOf(t.outcome);return`
-    <div class="row fade">
-      <div class="rk ${t.rank<=3?'top':''}">${t.rank<=0?'★':t.rank}</div>
-      <div style="flex:1;min-width:0">
-        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:3px">
-          ${dirTag(d)}
-          <span class="tag ${t.side==='BUY'?'tg-b':'tg-s'}" style="font-size:9px">${t.side}</span>
-          <span style="color:var(--text2);font-size:10px;margin-left:auto">${ft(t.ts)}</span>
-        </div>
-        <div style="font-size:12px;line-height:1.5">${betLine(t.name,d,t.market,t.price,t.size,t.slug)}</div>
-        <div style="font-size:11px;color:var(--text2);margin-top:2px">${cat(t.market)}${t.endTs?` · <span class="countdown" style="font-size:10px">${cdOrUnk(t.endTs)}</span>`:''}</div>
+  document.getElementById('fn').textContent=S.apiLive?'Live \xb7 '+S.tradeCount+' signals today':'Connecting \u2014 polls every '+C.pollMin+'min';
+  if(!items.length){el.innerHTML='<div class="empty">Watching for whale trades \u2014 data appears within 5 minutes of a qualifying trade</div>';return;}
+  el.innerHTML='<div class="bento">'+items.slice(0,12).map(t=>{const d=dirOf(t.outcome);const href=t.slug?'https://polymarket.com/event/'+t.slug:'https://polymarket.com/search?q='+encodeURIComponent(t.market);return`
+    <div class="feed-card fade">
+      <div class="bcard-tags">${dirTag(d)}<span class="tag ${t.side==='BUY'?'tg-b':'tg-s'}" style="font-size:9px">${t.side}</span><span style="color:#737373;font-size:11px;margin-left:auto">${ft(t.ts)}</span></div>
+      <div class="bcard-market"><a href="${href}" target="_blank" rel="noopener">${t.market}</a></div>
+      <div style="display:flex;align-items:baseline;gap:12px;margin-top:12px">
+        <span class="bcard-nums">${f$(t.size)}</span>
+        <span class="bcard-meta">@ ${Math.round(t.price*100)}\xa2 \xb7 ${t.name}</span>
       </div>
-    </div>`;}).join('');
+      <div class="bcard-meta" style="margin-top:6px">${cat(t.market)}${t.endTs?' \xb7 '+cdOrUnk(t.endTs):''}</div>
+    </div>`;}).join('')+'</div>';
 }
 
 function renderRecs(){
@@ -1004,30 +1045,29 @@ function renderRecs(){
     el.innerHTML=`<div class="empty" style="padding:28px 0;line-height:1.8">${msg}</div>`;
     return;
   }
-  el.innerHTML=recs.map(r=>{
-    const shiftWarn=r.priceShift>=0.05?`<div class="impact-warn">⚠ Price moved ${Math.round(r.priceShift*100)}¢ since whale entered</div>`:'';
-    const typeBadge=r.type==='consensus'?`<span class="tag tg-p" style="font-size:9px">${r.wc} whales</span>`:`<span class="tag tg-p" style="font-size:9px">Solo: ${r.topWhale} (${r.topWhaleTier}-Tier)</span>`;
-    return`<div class="rec-card fade">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-        <div style="flex-shrink:0">${dirBig(r.side)}</div>
+  el.innerHTML='<div class="bento bento-3">'+recs.map(r=>{
+    const shiftWarn=r.priceShift>=0.05?`<div class="impact-warn">\u26a0 Price moved ${Math.round(r.priceShift*100)}\xa2 since whale entered</div>`:'';
+    const href=r.slug?'https://polymarket.com/event/'+r.slug:'https://polymarket.com/search?q='+encodeURIComponent(r.market);
+    return`<div class="bento-card accent-cyan fade">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+        ${dirBig(r.side)}
         <div style="flex:1;min-width:0">
-          <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:3px">
+          <div class="bcard-tags">
             <span class="tag ${r.conf==='HIGH'?'tg-hi':'tg-md'}">${r.conf}</span>
-            ${typeBadge}
-            <span style="font-size:10px;padding:1px 7px;border-radius:100px;background:var(--cdim);color:var(--cyan);border:1px solid rgba(34,211,238,.15)">${r.cat}</span>
-            <span style="font-size:11px;color:var(--text2);margin-left:auto">${f$(r.tot)} whale vol</span>
+            <span class="tag tg-p" style="font-size:9px">${r.type==='consensus'?r.wc+' whales':'Solo: '+r.topWhale}</span>
           </div>
-          <div style="font-size:14px;font-weight:600;font-family:var(--sans);line-height:1.35">${mktLink(r.market,0,r.slug)}</div>
         </div>
       </div>
-      <div style="font-size:12px;color:var(--text2);margin-bottom:6px">${(r.whales||[r.topWhale||'']).join(' + ')} bet ${dirInline(r.side)} @ ${Math.round(r.ap*100)}¢</div>
+      <div class="bcard-market"><a href="${href}" target="_blank" rel="noopener">${r.market}</a></div>
+      <div class="bcard-meta" style="margin-bottom:12px">${(r.whales||[]).join(' + ')} bet ${dirInline(r.side)} @ ${Math.round(r.ap*100)}\xa2 \xb7 ${r.cat}</div>
       ${shiftWarn}
-      <div style="display:flex;align-items:baseline;gap:12px;margin-top:8px">
-        <div><span style="font-size:22px;font-weight:700;font-family:var(--sans);color:var(--amber)">${f$(r.sz)}</span><span style="font-size:11px;color:var(--text2);margin-left:8px">suggested size</span></div>
-        <button class="btn ba bsm" style="margin-left:auto" onclick="addRecQ('${encodeURIComponent(r.market)}','${r.side}',${r.ap},${r.sz})">Add to queue →</button>
+      <div style="display:flex;align-items:baseline;gap:12px;margin-top:14px">
+        <span class="bcard-nums" style="color:var(--amber)">${f$(r.sz)}</span>
+        <span class="bcard-meta">suggested size</span>
+        <button class="btn ba bsm" style="margin-left:auto" onclick="addRecQ('${encodeURIComponent(r.market)}','${r.side}',${r.ap},${r.sz})">Add to queue \u2192</button>
       </div>
     </div>`;
-  }).join('');
+  }).join('')+'</div>';
 }
 
 function renderCon(){
@@ -1047,30 +1087,24 @@ function dismissIns(id){
 function renderIns(){
   const el=document.getElementById('ins-list');document.getElementById('i-tr').textContent=C.insMaxTrades;document.getElementById('i-sz').textContent='$'+C.minInsider.toLocaleString();
   if(!S.insiders.length){renderInsEmpty();return;}
-  el.innerHTML=S.insiders.map(t=>`
-    <div class="ins-card fade">
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px">
-        <div style="flex:1">
-          <div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin-bottom:6px">
-            <span class="tag tg-ins">ANOMALY</span>
-            <span class="tag ${t.conf==='HIGH'?'tg-hi':'tg-md'}">${t.conf}</span>
-            <span class="tag ${t.side==='BUY'?'tg-b':'tg-s'}">${t.side}</span>
-            ${dirTag(t.outcome)}
-            <span style="font-size:10px;padding:1px 7px;border-radius:100px;background:var(--pdim);color:var(--purple);border:1px solid rgba(167,139,250,.2)">${t.cat}</span>
-          </div>
-          <div style="font-size:14px;font-weight:600;font-family:var(--sans);line-height:1.4;margin-bottom:4px">${mktLink(t.market,0,t.slug)}</div>
-          <div style="font-size:12px;color:var(--text2)">Wallet ${t.name} · <strong style="color:${t.trades<=3?'var(--red)':'var(--amber)'}">${t.trades} lifetime trade${t.trades===1?'':'s'}</strong> · ${ft(t.ts)}${t.endTs?` · <span class="countdown" style="font-size:10px">${cdOrUnk(t.endTs)}</span>`:''}</div>
-        </div>
-        <div style="text-align:right;flex-shrink:0">
-          <div style="font-size:22px;font-weight:700;font-family:var(--sans);color:var(--purple)">${f$(t.size)}</div>
-          <div style="font-size:12px;color:var(--text2)">@ ${Math.round(t.price*100)}¢</div>
+  el.innerHTML='<div class="bento">'+S.insiders.map(t=>{const href=t.slug?'https://polymarket.com/event/'+t.slug:'https://polymarket.com/search?q='+encodeURIComponent(t.market);return`
+    <div class="bento-card accent-purple fade">
+      <div class="bcard-tags">
+        <span class="tag tg-ins">ANOMALY</span>
+        <span class="tag ${t.conf==='HIGH'?'tg-hi':'tg-md'}">${t.conf}</span>
+        ${dirTag(t.outcome)}
+        <span style="font-size:10px;padding:1px 7px;border-radius:100px;background:var(--pdim);color:var(--purple);border:1px solid rgba(167,139,250,.2)">${t.cat}</span>
+      </div>
+      <div class="bcard-market" style="margin-top:10px"><a href="${href}" target="_blank" rel="noopener">${t.market}</a></div>
+      <div class="bcard-meta">Wallet ${t.name} \xb7 <strong style="color:${t.trades<=3?'var(--red)':'var(--amber)'}">${t.trades} lifetime trade${t.trades===1?'':'s'}</strong> \xb7 ${ft(t.ts)}${t.endTs?' \xb7 '+cdOrUnk(t.endTs):''}</div>
+      <div style="display:flex;align-items:baseline;justify-content:space-between;margin-top:14px">
+        <div><span class="bcard-nums" style="color:var(--purple)">${f$(t.size)}</span> <span class="bcard-meta">@ ${Math.round(t.price*100)}\xa2</span></div>
+        <div style="display:flex;gap:8px">
+          <button class="btn bsm" style="border-color:rgba(167,139,250,.4);color:var(--purple)" onclick="insToQ('${t.id}')">Add to queue \u2192</button>
+          <button class="btn bsm" style="border-color:var(--border2);color:var(--text3)" onclick="dismissIns('${t.id}')">Dismiss</button>
         </div>
       </div>
-      <div style="display:flex;gap:8px">
-        <button class="btn bsm" style="border-color:rgba(167,139,250,.4);color:var(--purple)" onclick="insToQ('${t.id}')">Add to queue →</button>
-        <button class="btn bsm" style="border-color:var(--border2);color:var(--text3)" onclick="dismissIns('${t.id}')">Dismiss</button>
-      </div>
-    </div>`).join('');
+    </div>`;}).join('')+'</div>';
 }
 
 function renderPositions(){
@@ -1087,29 +1121,27 @@ function renderPositions(){
   if(S.newResolutions>0){const rb=document.getElementById('nb-r');rb.style.display='inline-block';rb.textContent='!';}
   if(!open.length){openEl.innerHTML='<div class="empty">No open positions. Approved trades appear here automatically.</div>';}
   else{
-    openEl.innerHTML=open.map(p=>{
+    openEl.innerHTML='<div class="bento">'+open.map(p=>{
       const d=dirOf(p.outcome);
-      const remaining=p.endTs?p.endTs-Date.now():0;const urgent=remaining>0&&remaining<86400000*3;
+      const remaining=p.endTs?p.endTs-Date.now():0;
       const unrealized=p.currentPrice?Math.round(p.size*(p.currentPrice/p.price-1)):0;
-      return`<div class="pos-card">
-        <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:8px">
+      const statusClass=unrealized>=0?'winning':'losing';
+      const href=p.slug?'https://polymarket.com/event/'+p.slug:'https://polymarket.com/search?q='+encodeURIComponent(p.market);
+      return`<div class="pos-bento ${statusClass}">
+        <div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:10px">
           <div style="flex-shrink:0">${dirBig(d)}</div>
           <div style="flex:1;min-width:0">
-            <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:4px">
-              <span class="tag ${p.side==='BUY'?'tg-b':'tg-s'}" style="font-size:9px">${p.side}</span>
-              <span class="countdown${(remaining>0&&urgent)?' urgent':''}" style="font-size:10px">${cdOrUnk(p.endTs)}</span>
-              <span style="font-size:10px;color:var(--text2);margin-left:auto">${ft(p.ts)}</span>
-            </div>
-            <div style="font-size:13px;font-weight:600;line-height:1.4;margin-bottom:3px">${mktLink(p.market,0,p.slug)}</div>
-            <div style="font-size:11px;color:var(--text2)">Bet ${dirInline(d)} @ ${Math.round(p.price*100)}¢ · copied from ${p.whale||'—'}</div>
+            <div class="bcard-tags"><span class="tag ${p.side==='BUY'?'tg-b':'tg-s'}" style="font-size:9px">${p.side}</span><span class="countdown" style="font-size:10px">${cdOrUnk(p.endTs)}</span></div>
+            <div class="bcard-market" style="margin-top:6px"><a href="${href}" target="_blank" rel="noopener">${p.market}</a></div>
+            <div class="bcard-meta" style="margin-top:4px">Bet ${dirInline(d)} @ ${Math.round(p.price*100)}\xa2 \xb7 copied from ${p.whale||'\u2014'} \xb7 ${ft(p.ts)}</div>
           </div>
           <div style="text-align:right;flex-shrink:0">
-            <div style="font-size:18px;font-weight:700;font-family:var(--sans);color:var(--amber)">${f$(p.size)}</div>
-            ${p.currentPrice?`<div style="font-size:11px;${unrealized>=0?'color:var(--green)':'color:var(--red)'}">${unrealized>=0?'+':''}${f$(unrealized)} unrealized</div>`:''}
+            <div class="bcard-nums" style="color:var(--amber)">${f$(p.size)}</div>
+            ${p.currentPrice?`<div style="font-size:12px;margin-top:4px;${unrealized>=0?'color:var(--green)':'color:var(--red)'}">${unrealized>=0?'+':''}${f$(unrealized)} unrealized</div>`:''}
           </div>
         </div>
       </div>`;
-    }).join('');
+    }).join('')+'</div>';
   }
   if(!res.length){resEl.innerHTML='<div class="empty">No resolved bets yet.</div>';}
   else{
@@ -1138,35 +1170,35 @@ function renderPositions(){
 function renderQ(){
   const el=document.getElementById('q-list');const pend=S.queue.filter(q=>q.status==='pending');
   if(!pend.length){el.innerHTML=`<div class="card" style="text-align:center;padding:24px;margin-bottom:12px"><div style="color:var(--text2);font-size:13px">No pending trades. Signals queue here automatically.</div></div>`;return;}
-  el.innerHTML=pend.map(q=>{const d=dirOf(q.outcome);return`
-    <div class="card fade" style="margin-bottom:10px">
-      <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px">
+  el.innerHTML=pend.map(q=>{const d=dirOf(q.outcome);const href=q.slug?'https://polymarket.com/event/'+q.slug:'https://polymarket.com/search?q='+encodeURIComponent(q.market);return`
+    <div class="approve-card fade" style="margin-bottom:16px">
+      <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:16px">
         <div style="flex-shrink:0;text-align:center">
           ${dirBig(d)}
-          <div style="font-size:9px;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-top:2px">direction</div>
+          <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-top:4px">direction</div>
         </div>
         <div style="flex:1;min-width:0">
-          <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:4px">
+          <div class="bcard-tags" style="margin-bottom:8px">
             ${q.whaleTier?ttag(q.whaleTier):''}
-            <strong>#${q.rank} ${q.name}</strong>
+            <strong style="font-size:14px">#${q.rank} ${q.name}</strong>
             <span class="tag ${q.side==='BUY'?'tg-b':'tg-s'}" style="font-size:9px">${q.side}</span>
-            <span style="color:var(--text2);font-size:10px;margin-left:auto">${ft(q.ts)}</span>
+            <span style="color:#737373;font-size:11px;margin-left:auto">${ft(q.ts)}</span>
           </div>
-          <div style="font-size:14px;font-weight:600;font-family:var(--sans);margin:4px 0;line-height:1.4">${mktLink(q.market,0,q.slug)}</div>
-          <div style="font-size:10px;color:var(--text2)">${cdOrUnk(q.endTs)}</div>
-          <div style="font-size:12px;line-height:1.5"><strong>${q.name}</strong> bet ${dirInline(d)} for ${f$(q.size)} @ ${Math.round(q.price*100)}¢</div>
-          ${q.priceShift>=0.05?`<div class="impact-warn">⚠ Price moved ${Math.round(q.priceShift*100)}¢ since whale entered</div>`:''}
+          <div class="bcard-market"><a href="${href}" target="_blank" rel="noopener">${q.market}</a></div>
+          <div class="bcard-meta" style="margin-top:6px">${cdOrUnk(q.endTs)}</div>
+          <div style="font-size:14px;margin-top:8px"><strong>${q.name}</strong> bet ${dirInline(d)} for <span class="bcard-nums">${f$(q.size)}</span> @ ${Math.round(q.price*100)}\xa2</div>
+          ${q.priceShift>=0.05?`<div class="impact-warn">\u26a0 Price moved ${Math.round(q.priceShift*100)}\xa2 since whale entered</div>`:''}
         </div>
         <button class="btn bsm br" style="flex-shrink:0" onclick="skipQ('${q.id}')">Skip</button>
       </div>
-      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-        <span style="font-size:12px;color:var(--text2)">Amount:</span>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding-top:16px;border-top:1px solid var(--border)">
+        <span class="bcard-meta">Amount:</span>
         <input type="number" id="qs-${q.id}" class="szinp" value="${q.sugSz}">
-        <span style="font-size:11px;color:var(--text2)">max ${f$(C.maxTrade)}</span>
+        <span class="bcard-meta">max ${f$(C.maxTrade)}</span>
         <button class="btn bsm" onclick="setQS('${q.id}',${Math.round(q.size*.1)})">10%</button>
         <button class="btn bsm" onclick="setQS('${q.id}',${Math.round(q.size*.25)})">25%</button>
         <button class="btn bsm" onclick="setQS('${q.id}',${Math.round(q.size*.5)})">50%</button>
-        <button class="btn bsm bg" onclick="approveQ('${q.id}')">Execute →</button>
+        <button class="btn bsm bg" onclick="approveQ('${q.id}')">Execute \u2192</button>
       </div>
     </div>`;}).join('');
 }
