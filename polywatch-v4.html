@@ -110,6 +110,10 @@ body{padding-bottom:58px;}
 .whale-pos-row:last-child{border-bottom:none;}
 .whale-pos-link{display:block;color:var(--cyan);text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;}
 .whale-pos-link:hover{text-decoration:underline;}
+.mkt-link{color:var(--cyan);text-decoration:none;font-weight:500;}
+.mkt-link:hover{text-decoration:underline;}
+.dismiss-x{background:none;border:none;color:var(--text3);font-size:16px;cursor:pointer;padding:2px 6px;line-height:1;border-radius:4px;font-family:var(--mono);}
+.dismiss-x:hover{color:var(--red);background:var(--rdim);}
 .whale-pos-toggle{cursor:pointer;color:var(--cyan);font-size:10px;text-transform:uppercase;letter-spacing:.08em;margin-top:8px;user-select:none;font-weight:600;}
 .whale-pos-toggle:hover{text-decoration:underline;}
 
@@ -339,7 +343,7 @@ select.inp{cursor:pointer;}
   </div>
   <div id="q-list"></div>
   <div class="card" style="background:var(--bg3)">
-    <div class="ct"><span class="ca">◎</span> Execution history</div>
+    <div class="ct"><span class="ca">◎</span> Execution history<button class="btn bsm" onclick="clearExecHist()" style="margin-left:auto">Clear All</button></div>
     <div id="exec-hist"><div class="empty" style="padding:16px">Nothing executed yet.</div></div>
   </div>
 </div>
@@ -512,8 +516,17 @@ function dirOf(v){
 function dirTag(o){const d=dirOf(o);return`<span class="tag ${d==='YES'?'tg-y':'tg-n'}">${d}</span>`;}
 function dirInline(o){const d=dirOf(o);return`<span class="dir-inline ${d==='YES'?'yes':'no'}">${d}</span>`;}
 function dirBig(o){const d=dirOf(o);return`<span class="dir-big ${d==='YES'?'yes':'no'}">${d}</span>`;}
+// Clickable market link → polymarket.com/search?q=TITLE
+function mktLink(title,maxLen){
+  if(!title)return'Unknown';
+  const short=(maxLen&&title.length>maxLen)?title.slice(0,maxLen)+'…':title;
+  const safe=short.replace(/"/g,'&quot;');
+  return`<a href="https://polymarket.com/search?q=${encodeURIComponent(title)}" target="_blank" rel="noopener" class="mkt-link" title="${safe}">${short}</a>`;
+}
+// Countdown or fallback
+function cdOrUnk(endTs){return endTs&&endTs>Date.now()?fcd(endTs-Date.now()):'End date unknown';}
 // Prose-format bet: "whale bet YES on Market @ 97¢ for $6k"
-function betLine(whaleName,outcome,market,price,size){const mkt=market?((market.length>50?(market.slice(0,50)+'…'):market)):'';const onMkt=mkt?` on ${mkt}`:'';return`<strong>${whaleName}</strong> bet ${dirInline(outcome)}${onMkt} @ ${Math.round((+price||0.5)*100)}¢ for ${f$(+size||0)}`;}
+function betLine(whaleName,outcome,market,price,size){const mkt=market?((market.length>50?(market.slice(0,50)+'…'):market)):'';const onMkt=mkt?` on ${mktLink(market,50)}`:'';return`<strong>${whaleName}</strong> bet ${dirInline(outcome)}${onMkt} @ ${Math.round((+price||0.5)*100)}¢ for ${f$(+size||0)}`;}
 // Minimal markdown → HTML for Claude output (handles **bold**, *italic*, simple links, newlines)
 function renderMd(s){if(!s)return'';return String(s)
   .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
@@ -917,7 +930,7 @@ function renderFeed(){
           <span style="color:var(--text2);font-size:10px;margin-left:auto">${ft(t.ts)}</span>
         </div>
         <div style="font-size:12px;line-height:1.5">${betLine(t.name,d,t.market,t.price,t.size)}</div>
-        <div style="font-size:11px;color:var(--text2);margin-top:2px">${cat(t.market)}</div>
+        <div style="font-size:11px;color:var(--text2);margin-top:2px">${cat(t.market)}${t.endTs?` · <span class="countdown" style="font-size:10px">${cdOrUnk(t.endTs)}</span>`:''}</div>
       </div>
     </div>`;}).join('');
 }
@@ -950,7 +963,7 @@ function renderRecs(){
             <span style="font-size:10px;padding:1px 7px;border-radius:100px;background:var(--cdim);color:var(--cyan);border:1px solid rgba(34,211,238,.15)">${r.cat}</span>
             <span style="font-size:11px;color:var(--text2);margin-left:auto">${f$(r.tot)} whale vol</span>
           </div>
-          <div style="font-size:14px;font-weight:600;font-family:var(--sans);line-height:1.35">${r.market}</div>
+          <div style="font-size:14px;font-weight:600;font-family:var(--sans);line-height:1.35">${mktLink(r.market)}</div>
         </div>
       </div>
       <div style="font-size:12px;color:var(--text2);margin-bottom:6px">${(r.whales||[r.topWhale||'']).join(' + ')} bet ${dirInline(r.side)} @ ${Math.round(r.ap*100)}¢</div>
@@ -991,8 +1004,8 @@ function renderIns(){
             ${dirTag(t.outcome)}
             <span style="font-size:10px;padding:1px 7px;border-radius:100px;background:var(--pdim);color:var(--purple);border:1px solid rgba(167,139,250,.2)">${t.cat}</span>
           </div>
-          <div style="font-size:14px;font-weight:600;font-family:var(--sans);line-height:1.4;margin-bottom:4px">${t.market}</div>
-          <div style="font-size:12px;color:var(--text2)">Wallet ${t.name} · <strong style="color:${t.trades<=3?'var(--red)':'var(--amber)'}">${t.trades} lifetime trade${t.trades===1?'':'s'}</strong> · ${ft(t.ts)}</div>
+          <div style="font-size:14px;font-weight:600;font-family:var(--sans);line-height:1.4;margin-bottom:4px">${mktLink(t.market)}</div>
+          <div style="font-size:12px;color:var(--text2)">Wallet ${t.name} · <strong style="color:${t.trades<=3?'var(--red)':'var(--amber)'}">${t.trades} lifetime trade${t.trades===1?'':'s'}</strong> · ${ft(t.ts)}${t.endTs?` · <span class="countdown" style="font-size:10px">${cdOrUnk(t.endTs)}</span>`:''}</div>
         </div>
         <div style="text-align:right;flex-shrink:0">
           <div style="font-size:22px;font-weight:700;font-family:var(--sans);color:var(--purple)">${f$(t.size)}</div>
@@ -1030,10 +1043,10 @@ function renderPositions(){
           <div style="flex:1;min-width:0">
             <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:4px">
               <span class="tag ${p.side==='BUY'?'tg-b':'tg-s'}" style="font-size:9px">${p.side}</span>
-              ${remaining>0?`<span class="countdown ${urgent?'urgent':''}">${fcd(remaining)}</span>`:''}
+              <span class="countdown${(remaining>0&&urgent)?' urgent':''}" style="font-size:10px">${cdOrUnk(p.endTs)}</span>
               <span style="font-size:10px;color:var(--text2);margin-left:auto">${ft(p.ts)}</span>
             </div>
-            <div style="font-size:13px;font-weight:600;line-height:1.4;margin-bottom:3px">${p.market}</div>
+            <div style="font-size:13px;font-weight:600;line-height:1.4;margin-bottom:3px">${mktLink(p.market)}</div>
             <div style="font-size:11px;color:var(--text2)">Bet ${dirInline(d)} @ ${Math.round(p.price*100)}¢ · copied from ${p.whale||'—'}</div>
           </div>
           <div style="text-align:right;flex-shrink:0">
@@ -1056,7 +1069,7 @@ function renderPositions(){
               ${dirTag(d)}
               <span style="font-size:11px;color:var(--text2)">${ft(p.resolvedAt)}</span>
             </div>
-            <div style="font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.market}</div>
+            <div style="font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${mktLink(p.market,55)}</div>
             <div style="font-size:11px;color:var(--text2)">Bet ${dirInline(d)} — ${f$(p.size)} @ ${Math.round(p.price*100)}¢</div>
           </div>
           <div style="text-align:right;flex-shrink:0">
@@ -1085,7 +1098,8 @@ function renderQ(){
             <span class="tag ${q.side==='BUY'?'tg-b':'tg-s'}" style="font-size:9px">${q.side}</span>
             <span style="color:var(--text2);font-size:10px;margin-left:auto">${ft(q.ts)}</span>
           </div>
-          <div style="font-size:14px;font-weight:600;font-family:var(--sans);margin:4px 0;line-height:1.4">${q.market}</div>
+          <div style="font-size:14px;font-weight:600;font-family:var(--sans);margin:4px 0;line-height:1.4">${mktLink(q.market)}</div>
+          <div style="font-size:10px;color:var(--text2)">${cdOrUnk(q.endTs)}</div>
           <div style="font-size:12px;line-height:1.5"><strong>${q.name}</strong> bet ${dirInline(d)} for ${f$(q.size)} @ ${Math.round(q.price*100)}¢</div>
           ${q.priceShift>=0.05?`<div class="impact-warn">⚠ Price moved ${Math.round(q.priceShift*100)}¢ since whale entered</div>`:''}
         </div>
@@ -1103,12 +1117,23 @@ function renderQ(){
     </div>`;}).join('');
 }
 
+function clearExecHist(){
+  S.execHistory=[];S.openPositions=[];saveLS();renderExecHist();renderPositions();
+  showToast('Cleared','Execution history and open positions cleared','info');
+}
+function dismissExec(id){
+  S.execHistory=S.execHistory.filter(h=>h.id!==id);
+  S.openPositions=S.openPositions.filter(p=>p.id!==id);
+  S.betLog=S.betLog.filter(b=>b.id!==id);
+  saveLS();renderExecHist();renderPositions();
+}
 function renderExecHist(){
   const el=document.getElementById('exec-hist');if(!S.execHistory.length){el.innerHTML='<div class="empty" style="padding:16px">Nothing executed yet.</div>';return;}
-  el.innerHTML=S.execHistory.slice(0,8).map(h=>{
+  el.innerHTML=S.execHistory.slice(0,20).map(h=>{
     const bet=S.betLog.find(b=>b.id===h.id);
     const res=bet?.resolved?`<span class="tag ${bet.won?'tg-w':'tg-l'}">${bet.won?'WON +'+f$(bet.pnl):'LOST'}</span>`:'<span class="tag tg-W">open</span>';
-    return`<div class="row"><div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:2px"><span class="tag tg-ex">executed</span>${res}<strong style="font-size:12px">${h.name}</strong><span style="font-size:10px;color:var(--text2)">${ft(h.approvedAt)}</span></div><div style="font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text2)">${h.market}</div><div style="font-size:12px">${f$(h.dispSz)} ${h.side} ${h.outcome} @ ${Math.round(h.price*100)}¢</div></div></div>`;
+    const cd=h.endTs?`<span class="countdown" style="font-size:10px">${cdOrUnk(h.endTs)}</span>`:'';
+    return`<div class="row"><button class="dismiss-x" onclick="dismissExec('${h.id}')" title="Remove">×</button><div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:2px"><span class="tag tg-ex">executed</span>${res}${dirTag(h.outcome)}<strong style="font-size:12px">${h.name}</strong><span style="font-size:10px;color:var(--text2)">${ft(h.approvedAt)}</span>${cd}</div><div style="font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${mktLink(h.market,60)}</div><div style="font-size:12px;color:var(--text2)">${f$(h.dispSz)} ${h.side} ${dirOf(h.outcome)} @ ${Math.round(h.price*100)}¢</div></div></div>`;
   }).join('');
 }
 
