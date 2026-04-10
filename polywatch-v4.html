@@ -822,6 +822,9 @@ async function fetchPortfolio(addr){
 function addToQ(trade){
   if(S.queue.find(q=>q.id===trade.id))return;
   if(S.deployedToday>=C.maxDaily)return;
+  // Block near-resolved markets: price above 90¢ or below 10¢
+  const p=+(trade.price||0);
+  if(p>0&&(p>=0.90||p<=0.10)){showToast('Skipped','Market at '+Math.round(p*100)+'¢ appears already resolved','lose');return;}
   const w=S.wallets.find(x=>x.name===trade.name);
   const entryShift=trade.price&&trade.entryPrice?Math.abs(trade.price-trade.entryPrice):0;
   const sz=Math.min(trade.size*(C.copyPct/100),C.maxTrade);
