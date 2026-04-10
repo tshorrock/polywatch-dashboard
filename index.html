@@ -217,53 +217,51 @@ select.inp{cursor:pointer;}
 <!-- RECO TAB -->
 <div id="tp-reco" class="tp on page">
   <div class="stat-row">
-    <div class="stat-pill"><div class="stat-val" style="color:var(--amber)" id="r1">—</div></div>
-    <div class="sc"><div class="sl">Active recs</div><div class="stat-lbl">Whales live</div></div>
-    <div class="stat-pill"><div class="stat-val" style="color:var(--cyan)" id="r2">—</div></div>
-    <div class="sc"><div class="sl">My win rate</div><div class="sv" style="color:var(--green)" id="r3">—</div></div>
-    <div class="sc"><div class="sl">My P&L</div><div class="sv" id="r4">—</div></div>
+    <div class="stat-pill"><div class="stat-lbl">Whales Live</div><div class="stat-val" style="color:var(--amber)" id="r1">—</div></div>
+    <div class="stat-pill"><div class="stat-lbl">Active Recs</div><div class="stat-val" style="color:var(--cyan)" id="r2">—</div></div>
+    <div class="stat-pill"><div class="stat-lbl">My Win Rate</div><div class="stat-val" style="color:var(--green)" id="r3">—</div></div>
+    <div class="stat-pill"><div class="stat-lbl">My P&L</div><div class="stat-val" id="r4">—</div></div>
   </div>
-  <div class="card">
-    <div class="ct">
-      <span><span class="ca">★</span> AI bet recommendations</span>
-      <span style="font-size:10px;color:var(--text2)" id="rts"></span>
-    </div>
-
-    <div id="rec-list"><div class="skel" style="margin-bottom:8px"></div><div class="skel" style="width:70%"></div></div>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+    <span style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3)">★ AI Bet Recommendations</span>
+    <span style="font-size:10px;color:var(--text3)" id="rts"></span>
   </div>
-  <div class="card">
-    <div class="ct"><span class="ca">≡</span> Whale consensus heatmap</div>
-    <div id="con-list"><div class="empty">Watching for multi-whale activity...</div></div>
+  <div id="rec-list"><div class="ugrid"><div class="ucard"><div class="skel" style="margin-bottom:8px"></div><div class="skel" style="width:70%"></div></div><div class="ucard"><div class="skel" style="margin-bottom:8px"></div><div class="skel" style="width:60%"></div></div><div class="ucard"><div class="skel" style="margin-bottom:8px"></div><div class="skel" style="width:80%"></div></div></div></div>
+  <div style="margin-top:20px;margin-bottom:12px">
+    <span style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3)">≡ Whale Consensus Heatmap</span>
   </div>
-  <div class="card">
-    <div class="ct"><span class="ca">◎</span> Learning engine status</div>
-    <div id="learn-stat"></div>
+  <div id="con-list"><div class="empty">Watching for multi-whale activity...</div></div>
+  <div style="margin-top:20px;margin-bottom:12px">
+    <span style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3)">◎ Learning Engine</span>
   </div>
+  <div id="learn-stat"></div>
 </div>
 
 <!-- WHALES TAB -->
 <div id="tp-whales" class="tp page">
   <div id="cull-area"></div>
-  <div class="card">
-    <div class="ct"><span><span class="ca">◉</span> Live trade feed</span><span style="display:flex;align-items:center;gap:8px"><span id="fn" style="font-size:10px;color:var(--text2)"></span><button class="btn bsm" onclick="clearOldTrades()" title="Remove trades older than 24h">Clear Old</button></span></div>
-    <div id="wfeed"><div class="skel" style="margin-bottom:8px"></div><div class="skel" style="width:70%"></div></div>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+    <span style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3)">◉ Live Trade Feed</span>
+    <span style="display:flex;align-items:center;gap:8px">
+      <span id="fn" style="font-size:10px;color:var(--text3)"></span>
+      <button class="btn bsm" onclick="clearOldTrades()">Clear Old</button>
+    </span>
   </div>
-  <div class="card">
-    <div class="ct">
-      <span><span class="ca">★</span> Leaderboard</span>
-      <select id="lbp" onchange="fetchLB()" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:2px 7px;font-size:11px;">
-        <option value="all">All time</option><option value="1m">30 days</option><option value="7d">7 days</option>
-      </select>
-    </div>
-    <div id="lb-list"><div class="skel" style="margin-bottom:8px"></div><div class="skel" style="width:80%;margin-bottom:8px"></div><div class="skel" style="width:60%"></div></div>
+  <div id="wfeed" style="margin-bottom:24px"><div class="ugrid"><div class="ucard"><div class="skel" style="margin-bottom:8px"></div><div class="skel" style="width:70%"></div></div><div class="ucard"><div class="skel" style="margin-bottom:8px"></div><div class="skel" style="width:60%"></div></div><div class="ucard"><div class="skel" style="margin-bottom:8px"></div><div class="skel" style="width:80%"></div></div></div></div>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+    <span style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3)">★ Leaderboard</span>
+    <select id="lbp" onchange="fetchLB()" style="background:var(--elevated);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:4px 8px;font-size:11px;font-family:var(--mono);">
+      <option value="all">All time</option><option value="1m">30 days</option><option value="7d">7 days</option>
+    </select>
   </div>
+  <div id="lb-list"><div class="skel" style="margin-bottom:8px"></div><div class="skel" style="width:80%;margin-bottom:8px"></div><div class="skel" style="width:60%"></div></div>
 </div>
 
 <!-- INSIDERS TAB -->
 <div id="tp-insiders" class="tp page">
-  <div class="card" style="background:rgba(167,139,250,.04);border-color:rgba(167,139,250,.18);margin-bottom:12px">
-    <div class="ct"><span style="color:var(--purple)">◈</span> Insider anomaly detection</div>
-    <p style="font-size:12px;color:var(--text2);line-height:1.8">Flags wallets with fewer than <strong id="i-tr" style="color:var(--text)">8</strong> lifetime trades making single bets above <strong id="i-sz" style="color:var(--text)">$2,000</strong>. The fewer lifetime trades + the larger the bet = higher confidence. 1 trade + $20k+ on a political market is the single loudest signal this system can produce.</p>
+  <div class="ucard" style="border-top-color:var(--purple);margin-bottom:16px">
+    <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--purple);margin-bottom:8px">◈ Insider Anomaly Detection</div>
+    <p style="font-size:12px;color:var(--text2);line-height:1.8">Flags wallets with fewer than <strong id="i-tr" style="color:var(--text)">8</strong> lifetime trades making single bets above <strong id="i-sz" style="color:var(--text)">$2,000</strong>. Fewer lifetime trades + larger bet = higher confidence.</p>
   </div>
   <div id="ins-list"><div class="empty" style="padding:40px">Scanning markets...</div></div>
 </div>
@@ -277,67 +275,61 @@ select.inp{cursor:pointer;}
   <div id="hb-list"><div class="skel" style="margin-bottom:8px"></div><div class="skel" style="width:70%"></div></div>
 </div>
 
-<!-- POSITIONS TAB (NEW) -->
+<!-- POSITIONS TAB -->
 <div id="tp-positions" class="tp page">
   <div id="withdraw-banner" style="display:none"></div>
-  <div class="g4" style="margin-bottom:12px">
-    <div class="sc"><div class="sl">Open bets</div><div class="sv" style="color:var(--cyan)" id="pos-open">0</div></div>
-    <div class="sc"><div class="sl">At stake</div><div class="sv" style="color:var(--amber)" id="pos-staked">$0</div></div>
-    <div class="sc"><div class="sl">Resolved today</div><div class="sv" style="color:var(--green)" id="pos-res">0</div></div>
-    <div class="sc"><div class="sl">Today's P&L</div><div class="sv" id="pos-pnl">$0</div></div>
+  <div class="stat-row">
+    <div class="stat-pill"><div class="stat-lbl">Open Bets</div><div class="stat-val" style="color:var(--cyan)" id="pos-open">0</div></div>
+    <div class="stat-pill"><div class="stat-lbl">At Stake</div><div class="stat-val" style="color:var(--amber)" id="pos-staked">$0</div></div>
+    <div class="stat-pill"><div class="stat-lbl">Resolved Today</div><div class="stat-val" style="color:var(--green)" id="pos-res">0</div></div>
+    <div class="stat-pill"><div class="stat-lbl">Today's P&L</div><div class="stat-val" id="pos-pnl">$0</div></div>
   </div>
-  <div class="card">
-    <div class="ct"><span class="ca">◉</span> Open positions — live countdown to resolution</div>
-    <div id="open-positions"><div class="empty">No open positions yet. Approved trades appear here.</div></div>
-  </div>
-  <div class="card">
-    <div class="ct"><span class="ca">✓</span> Resolved bets — outcomes</div>
-    <div id="resolved-bets"><div class="empty">No resolved bets yet.</div></div>
-  </div>
+  <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:12px">◉ Open Positions — Live Countdown</div>
+  <div id="open-positions" style="margin-bottom:24px"><div class="empty">No open positions yet. Approved trades appear here.</div></div>
+  <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:12px">✓ Resolved Bets — Outcomes</div>
+  <div id="resolved-bets"><div class="empty">No resolved bets yet.</div></div>
 </div>
 
 <!-- APPROVAL QUEUE TAB -->
 <div id="tp-queue" class="tp page">
-  <div class="g3" style="margin-bottom:12px">
-    <div class="sc"><div class="sl">Pending</div><div class="sv" style="color:var(--amber)" id="qs1">0</div></div>
-    <div class="sc"><div class="sl">Executed</div><div class="sv" style="color:var(--green)" id="qs2">0</div></div>
-    <div class="sc"><div class="sl">Deployed</div><div class="sv" style="color:var(--cyan)" id="qs3">$0</div></div>
+  <div class="stat-row">
+    <div class="stat-pill"><div class="stat-lbl">Pending</div><div class="stat-val" style="color:var(--amber)" id="qs1">0</div></div>
+    <div class="stat-pill"><div class="stat-lbl">Executed</div><div class="stat-val" style="color:var(--green)" id="qs2">0</div></div>
+    <div class="stat-pill"><div class="stat-lbl">Deployed</div><div class="stat-val" style="color:var(--cyan)" id="qs3">$0</div></div>
+    <div class="stat-pill"><div class="stat-lbl">Bankroll</div><div class="stat-val" style="color:var(--text2)" id="qs4">—</div></div>
   </div>
-  <div id="q-list"></div>
-  <div class="card" style="background:var(--bg3)">
-    <div class="ct"><span class="ca">◎</span> Execution history<button class="btn bsm" onclick="clearExecHist()" style="margin-left:auto">Clear All</button></div>
-    <div id="exec-hist"><div class="empty" style="padding:16px">Nothing executed yet.</div></div>
+  <div id="q-list" style="margin-bottom:24px"></div>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+    <span style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3)">◎ Execution History</span>
+    <button class="btn bsm" onclick="clearExecHist()">Clear All</button>
   </div>
+  <div id="exec-hist"><div class="empty" style="padding:16px">Nothing executed yet.</div></div>
 </div>
 
 <!-- MY P&L TAB -->
 <div id="tp-bets" class="tp page">
-  <div id="b-empty" class="card" style="text-align:center;padding:24px">
-    <div style="font-size:24px;margin-bottom:8px">📊</div>
-    <div style="font-weight:600;font-family:var(--sans);margin-bottom:6px">Add your Polymarket wallet</div>
-    <div style="color:var(--text2);font-size:12px;margin-bottom:14px">polymarket.com → your profile → copy the 0x address from the URL</div>
+  <div id="b-empty" class="ucard" style="text-align:center;padding:32px;border-top-color:var(--green)">
+    <div style="font-size:28px;margin-bottom:10px">📊</div>
+    <div style="font-weight:700;font-size:16px;color:var(--text);margin-bottom:6px">Add your Polymarket wallet</div>
+    <div style="color:var(--text2);font-size:12px;margin-bottom:16px">polymarket.com → your profile → copy the 0x address from the URL</div>
     <input class="inp" id="mwin" placeholder="0x... proxy wallet address" style="max-width:400px;text-align:center;display:block;margin:0 auto 10px">
     <button class="btn ba" style="min-width:200px" onclick="setMW()">Start tracking →</button>
   </div>
   <div id="b-content" style="display:none">
-    <div class="g4" style="margin-bottom:12px">
-      <div class="sc"><div class="sl">All-time P&L</div><div class="sv" id="my-pnl">$0</div></div>
-      <div class="sc"><div class="sl">Win rate</div><div class="sv" style="color:var(--amber)" id="my-wr">—</div><div class="ss" id="my-wrs">—</div></div>
-      <div class="sc"><div class="sl">Profit factor</div><div class="sv" style="color:var(--cyan)" id="my-pf">—</div><div class="ss">avg win / avg loss</div></div>
-      <div class="sc"><div class="sl">Open value</div><div class="sv" style="color:var(--amber)" id="my-op">—</div></div>
+    <div class="stat-row">
+      <div class="stat-pill"><div class="stat-lbl">All-time P&L</div><div class="stat-val" id="my-pnl">$0</div></div>
+      <div class="stat-pill"><div class="stat-lbl">Win Rate</div><div class="stat-val" style="color:var(--amber)" id="my-wr">—</div><div style="font-size:10px;color:var(--text3);margin-top:2px" id="my-wrs">—</div></div>
+      <div class="stat-pill"><div class="stat-lbl">Profit Factor</div><div class="stat-val" style="color:var(--cyan)" id="my-pf">—</div><div style="font-size:10px;color:var(--text3);margin-top:2px">avg win / avg loss</div></div>
+      <div class="stat-pill"><div class="stat-lbl">Open Value</div><div class="stat-val" style="color:var(--amber)" id="my-op">—</div></div>
     </div>
-    <div class="card">
-      <div class="ct"><span class="ca">◎</span> My performance vs copied whales</div>
-      <div id="vs-whales"><div class="empty">Execute copy trades to see head-to-head comparison.</div></div>
-    </div>
-    <div class="card">
-      <div class="ct"><span class="ca">◎</span> Category breakdown</div>
-      <div id="cat-breakdown"><div class="empty">Accumulating data...</div></div>
-    </div>
-    <div class="card">
-      <div class="ct"><span class="ca">◎</span> Recent closed bets</div>
-      <div id="my-trades"><div class="skel" style="margin-bottom:8px"></div><div class="skel" style="width:75%"></div></div>
-    </div>
+    <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:12px">◎ Performance vs Copied Whales</div>
+    <div id="vs-whales" class="ucard" style="margin-bottom:16px;border-top-color:var(--cyan)"><div class="empty">Execute copy trades to see head-to-head comparison.</div></div>
+    <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:12px">◎ Category Breakdown</div>
+    <div id="cat-breakdown" class="ucard" style="margin-bottom:16px;border-top-color:var(--amber)"><div class="empty">Accumulating data...</div></div>
+    <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:12px">◎ Recent Closed Bets</div>
+    <div id="my-trades"><div class="skel" style="margin-bottom:8px"></div><div class="skel" style="width:75%"></div></div>
+  </div>
+</div>
   </div>
 </div>
 
@@ -878,30 +870,33 @@ async function sendSig(t,amt,approved){if(!C.webhook)return;try{await fetch(C.we
 // ── RENDER ───────────────────────────────────────────────────
 function renderLB(){
   const el=document.getElementById('lb-list');if(!S.wallets.length){el.innerHTML='<div class="empty">No data</div>';return;}
-  el.innerHTML=S.wallets.map(w=>{
+  el.innerHTML='<div class="ugrid">'+S.wallets.map(w=>{
     const sc=S.whaleScores[w.addr];const wr=sc?.rollingWr||w.wr;const ti=tier(wr,w.total);
     const wf=ti==='S'?'style="background:var(--amber)"':ti==='A'?'style="background:var(--cyan)"':'style="background:var(--text3)"';
     const cut=ti==='X';const act=w.active;
-    const catWrHtml=sc&&Object.keys(sc.catWr||{}).length?`<div style="font-size:10px;color:var(--text2);margin-top:3px">${Object.entries(sc.catWr).map(([k,v])=>`${k}:${v}%`).join(' · ')}</div>`:'';
-    return`<div class="row" style="${cut?'opacity:.4':''};flex-wrap:wrap">
-      <div class="rk ${w.rank<=3?'top':''}">${w.rank}</div>
-      <div style="flex:1;min-width:0">
-        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px">
-          <strong style="font-size:18px;font-family:var(--sans);letter-spacing:.01em">${w.name}</strong>${ttag(ti)}${act?'<span class="tag tg-b" style="font-size:9px">watching</span>':''}
+    const accentColor=act?'cyan':cut?'red':'border';
+    const catWrHtml=sc&&Object.keys(sc.catWr||{}).length?`<div style="font-size:10px;color:var(--text3);margin-top:6px">${Object.entries(sc.catWr).map(([k,v])=>`${k}:${v}%`).join(' · ')}</div>`:'';
+    return`<div class="ucard fade" style="border-top-color:var(--${accentColor});${cut?'opacity:.4':''}">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:10px">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <span style="font-size:20px;font-weight:800;font-family:var(--display);color:var(--text3)">${w.rank}</span>
+          <strong style="font-size:15px;font-family:var(--sans);color:#E5E5E5">${w.name}</strong>
+          ${ttag(ti)}${act?'<span class="tag tg-b" style="font-size:9px">watching</span>':''}
         </div>
-        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
-          <span class="big-num" style="color:var(--green)">${f$(w.pnl)}</span>
-          <div style="display:flex;align-items:center;gap:6px"><div class="wr-bar"><div class="wr-f" ${wf} style="width:${Math.min(wr,100)}%"></div></div><span style="font-size:11px;color:var(--text2);font-weight:600">${wr.toFixed(0)}%</span></div>
-          <span class="meta-lbl">${w.total}+ bets</span>
-          <span title="Last 5 results" style="display:inline-flex;align-items:center">${streakHtml(w.streak)}</span>
-        </div>
-        ${sc?.t30>=5?`<div style="font-size:10px;color:var(--cyan);margin-top:4px;font-weight:600">30D · ${sc.rollingWr.toFixed(0)}% (${sc.t30} bets)</div>`:''}
-        ${catWrHtml}
-        ${w.addr?`<div class="whale-pos-toggle" onclick="loadWhalePositions('${w.addr}')">▸ Currently betting on</div><div id="wp-${w.addr}" style="display:none;width:100%"></div>`:''}
+        ${!cut?`<button class="btn bsm ${act?'ba':''}" onclick="toggleW(${w.rank-1})">${act?'Stop':'Watch'}</button>`:`<span style="font-size:10px;color:var(--red)">Cut</span>`}
       </div>
-      ${!cut?`<button class="btn bsm ${act?'ba':''}" onclick="toggleW(${w.rank-1})">${act?'Stop':'Watch'}</button>`:`<span style="font-size:10px;color:var(--red)">Cut</span>`}
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px">
+        <span style="font-size:20px;font-weight:700;font-family:var(--display);color:var(--green)">${f$(w.pnl)}</span>
+        <div style="display:flex;align-items:center;gap:6px"><div class="wr-bar"><div class="wr-f" ${wf} style="width:${Math.min(wr,100)}%"></div></div><span style="font-size:12px;color:var(--text2);font-weight:600">${wr.toFixed(0)}%</span></div>
+        <span style="font-size:11px;color:var(--text3)">${w.total}+ bets</span>
+        <span style="display:inline-flex;align-items:center">${streakHtml(w.streak)}</span>
+      </div>
+      ${sc?.t30>=5?`<div style="font-size:10px;color:var(--cyan);font-weight:600;margin-bottom:4px">30D · ${sc.rollingWr.toFixed(0)}% (${sc.t30} bets)</div>`:''}
+      ${catWrHtml}
+      ${w.addr?`<div class="whale-pos-toggle" onclick="loadWhalePositions('${w.addr}')">▸ Currently betting on</div><div id="wp-${w.addr}" style="display:none;width:100%"></div>`:''}
     </div>`;
-  }).join('');
+  }).join('')+'</div>';
+}
 }
 
 // Remove trades older than a given age (ms) from S.activity and save
@@ -960,7 +955,7 @@ function renderRecs(){
 function renderCon(){
   const el=document.getElementById('con-list');const items=Object.values(S.consensus);
   if(!items.length){el.innerHTML='<div class="empty">Consensus appears when 2+ whales align on the same market</div>';return;}
-  el.innerHTML=items.slice(0,5).map(m=>{const tot=m.yes+m.no+1;const yp=Math.round(m.yes/tot*100);const np=Math.round(m.no/tot*100);return`<div class="row"><div style="flex:1;min-width:0"><div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500;font-size:12px;margin-bottom:3px">${m.market}</div><div style="font-size:11px;color:var(--text2);margin-bottom:5px">${m.whales.join(' · ')}</div><div class="con-bar"><div class="cony" style="width:${yp}%"></div><div class="conn" style="width:${np}%"></div></div><div style="display:flex;justify-content:space-between;margin-top:3px"><span style="font-size:11px;color:var(--cyan)">YES ${yp}%</span><span style="font-size:11px;color:var(--amber)">NO ${np}%</span></div></div></div>`;}).join('');
+  el.innerHTML='<div class="ugrid">'+items.slice(0,6).map(m=>{const tot=m.yes+m.no+1;const yp=Math.round(m.yes/tot*100);const np=Math.round(m.no/tot*100);return`<div class="ucard fade" style="border-top-color:var(--cyan)"><div style="font-weight:600;font-size:14px;color:#E5E5E5;margin-bottom:8px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical">${m.market}</div><div style="font-size:11px;color:var(--text3);margin-bottom:8px">${m.whales.join(' · ')}</div><div class="con-bar"><div class="cony" style="width:${yp}%"></div><div class="conn" style="width:${np}%"></div></div><div style="display:flex;justify-content:space-between;margin-top:4px"><span style="font-size:11px;color:#34d399;font-weight:700">YES ${yp}%</span><span style="font-size:11px;color:#fb7185;font-weight:700">NO ${np}%</span></div></div>`;}).join('')+'</div>';
 }
 
 function renderInsEmpty(){document.getElementById('ins-list').innerHTML='<div class="empty" style="padding:32px">Scanning markets for anomalies — large bets from wallets with fewer than '+C.insMaxTrades+' lifetime trades will appear here</div>';}
@@ -1079,19 +1074,19 @@ function renderMyPnl(){
   // Category breakdown
   const catEl=document.getElementById('cat-breakdown');
   if(Object.keys(S.catStats).length){
-    catEl.innerHTML=Object.entries(S.catStats).map(([c,d])=>`<div class="row"><div style="flex:1"><strong style="font-size:12px">${c}</strong><div style="font-size:11px;color:var(--text2)">${d.t} bets</div></div><div style="text-align:right"><div style="font-size:12px;font-weight:700;${d.pnl>=0?'color:var(--green)':'color:var(--red)'}">${d.pnl>=0?'+':''}${f$(d.pnl)}</div><div style="font-size:11px;color:var(--text2)">${d.t>0?(d.w/d.t*100).toFixed(0)+'% win':'—'}</div></div></div>`).join('');
+    catEl.innerHTML='<div class="ugrid">'+Object.entries(S.catStats).map(([c,d])=>`<div class="ucard" style="border-top-color:var(--${d.pnl>=0?'green':'red'})"><div style="font-size:14px;font-weight:700;color:#E5E5E5;margin-bottom:6px">${c}</div><div style="font-size:22px;font-weight:700;font-family:var(--display);${d.pnl>=0?'color:var(--green)':'color:var(--red)'};margin-bottom:4px">${d.pnl>=0?'+':''}${f$(d.pnl)}</div><div style="font-size:11px;color:var(--text3)">${d.t} bets · ${d.t>0?(d.w/d.t*100).toFixed(0)+'% win':'—'}</div></div>`).join('')+'</div>';
   }else{catEl.innerHTML='<div class="empty" style="padding:12px">Accumulating data...</div>';}
-  if(S.myTrades.length){document.getElementById('my-trades').innerHTML=S.myTrades.slice(0,10).map(t=>{const pl=+(t.pnl||0);return`<div class="row"><div style="flex:1;min-width:0"><div style="font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.title||t.market||'Market'}</div><div style="font-size:11px;color:var(--text2)">${f$(+(t.usdcSize||0))}</div></div><span style="font-weight:700;${pl>=0?'color:var(--green)':'color:var(--red)'}">${pl>=0?'+':''}${f$(pl)}</span></div>`;}).join('');}
+  if(S.myTrades.length){document.getElementById('my-trades').innerHTML='<div class="ugrid">'+S.myTrades.slice(0,9).map(t=>{const pl=+(t.pnl||0);return`<div class="ucard" style="border-top-color:var(--${pl>=0?'green':'red'})"><div style="font-size:13px;font-weight:600;color:#E5E5E5;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;margin-bottom:8px">${t.title||t.market||'Market'}</div><div style="font-size:11px;color:var(--text3);margin-bottom:8px">${f$(+(t.usdcSize||0))}</div><div style="font-size:18px;font-weight:700;font-family:var(--display);${pl>=0?'color:var(--green)':'color:var(--red)'}">${pl>=0?'+':''}${f$(pl)}</div></div>`;}).join('')+'</div>';}
 }
 
 function renderLearnStat(){
   const el=document.getElementById('learn-stat');const tw=Object.keys(S.whaleScores).length;const rm=Object.keys(S.mktOutcomes).length;
-  el.innerHTML=`<div class="g3" style="margin-bottom:10px">
-    <div class="sc"><div class="sl">Whales scored</div><div class="sv" style="color:var(--cyan)">${tw}</div></div>
-    <div class="sc"><div class="sl">Markets resolved</div><div class="sv" style="color:var(--green)">${rm}</div></div>
-    <div class="sc"><div class="sl">Bets tracked</div><div class="sv" style="color:var(--amber)">${S.totalTracked}</div></div>
+  el.innerHTML=`<div class="ugrid" style="margin-bottom:12px">
+    <div class="ucard" style="border-top-color:var(--cyan)"><div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;font-weight:600;margin-bottom:6px">Whales Scored</div><div style="font-size:28px;font-weight:700;font-family:var(--display);color:var(--cyan)">${tw}</div></div>
+    <div class="ucard" style="border-top-color:var(--green)"><div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;font-weight:600;margin-bottom:6px">Markets Resolved</div><div style="font-size:28px;font-weight:700;font-family:var(--display);color:var(--green)">${rm}</div></div>
+    <div class="ucard" style="border-top-color:var(--amber)"><div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;font-weight:600;margin-bottom:6px">Bets Tracked</div><div style="font-size:28px;font-weight:700;font-family:var(--display);color:var(--amber)">${S.totalTracked}</div></div>
   </div>
-  <p style="font-size:12px;color:var(--text2);line-height:1.8">${tw<3?'Watch whales to begin. Tiers and recommendations improve as markets resolve.':'Tier badges reflect rolling 30-day performance, not just all-time. Category win rates build per whale over time — useful for filtering which whale to follow on which type of bet.'}</p>`;
+  <p style="font-size:12px;color:var(--text2);line-height:1.8">${tw<3?'Watch whales to begin. Tiers and recommendations improve as markets resolve.':'Tier badges reflect rolling 30-day performance, not just all-time. Category win rates build per whale over time.'}</p>`;
 }
 
 function renderRecStats(){
@@ -1101,7 +1096,7 @@ function renderRecStats(){
   const bh=document.getElementById('bankroll-hdr');if(C.bankroll){bh.style.display='inline-block';bh.innerHTML=`<span style="color:var(--text3);font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-family:var(--mono);font-weight:600;margin-right:8px">Bankroll</span><span style="color:var(--cyan);font-weight:700;font-family:var(--display)">${f$(C.bankroll)}</span>`;}
 }
 
-function renderQStats(){document.getElementById('qs1').textContent=S.queue.filter(q=>q.status==='pending').length;document.getElementById('qs2').textContent=S.execCount;document.getElementById('qs3').textContent=f$(S.deployedTotal);}
+function renderQStats(){document.getElementById('qs1').textContent=S.queue.filter(q=>q.status==='pending').length;document.getElementById('qs2').textContent=S.execCount;document.getElementById('qs3').textContent=f$(S.deployedTotal);const qs4=document.getElementById('qs4');if(qs4)qs4.textContent=f$(C.bankroll);}
 
 function updateBadges(){
   const qc=S.queue.filter(q=>q.status==='pending').length;const qb=document.getElementById('nb-q');qb.style.display=qc>0?'inline-block':'none';qb.textContent=qc;
