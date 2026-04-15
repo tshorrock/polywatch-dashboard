@@ -383,10 +383,10 @@ select.inp{cursor:pointer;}
     <div class="ct"><span class="ca">◎</span> Signal detection</div>
     <div class="g2">
       <div>
-        <label class="lbl">Min whale trade (USDC) — <strong style="color:var(--amber)">$1,500 rec.</strong></label>
-        <input class="inp" id="s-mw" type="number" value="1500">
-        <label class="lbl">Min insider bet (USDC) — <strong style="color:var(--amber)">$2,000 rec.</strong></label>
-        <input class="inp" id="s-mi" type="number" value="2000">
+        <label class="lbl">Min whale trade (USDC) — <strong style="color:var(--amber)">$100 rec.</strong></label>
+        <input class="inp" id="s-mw" type="number" value="100">
+        <label class="lbl">Min insider bet (USDC) — <strong style="color:var(--amber)">$500 rec.</strong></label>
+        <input class="inp" id="s-mi" type="number" value="500">
       </div>
       <div>
         <label class="lbl">Max insider lifetime trades — <strong style="color:var(--amber)">8 rec.</strong></label>
@@ -434,7 +434,7 @@ select.inp{cursor:pointer;}
 </div><!-- .pw-shell -->
 <script>
 // ── CONFIG ──────────────────────────────────────────────────
-const DEF={bankroll:2000,minWhale:500,minInsider:2000,insMaxTrades:8,pollMin:60,copyPct:20,maxTrade:750,maxDaily:2000,maxDailyCount:4,t1Wr:72,t1Bets:250,t2Wr:65,t2Bets:125,cutWr:60,cutBets:75,maxWL:12,webhook:'',myWallet:'',withdrawReminder:200};
+const DEF={bankroll:2000,minWhale:100,minInsider:500,insMaxTrades:8,pollMin:60,copyPct:20,maxTrade:750,maxDaily:2000,maxDailyCount:4,t1Wr:72,t1Bets:250,t2Wr:65,t2Bets:125,cutWr:60,cutBets:75,maxWL:12,webhook:'',myWallet:'',withdrawReminder:200};
 let C={...DEF};
 
 // ── STATE ───────────────────────────────────────────────────
@@ -632,8 +632,8 @@ function buildRecs(){
   // Consensus = any market with 2+ whales (track for heatmap)
   S.consensus={};Object.values(mm).forEach(m=>{if(m.whales.length>=2)S.consensus[m.market]=m;});
   const recs=[];
-  // Multi-whale consensus recs — lowered volume floor from $2000 → $500
-  Object.values(mm).filter(m=>m.whales.length>=2&&m.tot>=500).forEach(m=>{
+  // Multi-whale consensus recs — lowered volume floor to $200
+  Object.values(mm).filter(m=>m.whales.length>=2&&m.tot>=200).forEach(m=>{
     const side=m.yes>=m.no?'YES':'NO';const sig=Math.abs(m.yes-m.no)/(m.yes+m.no+1);
     const ap=m.prices.reduce((a,b)=>a+b,0)/m.prices.length;
     const wp=Math.min(.95,Math.max(.05,side==='YES'?ap+sig*.2:1-ap+sig*.2));
@@ -643,10 +643,10 @@ function buildRecs(){
     const priceShift=m.prices.length>1?Math.abs(m.prices[0]-m.prices[m.prices.length-1]):0;
     recs.push({...m,side,sig,ap,sz,conf,wc:m.whales.length,type:'consensus',priceShift});
   });
-  // Single-whale recs:
-  //  - S/A tier: size >= $750
-  //  - W tier (CHANGE 11): size >= $3000
-  Object.values(mm).filter(m=>m.whales.length===1&&((m.topWhaleTier==='S'||m.topWhaleTier==='A')&&m.topBet>=750||m.topWhaleTier==='W'&&m.topBet>=3000)).forEach(m=>{
+  // Single-whale recs — loosened so content actually appears:
+  //  - S/A tier: size >= $200
+  //  - W tier: size >= $1000
+  Object.values(mm).filter(m=>m.whales.length===1&&((m.topWhaleTier==='S'||m.topWhaleTier==='A')&&m.topBet>=200||m.topWhaleTier==='W'&&m.topBet>=1000)).forEach(m=>{
     const side=m.yes>=m.no?'YES':'NO';const ap=m.prices[0]||.5;
     const odds=side==='YES'?(1-ap)/ap:ap/(1-ap);
     const wr=S.whaleScores[S.wallets.find(w=>w.name===m.topWhale)?.addr]?.rollingWr||70;
@@ -663,12 +663,39 @@ function buildRecs(){
 async function fetchLB(){
   const p=document.getElementById('lbp').value;let ws=null;
   try{
-    // Upstream /v1/leaderboard silently ignores window=*; the real param is timePeriod=ALL|MONTH|WEEK|DAY with orderBy=PNL.
+    // Multi-period merge: fetch WEEK + DAY (actually active traders) alongside the selected period.
+    // ALL-time leaders are mostly 2024 election whales who aren't trading anymore.
     const tp=p==='1m'?'MONTH':(p==='7d'||p==='1w')?'WEEK':'ALL';
-    const r=await fetch(`https://polywatch-api-production.up.railway.app/proxy/leaderboard?timePeriod=${tp}&limit=20&orderBy=PNL`);
-    if(!r.ok)throw 0;const raw=await r.json();const arr=Array.isArray(raw)?raw:(raw.data||raw.users||[]);
-    if(arr.length){
-      ws=arr.map((u,i)=>{const addr=(u.proxyWallet||u.proxyAddress||u.address||'').toLowerCase();const nm=u.userName||u.name||u.username||(addr?addr.slice(0,6)+'...'+addr.slice(-4):'Anon'+(i+1));return{rank:+u.rank||i+1,name:nm,addr:addr,pnl:+u.pnl||0,vol:+u.vol||+u.volume||0,wins:0,total:150,wr:65,streak:[],active:false,verified:!!u.verifiedBadge};});
+    const urls=[
+      `https://polywatch-api-production.up.railway.app/proxy/leaderboard?timePeriod=${tp}&limit=20&orderBy=PNL`,
+      `https://polywatch-api-production.up.railway.app/proxy/leaderboard?timePeriod=WEEK&limit=20&orderBy=PNL`,
+      `https://polywatch-api-production.up.railway.app/proxy/leaderboard?timePeriod=DAY&limit=15&orderBy=PNL`,
+    ];
+    const results=await Promise.all(urls.map(u=>fetch(u).then(r=>r.ok?r.json():[]).catch(()=>[])));
+    // Merge and deduplicate by address, prioritizing recent activity
+    const byAddr={};
+    const parseList=(arr,source)=>{
+      const list=Array.isArray(arr)?arr:(arr.data||arr.users||[]);
+      list.forEach((u,i)=>{
+        const addr=(u.proxyWallet||u.proxyAddress||u.address||'').toLowerCase();if(!addr)return;
+        const nm=u.userName||u.name||u.username||(addr.slice(0,6)+'...'+addr.slice(-4));
+        if(!byAddr[addr]){
+          byAddr[addr]={name:nm,addr,pnl:+u.pnl||0,vol:+u.vol||+u.volume||0,wins:0,total:150,wr:65,streak:[],active:false,verified:!!u.verifiedBadge,sources:[],freshScore:0};
+        }
+        if(!byAddr[addr].sources.includes(source))byAddr[addr].sources.push(source);
+        // Higher freshScore = more recently active = prioritized
+        if(source==='DAY')byAddr[addr].freshScore+=3;
+        else if(source==='WEEK')byAddr[addr].freshScore+=2;
+        else byAddr[addr].freshScore+=1;
+        // Keep highest PnL
+        if((+u.pnl||0)>byAddr[addr].pnl)byAddr[addr].pnl=+u.pnl||0;
+      });
+    };
+    parseList(results[0],tp);parseList(results[1],'WEEK');parseList(results[2],'DAY');
+    // Sort: recently active first (freshScore), then by PnL
+    const merged=Object.values(byAddr).sort((a,b)=>(b.freshScore-a.freshScore)||b.pnl-a.pnl);
+    if(merged.length){
+      ws=merged.slice(0,25).map((w,i)=>({...w,rank:i+1}));
       S.apiLive=true;S.demo=false;
     }
   }catch(e){S.demo=true;}
@@ -684,7 +711,7 @@ async function fetchLB(){
 async function fetchAct(w){
   if(!w.addr||!w.active)return;
   try{
-    const r=await fetch(`https://polywatch-api-production.up.railway.app/proxy/activity?user=${w.addr}&limit=30`);if(!r.ok)return;
+    const r=await fetch(`https://polywatch-api-production.up.railway.app/proxy/activity?user=${w.addr}&limit=50`);if(!r.ok)return;
     const raw=await r.json();const arr=Array.isArray(raw)?raw:(raw.data||[]);
     arr.forEach(a=>{
       // Skip non-trade events (REDEEM, etc.) — only count BUY/SELL activity
@@ -710,8 +737,8 @@ async function detectIns(){
   try{
     const r=await fetch(`https://polywatch-api-production.up.railway.app/proxy/trades?limit=100`);if(!r.ok)throw 0;
     const raw=await r.json();const ts=Array.isArray(raw)?raw:(raw.data||[]);
-    // Only scan the first 40 trades to avoid hammering the proxy with 100 sequential history calls
-    for(const t of ts.slice(0,40)){
+    // Scan 80 trades for insider anomalies (more coverage = more detections)
+    for(const t of ts.slice(0,80)){
       // /proxy/trades returns size as shares; USDC notional = size * price
       const sz=+(t.usdcSize||(+(t.size||0)*+(t.price||0))||0);if(sz<C.minInsider)continue;
       const addr=(t.proxyWallet||t.maker||t.taker||t.user||'').toLowerCase();if(!addr)continue;
@@ -875,7 +902,7 @@ function renderLB(){
       <div class="rk ${w.rank<=3?'top':''}">${w.rank}</div>
       <div style="flex:1;min-width:0">
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px">
-          <strong style="font-size:18px;font-family:var(--sans);letter-spacing:.01em">${w.name}</strong>${ttag(ti)}${act?'<span class="tag tg-b" style="font-size:11px">watching</span>':''}
+          <strong style="font-size:18px;font-family:var(--sans);letter-spacing:.01em">${w.name}</strong>${ttag(ti)}${w.sources&&w.sources.includes('DAY')?'<span class="tag" style="background:var(--gdim);color:var(--green);border:1px solid var(--gmid);font-size:11px">active today</span>':w.sources&&w.sources.includes('WEEK')?'<span class="tag" style="background:var(--adim);color:var(--amber);border:1px solid var(--amid);font-size:11px">active this week</span>':''}${act?'<span class="tag tg-b" style="font-size:11px">watching</span>':''}
         </div>
         <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
           <span class="big-num" style="color:var(--green)">${f$(w.pnl)}</span>
@@ -907,9 +934,12 @@ function clearOldTrades(){
   showToast('Feed cleaned',n?n+' old trade'+(n>1?'s':'')+' removed':'No trades older than 24h','info');
 }
 function renderFeed(){
-  const el=document.getElementById('wfeed');const items=S.activity;
-  document.getElementById('fn').textContent=S.apiLive?'Live \u00b7 '+S.tradeCount+' signals':'Polls every '+C.pollMin+'min';
-  if(!items.length){el.innerHTML='<div class="empty">Watching for whale trades</div>';return;}
+  const el=document.getElementById('wfeed');
+  // Filter out trades older than 7 days — keeps the feed fresh and relevant
+  const sevenDaysAgo=Date.now()-7*86400000;
+  const items=S.activity.filter(t=>t.ts>=sevenDaysAgo);
+  document.getElementById('fn').textContent=S.apiLive?'Live \u00b7 '+items.length+' recent signals':'Polls every '+C.pollMin+'min';
+  if(!items.length){el.innerHTML='<div class="empty">No whale trades in the last 7 days. Watching...</div>';return;}
   el.innerHTML='<div class="ugrid">'+items.slice(0,12).map(t=>{const d=dirOf(t.outcome);return uCard({
     accent:'cyan',
     tags:[dirTag(d),`<span class="tag ${t.side==='BUY'?'tg-b':'tg-s'}" style="font-size:11px">${t.side}</span>`,`<span style="font-size:11px;padding:1px 6px;border-radius:100px;background:var(--gydim);color:var(--text2);border:1px solid var(--gymid)">${cat(t.market)}</span>`],
@@ -921,16 +951,24 @@ function renderFeed(){
 function renderRecs(){
   const recs=buildRecs();const el=document.getElementById('rec-list');document.getElementById('rts').textContent=now();
   if(!recs.length){
-    const wc=S.wallets.length;
-    const ac=S.wallets.filter(w=>w.active).length;
-    const actN=S.activity.length;
-    const apiState=S.apiLive?'API live':'API offline';
-    let msg='';
-    if(!wc){msg=`<strong style="color:var(--red)">0 whales loaded · ${apiState}</strong><br><span style="color:var(--text2);font-size:11px">Check polywatch-api is deployed on Railway</span>`;}
-    else if(!ac){msg=`<strong style="color:var(--amber)">${wc} whales loaded · 0 active · ${apiState}</strong><br><span style="color:var(--text2);font-size:11px">Activate whales in the Whales tab</span>`;}
-    else if(!actN){msg=`<strong style="color:var(--cyan)">${wc} whales loaded · ${ac} active · ${apiState}</strong><br><span style="color:var(--text2);font-size:11px">0 qualifying trades yet — waiting for activity above $${C.minWhale}</span>`;}
-    else {msg=`<strong style="color:var(--cyan)">${wc} whales · ${ac} active · ${actN} recent trades · ${apiState}</strong><br><span style="color:var(--text2);font-size:11px">No recs built yet — waiting for consensus or large single-whale bets</span>`;}
-    el.innerHTML=`<div class="empty" style="padding:28px 0;line-height:1.8">${msg}</div>`;
+    // Fallback: show latest whale signals as individual cards instead of empty state
+    const recent=S.activity.slice(0,9);
+    if(recent.length){
+      el.innerHTML='<div style="font-size:11px;color:var(--amber);margin-bottom:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase">No multi-whale consensus yet — showing latest individual signals</div><div class="ugrid">'+recent.map(t=>{const d=dirOf(t.outcome);return uCard({
+        accent:'amber',
+        tags:[dirTag(d),`<span class="tag ${t.side==='BUY'?'tg-b':'tg-s'}" style="font-size:11px">${t.side}</span>`,`<span style="font-size:11px;padding:1px 6px;border-radius:100px;background:var(--gydim);color:var(--text2);border:1px solid var(--gymid)">${cat(t.market)}</span>`],
+        title:t.market,slug:t.slug,ts:t.ts,
+        mid:`<strong>${t.name}</strong> · <span style="font-family:var(--mono);color:#fff;font-size:16px;font-weight:700">${f$(t.size)}</span> @ ${Math.round(t.price*100)}¢`,
+        actions:`<button class="btn ba bsm" onclick="addRecQ('${encodeURIComponent(t.market)}','${dirOf(t.outcome)}',${t.price},${t.size})">Queue →</button>`,
+      });}).join('')+'</div>';
+    } else {
+      const wc=S.wallets.length;const ac=S.wallets.filter(w=>w.active).length;const apiState=S.apiLive?'API live':'API offline';
+      let msg='';
+      if(!wc){msg=`<strong style="color:var(--red)">0 whales loaded · ${apiState}</strong><br><span style="color:var(--text2);font-size:11px">Check polywatch-api is deployed on Railway</span>`;}
+      else if(!ac){msg=`<strong style="color:var(--amber)">${wc} whales loaded · 0 active · ${apiState}</strong><br><span style="color:var(--text2);font-size:11px">Activate whales in the Whales tab</span>`;}
+      else{msg=`<strong style="color:var(--cyan)">${wc} whales · ${ac} active · ${apiState}</strong><br><span style="color:var(--text2);font-size:11px">Waiting for whale activity above $${C.minWhale}</span>`;}
+      el.innerHTML=`<div class="empty" style="padding:28px 0;line-height:1.8">${msg}</div>`;
+    }
     return;
   }
   el.innerHTML='<div class="ugrid">'+recs.map(r=>{
@@ -1366,8 +1404,8 @@ function applyUI(){document.getElementById('s-br').value=C.bankroll;document.get
 
 // ── POLL ─────────────────────────────────────────────────────
 async function poll(){
-  // Auto-purge trades older than 48h each poll cycle
-  purgeOldTrades(48*3600000);
+  // Auto-purge trades older than 24h each poll cycle — keeps feed fresh
+  purgeOldTrades(24*3600000);
   await fetchLB();
   for(const w of S.wallets.filter(x=>x.active&&x.addr))await fetchAct(w);
   await detectIns();
@@ -1387,6 +1425,9 @@ function restartPoll(){clearInterval(S.pollTimer);clearInterval(S.resolutionTime
   renderLearnStat();renderQStats();renderExecHist();updateBadges();renderRecs();renderCon();renderRecStats();renderPositions();
   if(C.myWallet){document.getElementById('b-empty').style.display='none';document.getElementById('b-content').style.display='block';fetchPortfolio(C.myWallet);}
   await poll();restartPoll();
+  // Pre-load Hot Bets + BTC data in background so they're ready when tabs are opened
+  fetchHotBets().catch(()=>{});
+  initBtcPrice();fetchBtcMarkets().catch(()=>{});
 })();
 
 
