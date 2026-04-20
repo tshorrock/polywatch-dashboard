@@ -314,94 +314,17 @@ input, select, textarea{ font: inherit; color: inherit; }
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   HERO CARD — bankroll, P&L, sparkline
-   ═══════════════════════════════════════════════════════════════ */
-.hero{
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 24px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--rxl);
-  padding: 28px 32px;
-  margin-bottom: 20px;
-  position: relative;
-  overflow: hidden;
-}
-.hero::before{
-  content: ""; position: absolute;
-  top: -40%; right: -10%;
-  width: 440px; height: 440px;
-  background: radial-gradient(circle, rgba(6,182,212,0.08) 0%, transparent 60%);
-  pointer-events: none;
-}
-.hero-label{
-  font-family: var(--mono); font-size: 11px; font-weight: 600;
-  letter-spacing: 0.1em; text-transform: uppercase;
-  color: var(--faint);
-  margin-bottom: 8px;
-}
-.hero-value{
-  font-family: var(--display);
-  font-variant-numeric: tabular-nums;
-  font-size: 56px; font-weight: 600;
-  letter-spacing: -0.03em;
-  line-height: 1;
-  color: var(--text);
-  margin-bottom: 10px;
-}
-.hero-meta{
-  display: flex; align-items: center; gap: 16px;
-  font-size: 13px;
-  flex-wrap: wrap;
-}
-.hero-delta{
-  display: inline-flex; align-items: center; gap: 5px;
-  font-family: var(--mono); font-variant-numeric: tabular-nums;
-  font-weight: 600;
-  padding: 3px 9px;
-  border-radius: 100px;
-  font-size: 12px;
-}
-.hero-delta.up{ color: var(--green); background: var(--green-bg); }
-.hero-delta.down{ color: var(--red); background: var(--red-bg); }
-.hero-sub{ color: var(--muted); font-size: 12px; }
-
-.hero-aside{
-  display: flex; flex-direction: column; gap: 10px;
-  align-items: flex-end;
-  position: relative; z-index: 1;
-}
-.hero-aside-item{
-  text-align: right;
-  padding: 8px 14px;
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  min-width: 130px;
-}
-.hero-aside-item .k{
-  font-family: var(--mono); font-size: 10px; font-weight: 600;
-  letter-spacing: 0.08em; text-transform: uppercase;
-  color: var(--faint);
-}
-.hero-aside-item .v{
-  font-family: var(--mono); font-variant-numeric: tabular-nums;
-  font-size: 16px; font-weight: 600;
-  color: var(--text);
-  margin-top: 2px;
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   STATS ROW
+   STATS ROW — single unified row, bankroll featured
    ═══════════════════════════════════════════════════════════════ */
 .stats-row{
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: 1.6fr 1fr 1fr 1fr 1fr 1fr;
   gap: 14px;
   margin-bottom: 20px;
 }
-@media (max-width: 1100px){ .stats-row{ grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 1400px){ .stats-row{ grid-template-columns: 1.5fr repeat(5, 1fr); } }
+@media (max-width: 1100px){ .stats-row{ grid-template-columns: 1fr 1fr 1fr; } }
+@media (max-width: 700px){ .stats-row{ grid-template-columns: 1fr 1fr; } }
 
 .stat-pill{
   background: var(--surface);
@@ -409,6 +332,9 @@ input, select, textarea{ font: inherit; color: inherit; }
   border-radius: var(--rl);
   padding: 18px 20px;
   transition: border-color .12s;
+  position: relative;
+  overflow: hidden;
+  min-width: 0;
 }
 .stat-pill:hover{ border-color: var(--border-2); }
 .stat-pill .sl{
@@ -427,7 +353,41 @@ input, select, textarea{ font: inherit; color: inherit; }
   line-height: 1.1;
   display: block;
   text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
+
+/* Featured bankroll cell */
+.stat-featured{
+  padding: 22px 24px;
+}
+.stat-featured::before{
+  content: ""; position: absolute;
+  top: -50%; right: -15%;
+  width: 320px; height: 320px;
+  background: radial-gradient(circle, rgba(6,182,212,0.10) 0%, transparent 60%);
+  pointer-events: none;
+}
+.stat-featured .sv{
+  font-size: 44px;
+  margin-bottom: 6px;
+  position: relative; z-index: 1;
+}
+.stat-sub{
+  font-family: var(--mono); font-variant-numeric: tabular-nums;
+  font-size: 12px;
+  color: var(--muted);
+  position: relative; z-index: 1;
+  margin-top: 4px;
+}
+
+/* Today's P&L pill inline — colored value directly */
+.hero-delta-inline{
+  font-family: var(--mono);
+  color: var(--green);
+}
+.hero-delta-inline.down{ color: var(--red); }
 
 /* ═══════════════════════════════════════════════════════════════
    PANELS (cards)
@@ -935,10 +895,7 @@ select.inp{ cursor: pointer; }
   .side-item{ padding: 8px 12px; font-size: 11px; white-space: nowrap; }
   .side-item span{ display: none; }
   .dash{ padding: 16px 14px 80px; }
-  .hero{ padding: 20px; grid-template-columns: 1fr; }
-  .hero-value{ font-size: 40px; }
-  .hero-aside{ flex-direction: row; align-items: flex-start; }
-  .stats-row{ grid-template-columns: repeat(2, 1fr); }
+  .stats-row{ grid-template-columns: 1fr 1fr; }
 }
 </style>
 </head>
@@ -978,43 +935,42 @@ select.inp{ cursor: pointer; }
   <div class="dash">
     <div id="toast-container"></div>
 
-    <!-- HERO -->
-    <section class="hero" id="sec-hero">
-      <div>
-        <div class="hero-label">Total Bankroll</div>
-        <div class="hero-value" id="hero-bankroll">$0.00</div>
-        <div class="hero-meta">
-          <span class="hero-delta up" id="hero-today">+$0</span>
-          <span class="hero-sub">today's P&amp;L</span>
-          <span class="hero-sub" id="hero-winrate">·&nbsp; 0% win rate</span>
+    <!-- UNIFIED STATS ROW -->
+    <div class="stats-row">
+      <div class="stat-pill stat-featured">
+        <span class="sl">Total Bankroll</span>
+        <span class="sv" id="hero-bankroll">$0</span>
+        <div class="stat-sub">
+          <span>
+            <strong id="hero-open" style="color:var(--text);font-weight:600">0</strong>
+            <span style="color:var(--faint)"> open ·</span>
+            <strong id="hero-deployed" style="color:var(--text);font-weight:600">$0</strong>
+            <span style="color:var(--faint)"> deployed</span>
+          </span>
         </div>
       </div>
-      <div class="hero-aside">
-        <div class="hero-aside-item">
-          <div class="k">Open</div>
-          <div class="v" id="hero-open">0</div>
-        </div>
-        <div class="hero-aside-item">
-          <div class="k">Deployed</div>
-          <div class="v" id="hero-deployed">$0</div>
-        </div>
-      </div>
-    </section>
 
-    <!-- STATS ROW -->
-    <div class="stats-row" id="sig-stats">
+      <div class="stat-pill">
+        <span class="sl">Today's P&amp;L</span>
+        <span class="sv hero-delta-inline" id="hero-today">+$0</span>
+      </div>
+
       <div class="stat-pill">
         <span class="sl">Watched Whales</span>
         <span class="sv" id="r1" style="color:var(--accent-2)">—</span>
       </div>
+
       <div class="stat-pill">
         <span class="sl">Active Signals</span>
         <span class="sv" id="r2" style="color:var(--amber)">—</span>
       </div>
+
       <div class="stat-pill">
         <span class="sl">Win Rate</span>
         <span class="sv" id="r3" style="color:var(--green)">—</span>
+        <div class="stat-sub" id="hero-winrate" style="color:var(--faint)">0 resolved</div>
       </div>
+
       <div class="stat-pill">
         <span class="sl">All-Time P&amp;L</span>
         <span class="sv" id="r4">$0</span>
@@ -1193,24 +1149,23 @@ function scrollToSection(id){
   if(clicked && clicked.classList) clicked.classList.add('active');
 }
 function renderHero(){
-  // Bankroll in hero + sidebar kv
+  // Bankroll (featured cell + sidebar stubs)
   const br = C.bankroll || 0;
   const brStr = '$' + br.toLocaleString(undefined, {maximumFractionDigits:0});
   const bh = document.getElementById('hero-bankroll'); if(bh) bh.textContent = brStr;
   const bb = document.getElementById('bankroll-big');  if(bb) bb.textContent = brStr;
-  // Today P&L pill
+  // Today P&L — its own stat pill, colored by sign
   const td = S.todayPnl || 0;
   const te = document.getElementById('hero-today');
   if(te){
     te.textContent = (td>=0?'+':'') + '$' + Math.abs(Math.round(td)).toLocaleString();
-    te.className = 'hero-delta ' + (td>=0?'up':'down');
+    te.className = 'sv hero-delta-inline ' + (td>=0?'up':'down');
   }
-  // Win rate subline
+  // Win rate subline below Win Rate stat
   const tot = (S.myWins||0) + (S.myLosses||0);
-  const wr = tot>0 ? Math.round((S.myWins/tot)*100) : 0;
   const we = document.getElementById('hero-winrate');
-  if(we) we.textContent = '·  ' + wr + '% win rate · ' + tot + ' resolved';
-  // Aside: open + deployed
+  if(we) we.textContent = tot + ' resolved';
+  // Aside within bankroll cell
   const open = (S.openPositions||[]).length;
   const dep = S.deployedTotal || 0;
   const oe = document.getElementById('hero-open');     if(oe) oe.textContent = open;
