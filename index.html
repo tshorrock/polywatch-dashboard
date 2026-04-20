@@ -877,183 +877,7 @@ select.inp{ cursor: pointer; }
 /* Hide the legacy header elements we no longer render */
 .hdr-mid, .hdr-right-old { display: none; }
 
-/* ═══════════════════════════════════════════════════════════════
-   V10 — status strip, insider hero, whales hero
-   ═══════════════════════════════════════════════════════════════ */
-
-/* Thin always-visible status strip (replaces the old hero + stats row) */
-.status-strip{
-  display: flex;
-  align-items: center;
-  gap: 28px;
-  padding: 14px 20px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--rl);
-  margin-bottom: 16px;
-  flex-wrap: wrap;
-}
-.status-item{
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-}
-.status-item .k{
-  font-family: var(--mono);
-  font-size: 10px;
-  font-weight: 600;
-  color: var(--faint);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-.status-item .v{
-  font-family: var(--display);
-  font-variant-numeric: tabular-nums;
-  font-size: 22px;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
-  color: var(--text);
-}
-
-/* Panel title with main + sub lines */
-.panel-title .title-main{
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  text-transform: none;
-  color: var(--text);
-}
-.panel-title .title-sub{
-  font-family: var(--mono);
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--faint);
-  letter-spacing: 0;
-  text-transform: none;
-  margin-top: 2px;
-}
-.panel-title .ico.ins{
-  background: var(--purple-bg);
-  border-color: rgba(167,139,250,0.4);
-  color: var(--purple);
-  font-size: 14px;
-}
-
-/* INSIDER HERO — the prominent purple-accented section */
-.insider-hero{
-  border: 1px solid rgba(167,139,250,0.35);
-  background: linear-gradient(180deg, rgba(167,139,250,0.06) 0%, var(--surface) 70%);
-  margin-bottom: 16px;
-  position: relative;
-}
-.insider-hero::before{
-  content: ""; position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent 0%, var(--purple) 40%, var(--purple) 60%, transparent 100%);
-  opacity: 0.6;
-}
-.insider-hdr{
-  background: rgba(167,139,250,0.04);
-  border-bottom-color: rgba(167,139,250,0.2);
-}
-
-/* Enhanced insider cards (live DOM-transformed by renderInsiderHero wrapper) */
-#ins-list .sig-item.ins, #ins-list .ins-card{
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-left: 4px solid var(--purple);
-  border-radius: 12px;
-  padding: 16px 18px;
-  margin-bottom: 12px;
-  transition: border-color .12s, background .12s;
-}
-#ins-list .sig-item.ins:hover, #ins-list .ins-card:hover{
-  border-color: rgba(167,139,250,0.4);
-  background: var(--surface-3);
-}
-#ins-list .sig-item.ins.political, #ins-list .ins-card.political{
-  border-left-color: var(--red);
-  background: linear-gradient(180deg, rgba(239,68,68,0.04) 0%, var(--surface-2) 100%);
-}
-#ins-list .sig-item.ins.political:hover{
-  border-color: rgba(239,68,68,0.4);
-}
-#ins-list .ins-anomaly-type{
-  display: inline-block;
-  font-family: var(--mono);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  padding: 3px 8px;
-  border-radius: 4px;
-  background: var(--purple-bg);
-  color: var(--purple);
-  border: 1px solid rgba(167,139,250,0.35);
-}
-#ins-list .ins-anomaly-type.political{
-  background: var(--red-bg);
-  color: var(--red);
-  border-color: rgba(239,68,68,0.35);
-}
-#ins-list .ins-market-title{
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 1.4;
-  margin: 8px 0;
-  color: var(--text);
-}
-#ins-list .ins-wallet{
-  font-family: var(--mono);
-  font-variant-numeric: tabular-nums;
-  font-size: 11px;
-  color: var(--muted);
-}
-#ins-list .ins-wallet strong{
-  color: var(--red);
-  font-weight: 700;
-}
-#ins-list .ins-stats{
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin-top: 10px;
-  font-family: var(--mono);
-  font-variant-numeric: tabular-nums;
-  font-size: 12px;
-}
-#ins-list .ins-size{
-  color: var(--amber);
-  font-weight: 700;
-  font-size: 18px;
-  font-family: var(--display);
-}
-
-/* WHALES HERO */
-.whales-hero{
-  border: 1px solid var(--border);
-  margin-bottom: 16px;
-}
-
-/* Signal card in hero — larger, more info-dense */
-.whales-hero .sig-item{
-  padding: 16px 18px;
-  margin-bottom: 12px;
-  background: var(--surface-2);
-}
-.whales-hero .sig-item.rec{
-  border-left: 4px solid var(--accent-2);
-}
-.whales-hero .sig-item:hover{
-  background: var(--surface-3);
-}
-
-/* Hide the now-unused .stats-row + .stat-featured + .grid from v9 to avoid orphan rules */
-
+/* Mobile adjustments */
 @media (max-width: 900px){
   .side{
     position: fixed; bottom: 0; left: 0; right: 0; top: auto;
@@ -1092,7 +916,7 @@ select.inp{ cursor: pointer; }
     <div class="hdr-brand">
       <div class="brand-mark">🐋</div>
       <span class="logo">PolyWatch</span>
-      <span class="vtag">v10</span>
+      <span class="vtag">v9</span>
     </div>
     <div class="hdr-status">
       <span class="dot dotd pulse" id="hd"></span>
@@ -1111,66 +935,131 @@ select.inp{ cursor: pointer; }
   <div class="dash">
     <div id="toast-container"></div>
 
-    <!-- STATUS STRIP (thin, always visible) -->
-    <div class="status-strip">
-      <div class="status-item">
-        <span class="k">Bankroll</span>
-        <span class="v" id="hero-bankroll">$0</span>
+    <!-- UNIFIED STATS ROW -->
+    <div class="stats-row">
+      <div class="stat-pill stat-featured">
+        <span class="sl">Total Bankroll</span>
+        <span class="sv" id="hero-bankroll">$0</span>
+        <div class="stat-sub">
+          <span>
+            <strong id="hero-open" style="color:var(--text);font-weight:600">0</strong>
+            <span style="color:var(--faint)"> open ·</span>
+            <strong id="hero-deployed" style="color:var(--text);font-weight:600">$0</strong>
+            <span style="color:var(--faint)"> deployed</span>
+          </span>
+        </div>
       </div>
-      <div class="status-item">
-        <span class="k">Today</span>
-        <span class="v hero-delta-inline" id="hero-today">+$0</span>
+
+      <div class="stat-pill">
+        <span class="sl">Today's P&amp;L</span>
+        <span class="sv hero-delta-inline" id="hero-today">+$0</span>
       </div>
-      <div class="status-item">
-        <span class="k">Open</span>
-        <span class="v" id="hero-open">0</span>
+
+      <div class="stat-pill">
+        <span class="sl">Watched Whales</span>
+        <span class="sv" id="r1" style="color:var(--accent-2)">—</span>
       </div>
-      <div class="status-item">
-        <span class="k">Deployed</span>
-        <span class="v" id="hero-deployed">$0</span>
+
+      <div class="stat-pill">
+        <span class="sl">Active Signals</span>
+        <span class="sv" id="r2" style="color:var(--amber)">—</span>
       </div>
-      <div class="status-item">
-        <span class="k">Watched</span>
-        <span class="v" id="r1" style="color:var(--accent-2)">—</span>
+
+      <div class="stat-pill">
+        <span class="sl">Win Rate</span>
+        <span class="sv" id="r3" style="color:var(--green)">—</span>
+        <div class="stat-sub" id="hero-winrate" style="color:var(--faint)">0 resolved</div>
       </div>
-      <div class="status-item">
-        <span class="k">Win %</span>
-        <span class="v" id="r3" style="color:var(--green)">—</span>
+
+      <div class="stat-pill">
+        <span class="sl">All-Time P&amp;L</span>
+        <span class="sv" id="r4">$0</span>
       </div>
     </div>
 
-    <!-- INSIDER ALERTS — prominent, always visible -->
-    <div class="panel insider-hero" id="sec-insiders">
-      <div class="panel-hdr insider-hdr">
-        <div class="panel-title">
-          <span class="ico ins">🚨</span>
-          <div>
-            <div class="title-main">Insider Alerts</div>
-            <div class="title-sub">Low-history wallets placing outsized bets · last 48h · open markets only</div>
-          </div>
-        </div>
-        <span class="tag tg-ins" id="ins-count" style="display:none">0</span>
-      </div>
-      <div class="panel-body" id="ins-list">
-        <div class="empty">Scanning for anomalies…</div>
-      </div>
-    </div>
+    <!-- MAIN GRID: 3 rows × 2 columns -->
+    <div class="grid">
 
-    <!-- WHALES IN RIGHT NOW — the hero -->
-    <div class="panel whales-hero" id="sec-signals">
-      <div class="panel-hdr">
-        <div class="panel-title">
-          <span class="ico">🐋</span>
-          <div>
-            <div class="title-main">Whales In Right Now</div>
-            <div class="title-sub">Ranked setups — consensus and solo A/S-tier activity · open markets only</div>
-          </div>
+      <!-- Row 1: Live Feed + Whale Leaderboard -->
+      <div class="panel" id="sec-feed">
+        <div class="panel-hdr">
+          <div class="panel-title"><span class="ico">◉</span> Live Feed</div>
+          <span style="font-family:var(--mono);font-size:11px;color:var(--faint)" id="fn"></span>
         </div>
-        <span id="rts" class="title-sub"></span>
+        <div class="feed-strip" id="wfeed">
+          <div class="feed-card"><div class="skel"></div><div class="skel" style="width:60%"></div></div>
+          <div class="feed-card"><div class="skel"></div><div class="skel" style="width:70%"></div></div>
+        </div>
       </div>
-      <div class="panel-body" id="signal-list">
-        <div class="skel"></div><div class="skel" style="width:60%"></div>
+
+      <div class="panel" id="sec-whales">
+        <div class="panel-hdr">
+          <div class="panel-title"><span class="ico">🐋</span> Whale Leaderboard</div>
+          <select id="lbp" onchange="fetchLB()" class="inp" style="width:auto;margin:0;padding:6px 10px;font-size:11px">
+            <option value="all">All time</option>
+            <option value="1m">30 days</option>
+            <option value="7d">7 days</option>
+          </select>
+        </div>
+        <div class="panel-body tall" id="lb-list">
+          <div class="skel"></div><div class="skel" style="width:80%"></div><div class="skel" style="width:60%"></div>
+        </div>
       </div>
+
+      <!-- Row 2: Recommendations + Insider Anomalies -->
+      <div class="panel" id="sec-signals">
+        <div class="panel-hdr">
+          <div class="panel-title"><span class="ico">🎯</span> Recommendations</div>
+          <span style="font-family:var(--mono);font-size:10px;color:var(--faint)" id="rts"></span>
+        </div>
+        <div class="panel-body tall" id="signal-list">
+          <div class="skel"></div><div class="skel" style="width:60%"></div>
+        </div>
+      </div>
+
+      <div class="panel" id="sec-insiders">
+        <div class="panel-hdr">
+          <div class="panel-title"><span class="ico" style="background:var(--purple-bg);color:var(--purple);border-color:rgba(167,139,250,0.3)">⚠</span> Insider Anomalies</div>
+          <span class="tag tg-ins" id="ins-count" style="display:none">0</span>
+        </div>
+        <div class="panel-body tall" id="ins-list">
+          <div class="empty">Scanning for insider wallets…</div>
+        </div>
+      </div>
+
+      <!-- Row 3: Hot Markets + Bitcoin -->
+      <div class="panel" id="sec-hot">
+        <div class="panel-hdr">
+          <div class="panel-title"><span class="ico">🔥</span> Hot Markets</div>
+          <span style="font-family:var(--mono);font-size:10px;color:var(--faint)" id="hb-updated"></span>
+        </div>
+        <div class="panel-body tall" id="hb-list">
+          <div class="skel"></div><div class="skel" style="width:70%"></div>
+        </div>
+      </div>
+
+      <div class="panel" id="sec-btc">
+        <div class="panel-hdr">
+          <div class="panel-title"><span class="ico">₿</span> Bitcoin</div>
+          <span style="font-family:var(--display);font-size:20px;color:var(--amber);font-weight:600;font-variant-numeric:tabular-nums" id="btc-price">...</span>
+        </div>
+        <div class="panel-body tall">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+            <div>
+              <div class="lbl" style="margin-bottom:8px">Today</div>
+              <div id="btc-daily"><div class="skel"></div></div>
+            </div>
+            <div>
+              <div class="lbl" style="margin-bottom:8px">This Week</div>
+              <div id="btc-weekly"><div class="skel"></div></div>
+            </div>
+          </div>
+          <div class="hr"></div>
+          <div class="lbl" style="margin-bottom:8px">Price Targets</div>
+          <div id="btc-targets"><div class="skel"></div></div>
+        </div>
+      </div>
+
     </div>
 
     <!-- APPROVE QUEUE (hidden until items present) -->
@@ -1178,50 +1067,11 @@ select.inp{ cursor: pointer; }
       <div class="panel-hdr">
         <div class="panel-title">
           <span class="ico" style="background:var(--accent-bg);color:var(--accent-2);border-color:rgba(34,211,238,0.3)">✓</span>
-          <div>
-            <div class="title-main">Pending Trades</div>
-            <div class="title-sub">Click Execute to send to n8n webhook</div>
-          </div>
+          Pending Trades
           <span class="tag tg-y" id="nb-q" style="display:none">0</span>
         </div>
       </div>
       <div class="panel-body" id="q-list"></div>
-    </div>
-
-    <!-- WHALE ROSTER (compact, no expansions) -->
-    <div class="panel" id="sec-whales" style="margin-bottom:16px">
-      <div class="panel-hdr">
-        <div class="panel-title">
-          <span class="ico">🎯</span>
-          <div>
-            <div class="title-main">Whale Roster</div>
-            <div class="title-sub">Click a whale to focus the feed above</div>
-          </div>
-        </div>
-        <select id="lbp" onchange="fetchLB()" class="inp" style="width:auto;margin:0;padding:6px 10px;font-size:11px">
-          <option value="all">All time</option>
-          <option value="1m">30 days</option>
-          <option value="7d">7 days</option>
-        </select>
-      </div>
-      <div class="panel-body" id="lb-list">
-        <div class="skel"></div><div class="skel" style="width:80%"></div><div class="skel" style="width:60%"></div>
-      </div>
-    </div>
-
-    <!-- Legacy stubs — v6 JS still writes to these IDs, but we don't show them -->
-    <div style="display:none">
-      <span id="r2"></span>
-      <span id="r4"></span>
-      <span id="fn"></span>
-      <span id="hb-updated"></span>
-      <span id="btc-price"></span>
-      <span id="hero-winrate"></span>
-      <div id="hb-list"></div>
-      <div id="btc-daily"></div>
-      <div id="btc-weekly"></div>
-      <div id="btc-targets"></div>
-      <div id="wfeed"></div>
     </div>
 
     <!-- SETTINGS (hidden until toggled) -->
@@ -1980,113 +1830,31 @@ function restartPoll(){clearInterval(S.pollTimer);clearInterval(S.resolutionTime
 </script>
 
 <script>
-// ═══════════════════════════════════════════════════════════════════════
-// V10 — Insider hero renderer (rich cards, categorized, recency-filtered)
-// ═══════════════════════════════════════════════════════════════════════
-
-// Classify anomaly type from the raw insider record
-function anomalyType(ins){
-  const t = +(ins.trades||99);
-  if(t <= 1) return 'FIRST-EVER BET';
-  if(t <= 3) return 'NEW WALLET';
-  if(t <= 6) return 'LOW-HISTORY';
-  return 'UNUSUAL ACTIVITY';
-}
-
-function isPolitical(ins){
-  return (ins.cat === 'Politics') || /trump|biden|president|congress|senate|fed |chair|resign|nato|tariff|sanction|election|supreme court|vote|cabinet|policy/i.test(ins.market||'');
-}
-
-function renderInsiderHero(){
-  const el = document.getElementById('ins-list');
-  const badge = document.getElementById('ins-count');
-  if(!el) return;
-
-  // Filter: recent (last 48h), big enough, market still plausibly open
-  const cutoff = Date.now() - 48 * 3600 * 1000;
-  const list = (S.insiders || [])
-    .filter(ins => {
-      if(!ins || !ins.ts) return false;
-      if(ins.ts < cutoff) return false;
-      if(!ins.size || ins.size < (C.minInsider || 500)) return false;
-      // Exclude any already-resolved signal; price at edges = likely resolved
-      const p = +(ins.price || 0.5);
-      if(p <= 0.02 || p >= 0.98) return false;
-      return true;
-    })
-    // Sort: political first, then by confidence, then by recency, then by size
-    .sort((a,b) => {
-      const pa = isPolitical(a) ? 1 : 0;
-      const pb = isPolitical(b) ? 1 : 0;
-      if(pa !== pb) return pb - pa;
-      const confRank = {HIGH:3, MEDIUM:2, LOW:1};
-      const ca = confRank[a.conf] || 0;
-      const cb = confRank[b.conf] || 0;
-      if(ca !== cb) return cb - ca;
-      if(b.ts !== a.ts) return b.ts - a.ts;
-      return b.size - a.size;
-    })
-    .slice(0, 10);
-
-  if(!list.length){
-    el.innerHTML = '<div class="empty">No insider anomalies in the last 48 hours. Detector scans every poll cycle on markets ≥ $' + (C.minInsider||500).toLocaleString() + '.</div>';
-    if(badge) badge.style.display = 'none';
-    return;
-  }
-
-  if(badge){
-    badge.style.display = 'inline-block';
-    badge.textContent = list.length;
-  }
-
-  el.innerHTML = list.map(ins => {
-    const pol = isPolitical(ins);
-    const aType = anomalyType(ins);
-    const d = (typeof dirOf === 'function') ? dirOf(ins.outcome) : (ins.outcome||'YES');
-    const mkt = (typeof mktLink === 'function') ? mktLink(ins.market, ins.slug, 80) : (ins.market || 'Unknown market');
-    const mins = Math.floor((Date.now() - ins.ts) / 60000);
-    const age = mins < 60 ? mins + 'm ago' : Math.floor(mins/60) + 'h ' + (mins%60) + 'm ago';
-    const wallet = ins.name || '';
-    const copyArg = JSON.stringify({id:'ins_'+ins.id,name:wallet+' (ins)',rank:99,market:ins.market,side:ins.side||'BUY',outcome:ins.outcome,size:ins.size,price:ins.price,ts:ins.ts,slug:ins.slug||''}).replace(/"/g,'&quot;');
-    return `<div class="ins-card ${pol?'political':''} fade">
-      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-        <span class="ins-anomaly-type ${pol?'political':''}">${aType}</span>
-        <span class="tag ${pol?'tg-hi':'tg-ins'}">${ins.cat || 'Other'}</span>
-        <span class="tag ${d==='YES'?'tg-y':'tg-n'}">${d}</span>
-        ${ins.conf === 'HIGH' ? '<span class="tag tg-hi">HIGH CONF</span>' : ''}
-        <span style="font-family:var(--mono);font-size:11px;color:var(--faint);margin-left:auto">${age}</span>
-      </div>
-      <div class="ins-market-title">${mkt}</div>
-      <div class="ins-wallet">Wallet <strong style="color:var(--muted);font-family:var(--mono)">${wallet}</strong> · <strong>${ins.trades} lifetime trade${ins.trades===1?'':'s'}</strong></div>
-      <div class="ins-stats">
-        <span class="ins-size">$${(ins.size||0).toLocaleString()}</span>
-        <span style="color:var(--muted)">at</span>
-        <span style="color:var(--text);font-weight:600">${Math.round((ins.price||0.5)*100)}¢</span>
-        <button class="btn ba bsm" style="margin-left:auto" onclick='insToQ("${ins.id}")'>Copy to queue →</button>
-        <button class="dismiss-x" onclick='dismissIns("${ins.id}")'>×</button>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-// Wrap renderSignals to also render the insider hero every time
+// ── V7: split insiders out of Signals panel into their own panel ──
 (function(){
   if(typeof renderSignals !== 'function') return;
   const orig = renderSignals;
   window.renderSignals = function(){
     orig.apply(this, arguments);
-    // Strip insider cards out of signal-list (they shouldn't appear there in v10)
     const sigEl = document.getElementById('signal-list');
-    if(sigEl){
-      sigEl.querySelectorAll('.sig-item.ins').forEach(n => n.remove());
+    const insEl = document.getElementById('ins-list');
+    const badge = document.getElementById('ins-count');
+    if(!sigEl || !insEl) return;
+    const nodes = sigEl.querySelectorAll('.sig-item.ins');
+    if(nodes.length){
+      insEl.innerHTML = '';
+      nodes.forEach(n => insEl.appendChild(n));
+      if(badge){ badge.style.display='inline-block'; badge.textContent = nodes.length; }
+    } else {
+      insEl.innerHTML = '<div class="empty">No anomalies detected. Detector scans every poll.</div>';
+      if(badge) badge.style.display='none';
     }
-    // Render the dedicated insider hero
-    try { renderInsiderHero(); } catch(e){}
   };
+  // Re-run after first paint so the initial render relocates insiders too
   setTimeout(()=>{ try{ window.renderSignals(); }catch(e){} }, 50);
 })();
 
-// ── V8: Settings toggle scrolls into view ─────────────────────────────
+// ── V8: make Settings toggle actually scroll to the panel when opening ──
 (function(){
   if(typeof toggleSettings !== 'function') return;
   const orig = toggleSettings;
@@ -2096,18 +1864,6 @@ function renderInsiderHero(){
     if(s && s.style.display !== 'none'){
       setTimeout(()=>s.scrollIntoView({behavior:'smooth', block:'start'}), 30);
     }
-  };
-})();
-
-// ── V10: Remove expanded positions from whale roster (they lived under each
-//        row). The hero above already shows "what whales are in" — no need
-//        to duplicate by expanding individual rows. ────────────────────
-(function(){
-  if(typeof renderWhales !== 'function') return;
-  const orig = renderWhales;
-  window.renderWhales = function(){
-    orig.apply(this, arguments);
-    document.querySelectorAll('.whale-pos-list').forEach(n => n.remove());
   };
 })();
 </script>

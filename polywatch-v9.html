@@ -1237,7 +1237,24 @@ async function loadWhalePositions(addr,el){
     const r=await fetch(`${API}/proxy/positions?user=${addr}&limit=15`);
     if(!r.ok)throw 0;
     const raw=await r.json();const arr=Array.isArray(raw)?raw:(raw.data||[]);
-    const active=arr.filter(p=>{const cp=+(p.curPrice||p.currentPrice||p.avgPrice||0);const sz=+(p.size||0);return sz>0&&cp>0.01&&cp<0.99;});
+    const active=arr.filter(p=>{
+      const cp=+(p.curPrice||p.currentPrice||p.avgPrice||0);
+      const sz=+(p.size||0);
+      if(sz<=0) return false;
+      // Explicit resolution flags (different API shapes use different field names)
+      if(p.redeemable===true||p.redeemable==='true') return false;
+      if(p.closed===true||p.closed==='true') return false;
+      if(p.resolved===true||p.resolved==='true') return false;
+      if(p.marketResolved===true) return false;
+      // Tighter price floor/ceiling — resolved markets sit near 0/1
+      if(cp<=0.02||cp>=0.98) return false;
+      // If endDate exists and is in the past, market is over
+      const ed=p.endDate||p.end_date_iso||p.endDateIso;
+      if(ed){ const t=new Date(ed).getTime(); if(t&&t<Date.now()) return false; }
+      // Same for timestamp-style endTs (handle both seconds and ms)
+      if(p.endTs){ const t=+p.endTs*(+p.endTs>1e12?1:1000); if(t&&t<Date.now()) return false; }
+      return true;
+    });
     active.sort((a,b)=>(+b.size||0)-(+a.size||0));
     _posCache[addr]={data:active.slice(0,8),ts:Date.now()};
     renderWhalePos(addr,_posCache[addr].data,el);
