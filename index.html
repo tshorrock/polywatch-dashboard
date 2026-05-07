@@ -90,8 +90,6 @@ html, body{
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  height: 100vh;
-  overflow: hidden;
 }
 button{ font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
 a{ color: inherit; text-decoration: none; }
@@ -115,7 +113,6 @@ input, select, textarea{ font: inherit; color: inherit; }
 .shell{
   display: flex;
   flex-direction: column;
-  height: 100vh;
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -327,11 +324,8 @@ input, select, textarea{ font: inherit; color: inherit; }
 }
 .icon-btn:hover{ color: var(--text); background: var(--surface-2); border-color: var(--border-2); }
 
-/* Dashboard scrolling area */
+/* Dashboard content area. Page scrolls as one unit; no internal scroll trap. */
 .dash{
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
   padding: 24px 28px 32px;
 }
 
@@ -343,6 +337,14 @@ input, select, textarea{ font: inherit; color: inherit; }
   grid-template-columns: 1.6fr 1fr 1fr 1fr 1fr 1fr;
   gap: 14px;
   margin-bottom: 20px;
+  /* Sticks to viewport top while page scrolls. Background is opaque so
+     content does not show through the gaps between stat-pills. */
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--bg);
+  padding: 12px 0;
+  margin-top: -24px;
 }
 @media (max-width: 1400px){ .stats-row{ grid-template-columns: 1.5fr repeat(5, 1fr); } }
 @media (max-width: 1100px){ .stats-row{ grid-template-columns: 1fr 1fr 1fr; } }
@@ -457,10 +459,9 @@ input, select, textarea{ font: inherit; color: inherit; }
 }
 .panel-body{
   padding: 14px 20px;
-  max-height: 60vh;
-  overflow-y: auto;
+  height: auto;
 }
-.panel-body.tall{ max-height: 70vh; }
+.panel-body.tall{ height: auto; }
 .panel-body.flush{ padding: 0; }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -471,8 +472,7 @@ input, select, textarea{ font: inherit; color: inherit; }
   flex-direction: column;
   gap: 8px;
   padding: 14px 16px 16px;
-  max-height: 60vh;
-  overflow-y: auto;
+  height: auto;
 }
 .feed-card{
   width: 100%;
@@ -900,6 +900,289 @@ select.inp{ cursor: pointer; }
 /* Hide the legacy header elements we no longer render */
 .hdr-mid, .hdr-right-old { display: none; }
 
+/* ═══════════════════════════════════════════════════════════════
+   LAYOUT v2 — 2x2 zone, alert strip, compact rows
+   Page scrolls as one unit. Stats sticky at top.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Insider alert strip (collapses to zero space when no alerts) */
+details.alert-strip{
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--purple);
+  border-radius: var(--rl);
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+details.alert-strip[open]{ padding-bottom: 4px; }
+details.alert-strip > summary{
+  list-style: none;
+  cursor: pointer;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  user-select: none;
+}
+details.alert-strip > summary::-webkit-details-marker{ display: none; }
+details.alert-strip .alert-icon{
+  width: 22px; height: 22px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--purple-bg);
+  border: 1px solid rgba(167,139,250,0.3);
+  border-radius: 6px;
+  color: var(--purple);
+}
+details.alert-strip .alert-chev{
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--faint);
+  transition: transform .15s ease-out;
+}
+details.alert-strip[open] .alert-chev{ transform: rotate(180deg); }
+details.alert-strip .alert-body{
+  padding: 12px 16px 14px;
+  border-top: 1px solid var(--border);
+}
+/* Zero space when there are no alerts. renderInsiderHero emits
+   <div class="empty">…</div> in #ins-list when count = 0. */
+details.alert-strip:has(.alert-body .empty){ display: none; }
+
+/* 2x2 zone grid. Two stacked rows; 1px column seam, 2px row seam. */
+.zone-grid{
+  border: 1px solid var(--border);
+  border-radius: var(--rl);
+  overflow: hidden;
+  margin-bottom: 16px;
+  background: var(--surface);
+}
+.zone-row{
+  display: grid;
+  gap: 0;
+}
+.zone-row.top{
+  grid-template-columns: 1fr 1fr;
+  border-bottom: 2px solid var(--border-2);
+}
+.zone-row.bottom{
+  grid-template-columns: 3fr 2fr;
+}
+.zone-row > .panel{
+  background: var(--surface);
+  border: 0;
+  border-radius: 0;
+  overflow: visible;
+}
+.zone-row > .panel + .panel{
+  border-left: 1px solid var(--border);
+}
+@media (max-width: 1100px){
+  .zone-row.top, .zone-row.bottom{ grid-template-columns: 1fr; }
+  .zone-row > .panel + .panel{
+    border-left: 0;
+    border-top: 1px solid var(--border);
+  }
+}
+
+/* Stack of full-width panels below the zone (Hot Markets, BTC) */
+.below-stack{
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+/* COMPACT RECOMMENDED BETS — 36px single-line rows */
+#sec-signals .panel-body{ padding: 6px 0; }
+#sec-signals .sig-item.rec{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 36px;
+  padding: 0 16px;
+  margin: 0;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  border-left: 2px solid var(--accent);
+  font-size: 12px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+#sec-signals .sig-item.rec:last-child{ border-bottom: 0; }
+#sec-signals .sig-item.rec:hover{ background: var(--surface-2); border-color: var(--border); }
+#sec-signals .sig-item.rec .rec-title{
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text);
+}
+#sec-signals .sig-item.rec .rec-attr{
+  font-size: 11px;
+  color: var(--faint);
+  font-family: var(--mono);
+  flex-shrink: 0;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#sec-signals .sig-item.rec .rec-price{
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 12px;
+  color: var(--amber);
+  font-weight: 700;
+  flex-shrink: 0;
+  text-align: right;
+  min-width: 56px;
+}
+
+/* COMPACT WHALE ROSTER — 36px rows */
+#sec-whales .panel-body{ padding: 6px 0; }
+#sec-whales .whale-item{
+  border-bottom: 1px solid var(--border);
+  padding: 0;
+}
+#sec-whales .whale-item:last-child{ border-bottom: 0; }
+#sec-whales .whale-row{
+  height: 36px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 16px;
+  flex-wrap: nowrap;
+  overflow: hidden;
+}
+#sec-whales .whale-row .whale-rank{
+  width: 22px; height: 22px;
+  font-size: 11px; font-weight: 700;
+  border-radius: 6px;
+}
+#sec-whales .whale-row .whale-name{
+  font-size: 13px;
+  font-weight: 600;
+  max-width: 140px;
+  letter-spacing: 0;
+}
+#sec-whales .whale-row .whale-pnl{
+  font-size: 13px;
+  font-weight: 700;
+}
+#sec-whales .whale-row .whale-wr{
+  font-size: 12px;
+  font-weight: 500;
+}
+#sec-whales .whale-row .tag{ font-size: 9px; padding: 2px 6px; }
+#sec-whales .whale-row .btn{ padding: 4px 10px; font-size: 11px; }
+#sec-whales .whale-pos-list{
+  padding: 6px 16px 10px 48px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+}
+
+/* LIVE ACTIVITY FEED — natural height, ts + dot + body line */
+#sec-feed .feed-strip{ padding: 6px 0; gap: 0; }
+.feed-row{
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.feed-row:last-child{ border-bottom: 0; }
+.feed-row:hover{ background: var(--surface-2); }
+.feed-row .feed-ts{
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 11px;
+  color: var(--faint);
+  flex-shrink: 0;
+  width: 38px;
+  padding-top: 2px;
+}
+.feed-row .feed-dot{
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent-2);
+  flex-shrink: 0;
+  margin-top: 7px;
+}
+.feed-row .feed-dot.buy{ background: var(--green); }
+.feed-row .feed-dot.sell{ background: var(--red); }
+.feed-row .feed-body{
+  flex: 1;
+  min-width: 0;
+  color: var(--muted);
+}
+.feed-row .feed-body .feed-mkt{
+  display: block;
+  font-size: 12px;
+  color: var(--text);
+  font-weight: 500;
+  margin-bottom: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.feed-row .feed-body .feed-meta{
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* PENDING TRADES (Queue) — natural height, primary cyan + ghost skip */
+#sec-queue .panel-body{ padding: 8px 0; }
+#sec-queue .q-item{
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  border-left: 2px solid var(--accent-2);
+  border-radius: 0;
+  padding: 12px 16px;
+  margin: 0;
+}
+#sec-queue .q-item:last-child{ border-bottom: 0; }
+/* Approve = full cyan background, black text. Skip = ghost text link. */
+.btn-primary-cyan{
+  background: var(--accent);
+  color: #000;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 7px 14px;
+  letter-spacing: 0;
+  white-space: nowrap;
+  transition: background .12s, border-color .12s;
+}
+.btn-primary-cyan:hover{ background: var(--accent-2); border-color: var(--accent-2); }
+.btn-primary-cyan:active{ transform: scale(0.98); }
+.btn-skip-ghost{
+  background: transparent;
+  border: 0;
+  padding: 7px 8px;
+  color: var(--muted);
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color .12s;
+}
+.btn-skip-ghost:hover{ color: var(--text); }
+
 /* Mobile adjustments */
 @media (max-width: 900px){
   .side{
@@ -1000,63 +1283,89 @@ select.inp{ cursor: pointer; }
       </div>
     </div>
 
-    <!-- MAIN GRID: 3 rows × 2 columns -->
-    <div class="grid">
-
-      <!-- Row 1: Live Feed + Whale Leaderboard -->
-      <div class="panel" id="sec-feed">
-        <div class="panel-hdr">
-          <div class="panel-title"><span class="ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg></span> Live Feed</div>
-          <span style="font-family:var(--mono);font-size:11px;color:var(--faint)" id="fn"></span>
-        </div>
-        <div class="feed-strip" id="wfeed">
-          <div class="feed-card"><div class="skel"></div><div class="skel" style="width:60%"></div></div>
-          <div class="feed-card"><div class="skel"></div><div class="skel" style="width:70%"></div></div>
-        </div>
+    <!-- INSIDER ALERT STRIP — collapses to zero space when count = 0 -->
+    <details class="alert-strip" id="sec-insiders">
+      <summary>
+        <span class="alert-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span>
+        Insider Anomalies
+        <span class="tag tg-ins" id="ins-count" style="display:none">0</span>
+        <span class="alert-chev">▾</span>
+      </summary>
+      <div class="alert-body" id="ins-list">
+        <div class="empty">Scanning for insider wallets…</div>
       </div>
+    </details>
 
-      <div class="panel" id="sec-whales">
-        <div class="panel-hdr">
-          <div class="panel-title"><span class="ico">🐋</span> Whale Leaderboard</div>
-          <select id="lbp" onchange="fetchLB()" class="inp" style="width:auto;margin:0;padding:6px 10px;font-size:11px">
-            <option value="all">All time</option>
-            <option value="1m">30 days</option>
-            <option value="7d">7 days</option>
-          </select>
+    <!-- 2x2 ZONE GRID
+         Row 1 (50/50): Recommended Bets + Whale Roster
+         Row 2 (60/40): Live Activity Feed + Pending Trades
+         1px column seam, 2px row separator. -->
+    <div class="zone-grid">
+      <div class="zone-row top">
+
+        <div class="panel" id="sec-signals">
+          <div class="panel-hdr">
+            <div class="panel-title"><span class="ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span> Recommended Bets</div>
+            <span style="font-family:var(--mono);font-size:10px;color:var(--faint)" id="rts"></span>
+          </div>
+          <div class="panel-body" id="signal-list">
+            <div class="skel" style="margin:14px 16px"></div><div class="skel" style="width:60%;margin:0 16px"></div>
+          </div>
         </div>
-        <div class="panel-body tall" id="lb-list">
-          <div class="skel"></div><div class="skel" style="width:80%"></div><div class="skel" style="width:60%"></div>
+
+        <div class="panel" id="sec-whales">
+          <div class="panel-hdr">
+            <div class="panel-title"><span class="ico">🐋</span> Whale Roster</div>
+            <select id="lbp" onchange="fetchLB()" class="inp" style="width:auto;margin:0;padding:6px 10px;font-size:11px">
+              <option value="all">All time</option>
+              <option value="1m">30 days</option>
+              <option value="7d">7 days</option>
+            </select>
+          </div>
+          <div class="panel-body" id="lb-list">
+            <div class="skel" style="margin:14px 16px"></div><div class="skel" style="width:80%;margin:0 16px"></div><div class="skel" style="width:60%;margin:0 16px"></div>
+          </div>
         </div>
+
       </div>
+      <div class="zone-row bottom">
 
-      <!-- Row 2: Recommendations + Insider Anomalies -->
-      <div class="panel" id="sec-signals">
-        <div class="panel-hdr">
-          <div class="panel-title"><span class="ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span> Recommendations</div>
-          <span style="font-family:var(--mono);font-size:10px;color:var(--faint)" id="rts"></span>
+        <div class="panel" id="sec-feed">
+          <div class="panel-hdr">
+            <div class="panel-title"><span class="ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg></span> Live Activity Feed</div>
+            <span style="font-family:var(--mono);font-size:11px;color:var(--faint)" id="fn"></span>
+          </div>
+          <div class="feed-strip" id="wfeed">
+            <div class="feed-card"><div class="skel"></div><div class="skel" style="width:60%"></div></div>
+            <div class="feed-card"><div class="skel"></div><div class="skel" style="width:70%"></div></div>
+          </div>
         </div>
-        <div class="panel-body tall" id="signal-list">
-          <div class="skel"></div><div class="skel" style="width:60%"></div>
+
+        <div class="panel" id="sec-queue">
+          <div class="panel-hdr">
+            <div class="panel-title">
+              <span class="ico" style="background:var(--accent-bg);color:var(--accent-2);border-color:rgba(34,211,238,0.3)">✓</span>
+              Pending Trades
+              <span class="tag tg-y" id="nb-q" style="display:none">0</span>
+            </div>
+          </div>
+          <div class="panel-body" id="q-list">
+            <div class="empty">No pending trades</div>
+          </div>
         </div>
+
       </div>
+    </div>
 
-      <div class="panel" id="sec-insiders">
-        <div class="panel-hdr">
-          <div class="panel-title"><span class="ico" style="background:var(--purple-bg);color:var(--purple);border-color:rgba(167,139,250,0.3)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span> Insider Anomalies</div>
-          <span class="tag tg-ins" id="ins-count" style="display:none">0</span>
-        </div>
-        <div class="panel-body tall" id="ins-list">
-          <div class="empty">Scanning for insider wallets…</div>
-        </div>
-      </div>
+    <!-- BELOW THE ZONE — Hot Markets and Bitcoin (preserved as full-width panels) -->
+    <div class="below-stack">
 
-      <!-- Row 3: Hot Markets + Bitcoin -->
       <div class="panel" id="sec-hot">
         <div class="panel-hdr">
           <div class="panel-title"><span class="ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span> Hot Markets</div>
           <span style="font-family:var(--mono);font-size:10px;color:var(--faint)" id="hb-updated"></span>
         </div>
-        <div class="panel-body tall" id="hb-list">
+        <div class="panel-body" id="hb-list">
           <div class="skel"></div><div class="skel" style="width:70%"></div>
         </div>
       </div>
@@ -1066,7 +1375,7 @@ select.inp{ cursor: pointer; }
           <div class="panel-title"><span class="ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.767 19.089c4.924.868 6.14-6.025 1.216-6.894m-1.216 6.894L5.86 18.047m5.908 1.042-.347 1.97m1.563-8.864c4.924.869 6.14-6.025 1.215-6.893m-1.215 6.893-3.94-.694m5.155-6.2L8.29 4.26m5.908 1.042.348-1.97M7.48 20.364l3.126-17.727"/></svg></span> Bitcoin</div>
           <span style="font-family:var(--display);font-size:20px;color:var(--amber);font-weight:600;font-variant-numeric:tabular-nums" id="btc-price">...</span>
         </div>
-        <div class="panel-body tall">
+        <div class="panel-body">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
             <div>
               <div class="lbl" style="margin-bottom:8px">Today</div>
@@ -1083,18 +1392,6 @@ select.inp{ cursor: pointer; }
         </div>
       </div>
 
-    </div>
-
-    <!-- APPROVE QUEUE (hidden until items present) -->
-    <div class="panel grid-full" id="sec-queue" style="display:none;margin-bottom:16px">
-      <div class="panel-hdr">
-        <div class="panel-title">
-          <span class="ico" style="background:var(--accent-bg);color:var(--accent-2);border-color:rgba(34,211,238,0.3)">✓</span>
-          Pending Trades
-          <span class="tag tg-y" id="nb-q" style="display:none">0</span>
-        </div>
-      </div>
-      <div class="panel-body" id="q-list"></div>
     </div>
 
     <!-- SETTINGS (hidden until toggled) -->
@@ -1539,17 +1836,16 @@ function renderFeed(){
   const items=S.activity.filter(t=>t.ts>=cutoff);
   document.getElementById('fn').textContent=S.apiLive?items.length+' signals · '+now():'Connecting...';
   if(!items.length){el.innerHTML='<div style="padding:12px;color:var(--text3);font-size:12px">No recent whale trades. Watching...</div>';return;}
+  // Activity row: timestamp + dot + body. Natural height, comfortable line-height.
   el.innerHTML=items.slice(0,20).map(t=>{
     const d=dirOf(t.outcome);
-    return`<div class="feed-card fade">
-      <div class="fc-market">${mktLink(t.market,t.slug,50)}</div>
-      <div class="fc-meta">
-        ${dirTag(d)}
-        <span class="tag ${t.side==='BUY'?'tg-b':'tg-s'}">${t.side}</span>
-        <strong>${t.name}</strong>
-        <span style="color:#fff;font-weight:700">${f$(t.size)}</span>
-        <span>@ ${Math.round(t.price*100)}¢</span>
-        <span>${ft(t.ts)} ago</span>
+    const dotClass=t.side==='BUY'?'buy':t.side==='SELL'?'sell':'';
+    return`<div class="feed-row fade">
+      <span class="feed-ts">${ft(t.ts)}</span>
+      <span class="feed-dot ${dotClass}"></span>
+      <div class="feed-body">
+        <span class="feed-mkt">${mktLink(t.market,t.slug,60)}</span>
+        <span class="feed-meta">${dirTag(d)} <span class="tag ${t.side==='BUY'?'tg-b':'tg-s'}">${t.side}</span> <strong>${t.name}</strong> · ${f$(t.size)} @ ${Math.round(t.price*100)}¢</span>
       </div>
     </div>`;
   }).join('');
@@ -1559,18 +1855,16 @@ function renderFeed(){
 function renderWhales(){
   const el=document.getElementById('lb-list');
   if(!S.wallets.length){el.innerHTML='<div class="empty">Loading whales...</div>';return;}
+  // 36px compact row: rank + name + bankroll (PnL) + win rate + Watch/Stop
   el.innerHTML=S.wallets.map(w=>{
     const sc=S.whaleScores[w.addr];const wr=sc?.rollingWr||w.wr;const ti=tier(wr,w.total);
     const cut=ti==='X';const act=w.active;
-    const freshTag=w.sources&&w.sources.includes('DAY')?'<span class="tag tg-fresh">today</span>':w.sources&&w.sources.includes('WEEK')?'<span class="tag tg-week">week</span>':'';
     return`<div class="whale-item" style="${cut?'opacity:.35':''}">
       <div class="whale-row">
         <span class="whale-rank ${w.rank<=3?'top':''}">${w.rank}</span>
         <span class="whale-name">${w.name}</span>
-        ${ttag(ti)} ${freshTag}
         <span class="whale-pnl">${f$(w.pnl)}</span>
         <span class="whale-wr">${wr.toFixed(0)}%</span>
-        <span>${streakHtml(w.streak)}</span>
         ${!cut?`<button class="btn bsm ${act?'ba':''}" style="margin-left:auto" onclick="toggleW(${w.rank-1})">${act?'Stop':'Watch'}</button>`:''}
       </div>
       ${act&&w.addr?`<div class="whale-pos-list" id="wp-${w.addr}"><span style="font-size:11px;color:var(--text3)">Loading...</span></div>`:''}
@@ -1592,22 +1886,18 @@ function renderSignals(){
   if(C.bankroll)document.getElementById('bankroll-hdr').textContent='Bank '+f$(C.bankroll);
 
   let html='';
-  // Recs
+  // Recs — single-line 36px row: badge + title + whale-attr + price + Queue
   if(recs.length){
-    html+=recs.map(r=>`<div class="sig-item rec fade">
-      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:4px">
+    html+=recs.map(r=>{
+      const attr=r.type==='consensus'?`${r.wc} whales`:r.topWhale;
+      return`<div class="sig-item rec fade">
         ${dirTag(r.side)}
-        <span class="tag ${r.conf==='HIGH'?'tg-hi':'tg-md'}">${r.conf}</span>
-        <span style="font-size:11px;color:var(--purple);font-weight:600">${r.type==='consensus'?r.wc+' whales':'Solo: '+r.topWhale}</span>
-        <span style="font-size:10px;color:var(--text3);margin-left:auto">${r.cat}</span>
-      </div>
-      <div style="font-size:13px;font-weight:600;margin-bottom:4px">${mktLink(r.market,r.slug,55)}</div>
-      <div style="display:flex;align-items:center;gap:8px;font-size:11px;color:var(--text2)">
-        <span>${(r.whales||[]).join(' + ')} @ ${Math.round(r.ap*100)}¢</span>
-        <span style="color:var(--amber);font-weight:700;margin-left:auto">${f$(r.sz)}</span>
+        <span class="rec-title">${mktLink(r.market,r.slug,55)}</span>
+        <span class="rec-attr">${attr}</span>
+        <span class="rec-price">${f$(r.sz)}</span>
         <button class="btn bsm ba" onclick="addRecQ('${encodeURIComponent(r.market)}','${r.side}',${r.ap},${r.sz})">Queue</button>
-      </div>
-    </div>`).join('');
+      </div>`;
+    }).join('');
   }
   // Insiders
   if(S.insiders.length){
@@ -1791,27 +2081,34 @@ function renderBtcTargets(targets){
 
 // ── RENDER: QUEUE ────────────────────────────────────────────
 function renderQueue(){
-  const sec=document.getElementById('sec-queue');
   const el=document.getElementById('q-list');
   const pend=S.queue.filter(q=>q.status==='pending');
   const nb=document.getElementById('nb-q');
-  if(!pend.length){sec.style.display='none';nb.style.display='none';return;}
-  sec.style.display='block';nb.style.display='inline-block';nb.textContent=pend.length;
-  el.innerHTML=pend.map(q=>{const d=dirOf(q.outcome);return`<div class="q-item fade">
-    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-      ${dirTag(d)} <span class="tag ${q.side==='BUY'?'tg-b':'tg-s'}">${q.side}</span> ${q.whaleTier?ttag(q.whaleTier):''}
-      <strong style="font-size:13px">${mktLink(q.market,q.slug,50)}</strong>
-      <span style="color:var(--text2);font-size:11px;margin-left:auto">#${q.rank} ${q.name} · ${f$(q.size)} @ ${Math.round(q.price*100)}¢</span>
-    </div>
-    <div style="display:flex;align-items:center;gap:6px;margin-top:8px">
-      <span style="font-size:11px;color:var(--text3)">$</span>
-      <input type="number" id="qs-${q.id}" class="szinp" value="${q.sugSz}" style="width:80px">
-      <button class="btn bsm" onclick="setQS('${q.id}',${Math.round(q.size*.1)})">10%</button>
-      <button class="btn bsm" onclick="setQS('${q.id}',${Math.round(q.size*.25)})">25%</button>
-      <button class="btn bsm bg" onclick="approveQ('${q.id}')">Execute</button>
-      <button class="btn bsm br" onclick="skipQ('${q.id}')" style="margin-left:auto">Skip</button>
-    </div>
-  </div>`;}).join('');
+  if(!pend.length){
+    el.innerHTML='<div class="empty">No pending trades</div>';
+    nb.style.display='none';
+    return;
+  }
+  nb.style.display='inline-block';nb.textContent=pend.length;
+  // Natural-height row: market title + meta + Approve/Skip
+  el.innerHTML=pend.map(q=>{
+    const d=dirOf(q.outcome);
+    return`<div class="q-item fade">
+      <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${mktLink(q.market,q.slug,60)}</div>
+      <div style="display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);font-family:var(--mono);font-variant-numeric:tabular-nums;margin-bottom:10px;flex-wrap:wrap">
+        ${dirTag(d)}
+        <span class="tag ${q.side==='BUY'?'tg-b':'tg-s'}">${q.side}</span>
+        ${q.whaleTier?ttag(q.whaleTier):''}
+        <span>${q.name}</span>
+        <span>@ ${Math.round(q.price*100)}¢</span>
+        <span style="color:var(--amber);font-weight:700;margin-left:auto">${f$(q.sugSz)}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <button class="btn-primary-cyan" onclick="approveQ('${q.id}')">Approve</button>
+        <button class="btn-skip-ghost" onclick="skipQ('${q.id}')">Skip</button>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 // ── STATUS ───────────────────────────────────────────────────
