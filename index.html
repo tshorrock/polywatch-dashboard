@@ -953,38 +953,53 @@ details.alert-strip .alert-body{
    <div class="empty">…</div> in #ins-list when count = 0. */
 details.alert-strip:has(.alert-body .empty){ display: none; }
 
-/* 2x2 zone grid. Two stacked rows; 1px column seam, 2px row seam. */
-.zone-grid{
+/* Two-column flex layout. Each column is its own flex-column with two
+   stacked panels. Columns are independent height. A 1px vertical seam
+   runs between them via pseudo-element so it spans the full container
+   regardless of which column is taller. 1px hairline between the two
+   stacked panels within each column; no gap. */
+.zone-cols{
+  position: relative;
+  display: flex;
+  align-items: flex-start;
   border: 1px solid var(--border);
   border-radius: var(--rl);
   overflow: hidden;
   margin-bottom: 16px;
   background: var(--surface);
 }
-.zone-row{
-  display: grid;
-  gap: 0;
+.zone-cols::after{
+  content: "";
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 50%;
+  width: 1px;
+  background: var(--border);
+  pointer-events: none;
 }
-.zone-row.top{
-  grid-template-columns: 1fr 1fr;
-  border-bottom: 2px solid var(--border-2);
+.zone-col{
+  flex: 1 1 50%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
 }
-.zone-row.bottom{
-  grid-template-columns: 3fr 2fr;
-}
-.zone-row > .panel{
+.zone-col > .panel{
+  flex: 0 0 auto;
   background: var(--surface);
   border: 0;
   border-radius: 0;
   overflow: visible;
+  height: auto;
+  min-height: 0;
+  max-height: none;
 }
-.zone-row > .panel + .panel{
-  border-left: 1px solid var(--border);
+.zone-col > .panel + .panel{
+  border-top: 1px solid var(--border);
 }
 @media (max-width: 1100px){
-  .zone-row.top, .zone-row.bottom{ grid-template-columns: 1fr; }
-  .zone-row > .panel + .panel{
-    border-left: 0;
+  .zone-cols{ flex-direction: column; }
+  .zone-cols::after{ display: none; }
+  .zone-col + .zone-col > .panel:first-child{
     border-top: 1px solid var(--border);
   }
 }
@@ -1296,12 +1311,13 @@ details.alert-strip:has(.alert-body .empty){ display: none; }
       </div>
     </details>
 
-    <!-- 2x2 ZONE GRID
-         Row 1 (50/50): Recommended Bets + Whale Roster
-         Row 2 (60/40): Live Activity Feed + Pending Trades
-         1px column seam, 2px row separator. -->
-    <div class="zone-grid">
-      <div class="zone-row top">
+    <!-- TWO-COLUMN FLEX
+         Left:  Recommended Bets above Live Activity Feed
+         Right: Whale Roster above Pending Trades
+         Each column is independent height. 1px vertical seam between
+         columns; 1px hairline between stacked panels within a column. -->
+    <div class="zone-cols">
+      <div class="zone-col">
 
         <div class="panel" id="sec-signals">
           <div class="panel-hdr">
@@ -1312,6 +1328,20 @@ details.alert-strip:has(.alert-body .empty){ display: none; }
             <div class="skel" style="margin:14px 16px"></div><div class="skel" style="width:60%;margin:0 16px"></div>
           </div>
         </div>
+
+        <div class="panel" id="sec-feed">
+          <div class="panel-hdr">
+            <div class="panel-title"><span class="ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg></span> Live Activity Feed</div>
+            <span style="font-family:var(--mono);font-size:11px;color:var(--faint)" id="fn"></span>
+          </div>
+          <div class="feed-strip" id="wfeed">
+            <div class="feed-card"><div class="skel"></div><div class="skel" style="width:60%"></div></div>
+            <div class="feed-card"><div class="skel"></div><div class="skel" style="width:70%"></div></div>
+          </div>
+        </div>
+
+      </div>
+      <div class="zone-col">
 
         <div class="panel" id="sec-whales">
           <div class="panel-hdr">
@@ -1324,20 +1354,6 @@ details.alert-strip:has(.alert-body .empty){ display: none; }
           </div>
           <div class="panel-body" id="lb-list">
             <div class="skel" style="margin:14px 16px"></div><div class="skel" style="width:80%;margin:0 16px"></div><div class="skel" style="width:60%;margin:0 16px"></div>
-          </div>
-        </div>
-
-      </div>
-      <div class="zone-row bottom">
-
-        <div class="panel" id="sec-feed">
-          <div class="panel-hdr">
-            <div class="panel-title"><span class="ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg></span> Live Activity Feed</div>
-            <span style="font-family:var(--mono);font-size:11px;color:var(--faint)" id="fn"></span>
-          </div>
-          <div class="feed-strip" id="wfeed">
-            <div class="feed-card"><div class="skel"></div><div class="skel" style="width:60%"></div></div>
-            <div class="feed-card"><div class="skel"></div><div class="skel" style="width:70%"></div></div>
           </div>
         </div>
 
