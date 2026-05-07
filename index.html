@@ -953,11 +953,12 @@ details.alert-strip .alert-body{
    <div class="empty">…</div> in #ins-list when count = 0. */
 details.alert-strip:has(.alert-body .empty){ display: none; }
 
-/* Two-column flex layout. Each column is its own flex-column with two
-   stacked panels. Columns are independent height. A 1px vertical seam
-   runs between them via pseudo-element so it spans the full container
-   regardless of which column is taller. 1px hairline between the two
-   stacked panels within each column; no gap. */
+/* Two-column flex layout. Each column is a flex-column holding all
+   of that column's panels with a 6px gap (page bg shows through, so
+   each panel reads as a distinct card with breathing room). Columns
+   are independent height. A 1px vertical seam at 50% spans the full
+   container. Container bg is --bg (not --surface) so the gaps inside
+   columns are visible against the surface-colored panels. */
 .zone-cols{
   position: relative;
   display: flex;
@@ -966,7 +967,7 @@ details.alert-strip:has(.alert-body .empty){ display: none; }
   border-radius: var(--rl);
   overflow: hidden;
   margin-bottom: 16px;
-  background: var(--surface);
+  background: var(--bg);
 }
 .zone-cols::after{
   content: "";
@@ -982,6 +983,7 @@ details.alert-strip:has(.alert-body .empty){ display: none; }
   min-width: 0;
   display: flex;
   flex-direction: column;
+  gap: 6px;
 }
 .zone-col > .panel{
   flex: 0 0 auto;
@@ -993,24 +995,22 @@ details.alert-strip:has(.alert-body .empty){ display: none; }
   min-height: 0;
   max-height: none;
 }
-.zone-col > .panel + .panel{
-  border-top: 1px solid var(--border);
-}
 @media (max-width: 1100px){
-  .zone-cols{ flex-direction: column; }
+  .zone-cols{ flex-direction: column; gap: 6px; }
   .zone-cols::after{ display: none; }
-  .zone-col + .zone-col > .panel:first-child{
-    border-top: 1px solid var(--border);
-  }
 }
 
-/* Stack of full-width panels below the zone (Hot Markets, BTC) */
-.below-stack{
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-bottom: 16px;
-}
+/* Per-panel header accent: 3px colored left border on .panel-hdr,
+   keyed off the panel's id. Visual differentiation only; data colors
+   inside panels still follow v1 use-rules. NOTE: this set deliberately
+   deviates from v1 (green was P&L only; purple was insider only; red
+   was P&L negative + destructive only). */
+#sec-signals .panel-hdr{ border-left: 3px solid var(--accent); }
+#sec-whales  .panel-hdr{ border-left: 3px solid var(--green); }
+#sec-feed    .panel-hdr{ border-left: 3px solid var(--amber); }
+#sec-queue   .panel-hdr{ border-left: 3px solid var(--purple); }
+#sec-hot     .panel-hdr{ border-left: 3px solid var(--red); }
+#sec-btc     .panel-hdr{ border-left: 3px solid var(--amber); }
 
 /* COMPACT RECOMMENDED BETS — 36px single-line rows */
 #sec-signals .panel-body{ padding: 6px 0; }
@@ -1312,10 +1312,10 @@ details.alert-strip:has(.alert-body .empty){ display: none; }
     </details>
 
     <!-- TWO-COLUMN FLEX
-         Left:  Recommended Bets above Live Activity Feed
-         Right: Whale Roster above Pending Trades
+         Left:  Recommended Bets, Live Activity Feed, Hot Markets
+         Right: Whale Roster, Pending Trades, Bitcoin
          Each column is independent height. 1px vertical seam between
-         columns; 1px hairline between stacked panels within a column. -->
+         columns; 6px gap between stacked panels within each column. -->
     <div class="zone-cols">
       <div class="zone-col">
 
@@ -1337,6 +1337,16 @@ details.alert-strip:has(.alert-body .empty){ display: none; }
           <div class="feed-strip" id="wfeed">
             <div class="feed-card"><div class="skel"></div><div class="skel" style="width:60%"></div></div>
             <div class="feed-card"><div class="skel"></div><div class="skel" style="width:70%"></div></div>
+          </div>
+        </div>
+
+        <div class="panel" id="sec-hot">
+          <div class="panel-hdr">
+            <div class="panel-title"><span class="ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span> Hot Markets</div>
+            <span style="font-family:var(--mono);font-size:10px;color:var(--faint)" id="hb-updated"></span>
+          </div>
+          <div class="panel-body" id="hb-list">
+            <div class="skel"></div><div class="skel" style="width:70%"></div>
           </div>
         </div>
 
@@ -1370,44 +1380,29 @@ details.alert-strip:has(.alert-body .empty){ display: none; }
           </div>
         </div>
 
-      </div>
-    </div>
-
-    <!-- BELOW THE ZONE — Hot Markets and Bitcoin (preserved as full-width panels) -->
-    <div class="below-stack">
-
-      <div class="panel" id="sec-hot">
-        <div class="panel-hdr">
-          <div class="panel-title"><span class="ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span> Hot Markets</div>
-          <span style="font-family:var(--mono);font-size:10px;color:var(--faint)" id="hb-updated"></span>
-        </div>
-        <div class="panel-body" id="hb-list">
-          <div class="skel"></div><div class="skel" style="width:70%"></div>
-        </div>
-      </div>
-
-      <div class="panel" id="sec-btc">
-        <div class="panel-hdr">
-          <div class="panel-title"><span class="ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.767 19.089c4.924.868 6.14-6.025 1.216-6.894m-1.216 6.894L5.86 18.047m5.908 1.042-.347 1.97m1.563-8.864c4.924.869 6.14-6.025 1.215-6.893m-1.215 6.893-3.94-.694m5.155-6.2L8.29 4.26m5.908 1.042.348-1.97M7.48 20.364l3.126-17.727"/></svg></span> Bitcoin</div>
-          <span style="font-family:var(--display);font-size:20px;color:var(--amber);font-weight:600;font-variant-numeric:tabular-nums" id="btc-price">...</span>
-        </div>
-        <div class="panel-body">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-            <div>
-              <div class="lbl" style="margin-bottom:8px">Today</div>
-              <div id="btc-daily"><div class="skel"></div></div>
-            </div>
-            <div>
-              <div class="lbl" style="margin-bottom:8px">This Week</div>
-              <div id="btc-weekly"><div class="skel"></div></div>
-            </div>
+        <div class="panel" id="sec-btc">
+          <div class="panel-hdr">
+            <div class="panel-title"><span class="ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.767 19.089c4.924.868 6.14-6.025 1.216-6.894m-1.216 6.894L5.86 18.047m5.908 1.042-.347 1.97m1.563-8.864c4.924.869 6.14-6.025 1.215-6.893m-1.215 6.893-3.94-.694m5.155-6.2L8.29 4.26m5.908 1.042.348-1.97M7.48 20.364l3.126-17.727"/></svg></span> Bitcoin</div>
+            <span style="font-family:var(--display);font-size:20px;color:var(--amber);font-weight:600;font-variant-numeric:tabular-nums" id="btc-price">...</span>
           </div>
-          <div class="hr"></div>
-          <div class="lbl" style="margin-bottom:8px">Price Targets</div>
-          <div id="btc-targets"><div class="skel"></div></div>
+          <div class="panel-body">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+              <div>
+                <div class="lbl" style="margin-bottom:8px">Today</div>
+                <div id="btc-daily"><div class="skel"></div></div>
+              </div>
+              <div>
+                <div class="lbl" style="margin-bottom:8px">This Week</div>
+                <div id="btc-weekly"><div class="skel"></div></div>
+              </div>
+            </div>
+            <div class="hr"></div>
+            <div class="lbl" style="margin-bottom:8px">Price Targets</div>
+            <div id="btc-targets"><div class="skel"></div></div>
+          </div>
         </div>
-      </div>
 
+      </div>
     </div>
 
     <!-- SETTINGS (hidden until toggled) -->
